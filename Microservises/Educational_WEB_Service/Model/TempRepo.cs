@@ -17,7 +17,7 @@ namespace Lesson1.Model
         /// <summary>
         /// Свойство доступа к полю для хранения пары дата - температура
         /// </summary>
-        //public Dictionary<DateTime, decimal> DateAndTemp { get => _dateAndTemp; set => _dateAndTemp = value; }
+        public Dictionary<DateTime, decimal> DateAndTemp { get => _dateAndTemp; set => _dateAndTemp = value; }
 
         /// <summary>
         /// Конструктор класса
