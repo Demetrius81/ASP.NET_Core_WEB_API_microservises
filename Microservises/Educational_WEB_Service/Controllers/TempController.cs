@@ -36,6 +36,13 @@ namespace Lesson1.Controllers
             _tempRepo = tempRepo;
         }
 
+        /*  
+         *  
+         * Столкнулся с проблеммой. Если ставлю тип переменной для ввода времени DateTime,
+         * выдает ошибку 400. С int все работает.
+         * 
+         */
+
         /// <summary>
         /// Метод добавляет запись о температуре в определенное время
         /// </summary>
@@ -43,8 +50,23 @@ namespace Lesson1.Controllers
         /// <param name="temp">decimal температура</param>
         /// <returns></returns>
         [HttpPost("create")]
-        public IActionResult Create([FromQuery] DateTime dateTime, [FromQuery] decimal temp)
+        public IActionResult Create([FromQuery] decimal temp, [FromQuery] int dateTime)
         {
+            #region For best times
+
+            //[FromQuery] DateTime? dateTime = null
+
+            //if (!dateTime.HasValue)
+            //{
+            //    dateTime = DateTime.UtcNow;
+            //}
+            //else
+            //{
+            //    dateTime = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);
+            //}
+
+            #endregion
+
             _tempRepo.Add(dateTime, temp);
 
             return Ok();
@@ -56,11 +78,23 @@ namespace Lesson1.Controllers
         /// <param name="dateTime">DateTime дата</param>
         /// <returns></returns>
         [HttpGet("read")]
-        public IActionResult Read([FromQuery] DateTime dateTime)
+        public IActionResult Read([FromQuery] int dateTime)
         {
             decimal temp = _tempRepo.Get(ref dateTime);
 
             return Ok($"{dateTime}, {temp}");
+        }
+
+        /// <summary>
+        /// Метод выводит список показателей температуры за указанный промежуток времени
+        /// </summary>
+        /// <param name="dateTimeStart">DateTime начало интервала</param>
+        /// <param name="dateTimeEnd">DateTime конец интервала</param>
+        /// <returns></returns>
+        [HttpGet("readfortheinterval")]
+        public IActionResult ReadForTheIntervale([FromQuery] int dateTimeStart, [FromQuery] int dateTimeEnd)
+        {
+            return Ok($"{_tempRepo.ReadInterval(dateTimeStart, dateTimeEnd)}");
         }
 
         /// <summary>
@@ -80,7 +114,7 @@ namespace Lesson1.Controllers
         /// <param name="temp"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public IActionResult Update([FromQuery] DateTime dateTime, [FromQuery] decimal temp)
+        public IActionResult Update([FromQuery] int dateTime, [FromQuery] decimal temp)
         {
             _tempRepo.Replace(dateTime, temp);
 
@@ -93,9 +127,23 @@ namespace Lesson1.Controllers
         /// <param name="dateTime">DateTime дата и время</param>
         /// <returns></returns>
         [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] DateTime dateTime)
+        public IActionResult Delete([FromQuery] int dateTime)
         {
             _ = _tempRepo.DateAndTemp.Remove(dateTime);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Метод удаляет показатель температуры в указанный промежуток времени
+        /// </summary>
+        /// <param name="dateTimeStart">DateTime начало интервала</param>
+        /// <param name="dateTimeEnd">DateTime конец интервала</param>
+        /// <returns></returns>
+        [HttpDelete("deletefortheinterval")]
+        public IActionResult DeleteForTheIntervale([FromQuery] int dateTimeStart, [FromQuery] int dateTimeEnd)
+        {
+            _tempRepo.RemoveInterval(dateTimeStart, dateTimeEnd);
 
             return Ok();
         }
@@ -110,32 +158,6 @@ namespace Lesson1.Controllers
             _tempRepo.DateAndTemp.Clear();
 
             return Ok();
-        }
-
-        /// <summary>
-        /// Метод удаляет показатель температуры в указанный промежуток времени
-        /// </summary>
-        /// <param name="dateTimeStart">DateTime начало интервала</param>
-        /// <param name="dateTimeEnd">DateTime конец интервала</param>
-        /// <returns></returns>
-        [HttpDelete("deletefortheinterval")]
-        public IActionResult DeleteForTheIntervale([FromQuery] DateTime dateTimeStart, [FromQuery] DateTime dateTimeEnd)
-        {
-            _tempRepo.RemoveInterval(dateTimeStart, dateTimeEnd);
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Метод выводит список показателей температуры за указанный промежуток времени
-        /// </summary>
-        /// <param name="dateTimeStart">DateTime начало интервала</param>
-        /// <param name="dateTimeEnd">DateTime конец интервала</param>
-        /// <returns></returns>
-        [HttpGet("readfortheinterval")]
-        public IActionResult ReadForTheIntervale([FromQuery] DateTime dateTimeStart, [FromQuery] DateTime dateTimeEnd)
-        {
-            return Ok($"{_tempRepo.ReadInterval(dateTimeStart, dateTimeEnd)}");
         }
     }
 }

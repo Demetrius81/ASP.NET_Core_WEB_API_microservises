@@ -12,19 +12,19 @@ namespace Lesson1.Model
         /// <summary>
         /// Поле для хранения пары дата - температура
         /// </summary>
-        private Dictionary<DateTime, decimal> _dateAndTemp;
+        private Dictionary<int, decimal> _dateAndTemp;
 
         /// <summary>
         /// Свойство доступа к полю для хранения пары дата - температура
         /// </summary>
-        public Dictionary<DateTime, decimal> DateAndTemp { get => _dateAndTemp; set => _dateAndTemp = value; }
+        public Dictionary<int, decimal> DateAndTemp { get => _dateAndTemp; set => _dateAndTemp = value; }
 
         /// <summary>
         /// Конструктор класса
         /// </summary>
         public TempRepo()
         {
-            _dateAndTemp = new Dictionary<DateTime, decimal>();
+            _dateAndTemp = new Dictionary<int, decimal>();
         }
 
         /// <summary>
@@ -32,9 +32,12 @@ namespace Lesson1.Model
         /// </summary>
         /// <param name="date">DateTime дата и время</param>
         /// <param name="temp">decimal температура</param>
-        public void Add(DateTime date, decimal temp)
+        public void Add(int date, decimal temp)
         {
-            _dateAndTemp.Add(date, temp);
+            if (!_dateAndTemp.ContainsKey(date))
+            { 
+                _dateAndTemp.Add(date, temp); 
+            }            
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Lesson1.Model
         /// </summary>
         /// <param name="date">DateTime дата</param>
         /// <returns>decimal температура</returns>
-        public decimal Get(ref DateTime date)
+        public decimal Get(ref int date)
         {
             _ = _dateAndTemp.TryGetValue(date, out decimal temp);
 
@@ -57,9 +60,9 @@ namespace Lesson1.Model
         {
             string result = string.Empty;
 
-            foreach (DateTime key in _dateAndTemp.Keys)
+            foreach (int key in _dateAndTemp.Keys)
             {
-                result = result + $"{key}" + ", " + $"_DateAndTemp[key]" + "; ";
+                result = result + $"{key}" + ", " + $"{_dateAndTemp[key]}" + "; ";
             }
 
             return result;
@@ -70,7 +73,7 @@ namespace Lesson1.Model
         /// </summary>
         /// <param name="date">DateTime дата и время</param>
         /// <param name="temp">decimal температура</param>
-        public void Replace(DateTime date, decimal temp)
+        public void Replace(int date, decimal temp)
         {
             if (_dateAndTemp.ContainsKey(date))
             {
@@ -83,9 +86,9 @@ namespace Lesson1.Model
         /// </summary>
         /// <param name="dateTimeStart">DateTime начало интервала</param>
         /// <param name="dateTimeEnd">DateTime конец интервала</param>
-        public void RemoveInterval(DateTime dateTimeStart, DateTime dateTimeEnd)
+        public void RemoveInterval(int dateTimeStart, int dateTimeEnd)
         {
-            foreach (DateTime key in GetInterval(dateTimeStart, dateTimeEnd))
+            foreach (int key in GetInterval(dateTimeStart, dateTimeEnd))
             {
                 _ = _dateAndTemp.Remove(key);
             }
@@ -97,13 +100,13 @@ namespace Lesson1.Model
         /// <param name="dateTimeStart">DateTime начало интервала</param>
         /// <param name="dateTimeEnd">DateTime конец интервала</param>
         /// <returns>string коллекция значений дата - температура</returns>
-        public string ReadInterval(DateTime dateTimeStart, DateTime dateTimeEnd)
+        public string ReadInterval(int dateTimeStart, int dateTimeEnd)
         {
             string result = string.Empty;
 
-            foreach (DateTime key in GetInterval(dateTimeStart, dateTimeEnd))
+            foreach (int key in GetInterval(dateTimeStart, dateTimeEnd))
             {
-                result = result + $"{key}" + ", " + $"_DateAndTemp[key]" + "; ";
+                result = result + $"{key}" + ", " + $"{_dateAndTemp[key]}" + "; ";
             }
 
             return result;
@@ -115,7 +118,7 @@ namespace Lesson1.Model
         /// <param name="dateTimeStart">DateTime начало интервала</param>
         /// <param name="dateTimeEnd">DateTime конец интервала</param>
         /// <returns></returns>
-        private List<DateTime> GetInterval(DateTime dateTimeStart, DateTime dateTimeEnd) =>
+        private List<int> GetInterval(int dateTimeStart, int dateTimeEnd) =>
             _dateAndTemp.Keys.Where(key => key >= dateTimeStart && key <= dateTimeEnd).ToList();
     }
 }
