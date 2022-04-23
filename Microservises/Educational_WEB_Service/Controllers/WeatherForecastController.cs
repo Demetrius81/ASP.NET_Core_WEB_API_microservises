@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Educational_WEB_Service.Controllers
 {
+    [NonController]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
