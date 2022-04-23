@@ -35,9 +35,9 @@ namespace Lesson1.Model
         public void Add(int date, decimal temp)
         {
             if (!_dateAndTemp.ContainsKey(date))
-            { 
-                _dateAndTemp.Add(date, temp); 
-            }            
+            {
+                _dateAndTemp.Add(date, temp);
+            }
         }
 
         /// <summary>
