@@ -4,9 +4,6 @@ using System;
 
 namespace MetricsManager.Controllers
 {
-    /// <summary>
-    /// CPU контроллер
-    /// </summary>
     [Route("api/cpu")]
     [ApiController]
     public class CpuMetricsController : ControllerBase, IMetricsManager
@@ -17,6 +14,7 @@ namespace MetricsManager.Controllers
         {
             return Ok();
         }
+
         [HttpGet("clister/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster(
             [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
