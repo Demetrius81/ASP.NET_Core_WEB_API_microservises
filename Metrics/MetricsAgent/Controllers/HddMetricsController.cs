@@ -12,20 +12,10 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase, IMetricsAgent
     {
-        [HttpGet("from/{fromTime}/to/{toTime}")]
+        [HttpGet("left/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
-        }
-
-        /// <summary>
-        /// Метод возвращает количество свободного места на диске
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("left")]
-        public IActionResult GetMetricsHddLeft()
-        {
-            return Ok();
-        }
+        }        
     }
 }
