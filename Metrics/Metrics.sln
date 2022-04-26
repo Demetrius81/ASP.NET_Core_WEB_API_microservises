@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsManager", "MetricsManager\MetricsManager.csproj", "{F28C3274-05B9-4C2B-8E0D-3E96DA4AD4EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{47746463-A46E-4D2F-97E0-803ECE83D81A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F28C3274-05B9-4C2B-8E0D-3E96DA4AD4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F28C3274-05B9-4C2B-8E0D-3E96DA4AD4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F28C3274-05B9-4C2B-8E0D-3E96DA4AD4EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47746463-A46E-4D2F-97E0-803ECE83D81A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47746463-A46E-4D2F-97E0-803ECE83D81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47746463-A46E-4D2F-97E0-803ECE83D81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47746463-A46E-4D2F-97E0-803ECE83D81A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

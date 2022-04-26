@@ -9,7 +9,7 @@ namespace MetricsManager.Controllers
     /// </summary>
     [Route("api/cpu")]
     [ApiController]
-    public class CpuMetricsController : ControllerBase
+    public class CpuMetricsController : ControllerBase, IMetricsManager
     {
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent(
