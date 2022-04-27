@@ -1,24 +1,32 @@
 using System;
 using System.Reflection;
 using Xunit;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using MetricsAgent.Controllers;
 
 namespace MetricsAgentTests
 {
     public class AgentMerticsControllersTest
     {
+        private TimeSpan _fromTime;
 
-        [Fact]
-        public void TestControllers()
+        private TimeSpan _toTime;
+
+        public AgentMerticsControllersTest()
         {
-            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            _fromTime = TimeSpan.FromSeconds(0);
 
-            TimeSpan toTime = TimeSpan.FromSeconds(2);
+            _toTime = TimeSpan.FromSeconds(2);
+        }
 
-            object[] vs = new object[] { fromTime, toTime };
+        // На сколько валидным является следующий тестовый метод?
+
+        /// <summary>
+        /// Тестовый метод для всех методов всех классов, реализующих интерфейс IMetricsAgent
+        /// </summary>
+        [Fact]
+        public void AllControllersTest()
+        {
+            object[] vs = new object[] { _fromTime, _toTime };
 
             Assembly asm = Assembly.LoadFrom("MetricsAgent.dll");
 
@@ -30,15 +38,15 @@ namespace MetricsAgentTests
                 {
                     MethodInfo method = type.GetMethod("GetMetrics");
 
-                    ConstructorInfo ctr = type.GetConstructor(Type.EmptyTypes);
+                    ConstructorInfo ctоr = type.GetConstructor(Type.EmptyTypes);
 
-                    object instance = ctr.Invoke(null);
+                    object instance = ctоr.Invoke(null);
 
                     object result = method.Invoke(instance, vs);
 
                     Assert.IsAssignableFrom<IActionResult>(result);
                 }
-            }            
+            }
         }
     }
 }
