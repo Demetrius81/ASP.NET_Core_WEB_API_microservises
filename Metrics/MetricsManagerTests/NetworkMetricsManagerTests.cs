@@ -27,5 +27,17 @@ namespace MetricsManagerTests
 
             Assert.IsAssignableFrom<IActionResult>(result);
         }
+
+        [Fact]
+        public void GetMetricsFromAllCluster_ReturnOk()
+        {
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
+
+            IActionResult result = _networkMetricsController.GetMetricsFromAllCluster(fromTime, toTime);
+
+            Assert.IsAssignableFrom<IActionResult>(result);
+        }
     }
 }
