@@ -26,8 +26,6 @@ namespace MetricsManagerTests
             _agentId = 1;
         }
 
-        // На сколько валидным является следующие тестовые методы?
-
         /// <summary>
         /// Тестовый метод для метода GetMetricsFromAgent всех классов, реализующих интерфейс IMetricsManager
         /// </summary>
