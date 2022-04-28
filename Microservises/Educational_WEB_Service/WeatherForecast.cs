@@ -1,6 +1,6 @@
 using System;
 
-namespace Microservises
+namespace Educational_WEB_Service
 {
     public class WeatherForecast
     {

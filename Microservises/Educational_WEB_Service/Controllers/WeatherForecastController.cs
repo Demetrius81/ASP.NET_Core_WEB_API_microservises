@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Microservises.Controllers
+namespace Educational_WEB_Service.Controllers
 {
+    [NonController]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

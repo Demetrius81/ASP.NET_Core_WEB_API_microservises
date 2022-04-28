@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Microservises
+namespace Educational_WEB_Service
 {
     public class Program
     {
