@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MetricsAgent.Models.Interfaces;
+using System;
 
 namespace MetricsAgent.Models.Requests
 {
-    public class MetricCreateRequest
+    public class CpuMetricCreateRequest : IMetricCreateRequest
     {
         public TimeSpan Time { get; set; }
 

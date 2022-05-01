@@ -30,7 +30,7 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] MetricCreateRequest request)
+        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
             Metric cpuMetric = new Metric
             {
@@ -53,7 +53,7 @@ namespace MetricsAgent.Controllers
         {
             var metrics = _dotNetMetricsRepository.GetAll();
 
-            var response = new AllMetricsResponse()
+            var response = new CpuAllMetricsResponse()
             {
                 Metrics = new List<MetricDto>()
             };

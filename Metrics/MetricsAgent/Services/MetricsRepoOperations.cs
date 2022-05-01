@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.Models;
+using MetricsAgent.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -16,7 +17,7 @@ namespace MetricsAgent.Services
             TabName = tabName;
         }
 
-        public void CreateOperation(Metric item)
+        public void CreateOperation(IMetric item)
         {
             using SQLiteConnection connection = new SQLiteConnection(ConnectionString);
 
@@ -52,7 +53,7 @@ namespace MetricsAgent.Services
             command.ExecuteNonQuery();
         }
 
-        public void UpdateOperation(Metric item)
+        public void UpdateOperation(IMetric item)
         {
             using SQLiteConnection connection = new SQLiteConnection(ConnectionString);
 
@@ -73,7 +74,7 @@ namespace MetricsAgent.Services
             command.ExecuteNonQuery();
         }
 
-        public IList<Metric> GetAllOperation()
+        public IList<IMetric> GetAllOperation(IMetric metric)
         {
             using SQLiteConnection connection = new SQLiteConnection(ConnectionString);
 
@@ -83,26 +84,25 @@ namespace MetricsAgent.Services
 
             command.CommandText = $"SELECT * FROM {TabName}";
 
-            var returnList = new List<Metric>();
+            var returnList = new List<IMetric>();
 
             using (SQLiteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    returnList.Add(new Metric
-                    {
-                        Id = reader.GetInt32(0),
+                    metric.Id = reader.GetInt32(0);
 
-                        Value = reader.GetInt32(1),
+                    metric.Value = reader.GetInt32(1);
 
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
-                    });
+                    metric.Time = TimeSpan.FromSeconds(reader.GetInt32(2));
+
+                    returnList.Add(metric);
                 }
             }
             return returnList;
         }
 
-        public Metric GetByIdOperation(int id)
+        public IMetric GetByIdOperation(int id, IMetric metric)
         {
             using SQLiteConnection connection = new SQLiteConnection(ConnectionString);
 
@@ -116,14 +116,13 @@ namespace MetricsAgent.Services
             {
                 if (reader.Read())
                 {
-                    return new Metric
-                    {
-                        Id = reader.GetInt32(0),
+                    metric.Id = reader.GetInt32(0);
 
-                        Value = reader.GetInt32(1),
+                    metric.Value = reader.GetInt32(1);
 
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(1))
-                    };
+                    metric.Time = TimeSpan.FromSeconds(reader.GetInt32(1));
+
+                    return metric;
                 }
                 else
                 {

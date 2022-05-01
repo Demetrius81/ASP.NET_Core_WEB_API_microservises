@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.Models;
+using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace MetricsAgent.Services
             _operation = new MetricsRepoOperations(_tabName);
         }
 
-        public void Create(Metric item)
+        public void Create(IMetric item)
         {
             _operation.CreateOperation(item);
         }
@@ -27,19 +28,23 @@ namespace MetricsAgent.Services
             _operation.DeleteOperation(id);
         }
 
-        public void Update(Metric item)
+        public void Update(IMetric item)
         {
             _operation.UpdateOperation(item);
         }
 
-        public IList<Metric> GetAll()
-        {            
-            return _operation.GetAllOperation();
+        public IList<IMetric> GetAll()
+        {
+            IMetric metric = new CpuMetric();
+
+            return _operation.GetAllOperation(metric);
         }
 
-        public Metric GetById(int id)
+        public IMetric GetById(int id)
         {
-            return _operation.GetByIdOperation(id);
+            IMetric metric = new CpuMetric();
+
+            return _operation.GetByIdOperation(id, metric);
         }
     }
 }

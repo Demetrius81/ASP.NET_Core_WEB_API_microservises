@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MetricsAgent.Models.Interfaces;
+using System;
 
 namespace MetricsAgent.Models
 {
-    public class MetricDto
+    public class CpuMetricDto : IMetric
     {
         public int Id { get; set; }
 
