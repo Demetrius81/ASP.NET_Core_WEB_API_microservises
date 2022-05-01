@@ -1,4 +1,5 @@
 using MetricsManager.Models;
+using MetricsManager.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,7 +29,7 @@ namespace MetricsManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<AgentPool>();
+            services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
