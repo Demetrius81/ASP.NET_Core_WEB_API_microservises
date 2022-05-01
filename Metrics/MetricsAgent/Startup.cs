@@ -1,3 +1,4 @@
+using MetricsAgent.Converter;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -33,7 +34,11 @@ namespace MetricsAgent
 
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
 
-            services.AddControllers();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
@@ -82,6 +87,34 @@ namespace MetricsAgent
                 command.ExecuteNonQuery();
 
                 command.CommandText = @"CREATE TABLE cpumetrics(
+                    id INTEGER PRIMARY KEY,
+                    value INT, 
+                    time INT)";
+
+                command.ExecuteNonQuery();
+
+                command.CommandText = @"CREATE TABLE dotnetmetrics(
+                    id INTEGER PRIMARY KEY,
+                    value INT, 
+                    time INT)";
+
+                command.ExecuteNonQuery();
+
+                command.CommandText = @"CREATE TABLE hddmetrics(
+                    id INTEGER PRIMARY KEY,
+                    value INT, 
+                    time INT)";
+
+                command.ExecuteNonQuery();
+
+                command.CommandText = @"CREATE TABLE networkmetrics(
+                    id INTEGER PRIMARY KEY,
+                    value INT, 
+                    time INT)";
+
+                command.ExecuteNonQuery();
+
+                command.CommandText = @"CREATE TABLE rammetrics(
                     id INTEGER PRIMARY KEY,
                     value INT, 
                     time INT)";

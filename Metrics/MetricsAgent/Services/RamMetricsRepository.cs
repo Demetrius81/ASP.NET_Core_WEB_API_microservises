@@ -6,13 +6,13 @@ using System.Data.SQLite;
 
 namespace MetricsAgent.Services
 {
-    public class CpuMetricsRepository : ICpuMetricsRepository
+    public class RamMetricsRepository : IRamMetricsRepository
     {
-        private const string _tabName = "cpumetrics";
+        private const string _tabName = "rammetrics";
 
         private MetricsRepoOperations _operation;
 
-        public CpuMetricsRepository()
+        public RamMetricsRepository()
         {
             _operation = new MetricsRepoOperations(_tabName);
         }
@@ -33,7 +33,7 @@ namespace MetricsAgent.Services
         }
 
         public IList<Metric> GetAll()
-        {            
+        {
             return _operation.GetAllOperation();
         }
 

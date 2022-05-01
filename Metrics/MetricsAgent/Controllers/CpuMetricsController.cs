@@ -27,9 +27,9 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        public IActionResult Create([FromBody] MetricCreateRequest request)
         {
-            CpuMetric cpuMetric = new CpuMetric
+            Metric cpuMetric = new Metric
             {
                 Time = request.Time,
 
@@ -50,13 +50,13 @@ namespace MetricsAgent.Controllers
         {
             var metrics = _cpuMetricsRepository.GetAll();
 
-            var response = new AllCpuMetricsResponse()
+            var response = new AllMetricsResponse()
             {
-                Metrics = new List<CpuMetricDto>()
+                Metrics = new List<MetricDto>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto
+                response.Metrics.Add(new MetricDto
                 {
                     Time = metric.Time,
                     Value = metric.Value,

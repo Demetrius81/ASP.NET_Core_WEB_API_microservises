@@ -12,5 +12,7 @@ namespace MetricsAgent.Controllers
         /// <param name="toTime"></param>
         /// <returns></returns>
         IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime);
+
+
     }
 }
