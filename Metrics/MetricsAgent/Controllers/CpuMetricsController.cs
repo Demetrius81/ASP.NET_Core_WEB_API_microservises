@@ -1,5 +1,7 @@
 ﻿using MetricsAgent.Models;
+using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
+using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +29,9 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] MetricCreateRequest request)
+        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
-            Metric cpuMetric = new Metric
+            IMetric cpuMetric = new CpuMetric
             {
                 Time = request.Time,
 
@@ -48,15 +50,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = _cpuMetricsRepository.GetAll();
+            IList<IMetric> metrics = _cpuMetricsRepository.GetAll();
 
-            var response = new AllMetricsResponse()
+            CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<MetricDto>()
+                Metrics = new List<IMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new MetricDto
+                response.Metrics.Add(new CpuMetricDto
                 {
                     Time = metric.Time,
                     Value = metric.Value,
@@ -66,7 +68,9 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
-        [HttpGet("sql-test")]
+        #region sql-test
+
+        //[HttpGet("sql-test")]
         public IActionResult TryToSqlLite()
         {
             string sql = "Data Source=:memory:";
@@ -85,6 +89,7 @@ namespace MetricsAgent.Controllers
             }
         }
 
+        #endregion
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
