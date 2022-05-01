@@ -3,7 +3,6 @@ using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 
 namespace MetricsAgent.Services
 {
@@ -31,6 +30,13 @@ namespace MetricsAgent.Services
         public void Update(IMetric item)
         {
             _operation.UpdateOperation(item);
+        }
+
+        public IList<IMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            IMetric metric = new CpuMetric();
+
+            return _operation.GetByTimePeriodOperation(fromTime, toTime, metric);
         }
 
         public IList<IMetric> GetAll()

@@ -51,7 +51,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = _dotNetMetricsRepository.GetAll();
+            var metrics = _dotNetMetricsRepository.GetByTimePeriod();
 
             var response = new CpuAllMetricsResponse()
             {

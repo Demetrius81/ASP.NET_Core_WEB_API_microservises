@@ -102,6 +102,34 @@ namespace MetricsAgent.Services
             return returnList;
         }
 
+        public IList<IMetric> GetByTimePeriodOperation(TimeSpan fromTime, TimeSpan toTime, IMetric metric)
+        {
+            using SQLiteConnection connection = new SQLiteConnection(ConnectionString);
+
+            connection.Open();
+
+            using SQLiteCommand command = new SQLiteCommand(connection);
+
+            command.CommandText = $"SELECT * FROM {TabName} WHERE time BETWEEN {fromTime.TotalSeconds} AND {toTime.TotalSeconds}; ";
+
+            var returnList = new List<IMetric>();
+
+            using (SQLiteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    metric.Id = reader.GetInt32(0);
+
+                    metric.Value = reader.GetInt32(1);
+
+                    metric.Time = TimeSpan.FromSeconds(reader.GetInt32(2));
+
+                    returnList.Add(metric);
+                }
+            }
+            return returnList;
+        }
+
         public IMetric GetByIdOperation(int id, IMetric metric)
         {
             using SQLiteConnection connection = new SQLiteConnection(ConnectionString);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MetricsAgent.Services.Interfaces
 {
@@ -9,6 +10,14 @@ namespace MetricsAgent.Services.Interfaces
         /// </summary>
         /// <returns></returns>
         IList<T> GetAll();
+
+        /// <summary>
+        /// Метод возвращает коллекцию метрик за указанный промежуток времени
+        /// </summary>
+        /// <param name="fromTime"></param>
+        /// <param name="toTime"></param>
+        /// <returns></returns>
+        IList<T> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime);
 
         /// <summary>
         /// Метод возвращает метрику по ее ID
@@ -34,6 +43,5 @@ namespace MetricsAgent.Services.Interfaces
         /// </summary>
         /// <param name="id"></param>
         void Delete(int id);
-
     }
 }

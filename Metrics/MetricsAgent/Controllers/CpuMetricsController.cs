@@ -61,7 +61,33 @@ namespace MetricsAgent.Controllers
                 response.Metrics.Add(new CpuMetricDto
                 {
                     Time = metric.Time,
+
                     Value = metric.Value,
+
+                    Id = metric.Id
+                });
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        {
+            IList<IMetric> metrics = _cpuMetricsRepository.GetByTimePeriod(fromTime, toTime);
+
+            CpuAllMetricsResponse response = new CpuAllMetricsResponse()
+            {
+                Metrics = new List<IMetric>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new CpuMetricDto
+                {
+                    Time = metric.Time,
+
+                    Value = metric.Value,
+
                     Id = metric.Id
                 });
             }
@@ -90,11 +116,5 @@ namespace MetricsAgent.Controllers
         }
 
         #endregion
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            return Ok();
-        }
     }
 }
