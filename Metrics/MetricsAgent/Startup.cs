@@ -29,7 +29,7 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureSqlLiteConnection(services);
+            ConfigureSqlLiteConnection();
                         
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
 
@@ -72,7 +72,7 @@ namespace MetricsAgent
             });
         }
 
-        private void ConfigureSqlLiteConnection(IServiceCollection services)
+        private void ConfigureSqlLiteConnection()
         {
             const string connectionString = "Data Source = metrics.db; Version = 3; Pooling = true; Max Pool Size = 100;";
 

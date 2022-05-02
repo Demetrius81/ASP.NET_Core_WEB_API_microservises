@@ -21,7 +21,7 @@ namespace MetricsAgentTests
         [Fact]
         public void RamControllerTest()
         {
-            IMetricsAgent controller = new RamMetricsController();
+            IMetricsController controller = new RamMetricsController();
 
             IActionResult result = controller.GetMetrics(_fromTime, _toTime);
 

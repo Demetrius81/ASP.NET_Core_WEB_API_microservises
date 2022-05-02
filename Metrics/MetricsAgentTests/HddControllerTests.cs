@@ -21,7 +21,7 @@ namespace MetricsAgentTests
         [Fact]
         public void HddControllerTest()
         {
-            IMetricsAgent controller = new HddMetricsController();
+            IMetricsController controller = new HddMetricsController();
 
             IActionResult result = controller.GetMetrics(_fromTime, _toTime);
 

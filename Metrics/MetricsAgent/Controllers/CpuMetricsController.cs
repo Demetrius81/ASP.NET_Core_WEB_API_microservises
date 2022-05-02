@@ -14,7 +14,7 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/metrics/cpu")]
     [ApiController]
-    public class CpuMetricsController : ControllerBase, IMetricsAgent
+    public class CpuMetricsController : ControllerBase, IMetricsController
     {
         private ICpuMetricsRepository _metricsRepository;
 
@@ -29,8 +29,10 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        public IActionResult Create([FromBody] IMetricCreateRequest requestData)
         {
+            CpuMetricCreateRequest request = requestData as CpuMetricCreateRequest;
+
             IMetric metric = new CpuMetric
             {
                 Time = request.Time,

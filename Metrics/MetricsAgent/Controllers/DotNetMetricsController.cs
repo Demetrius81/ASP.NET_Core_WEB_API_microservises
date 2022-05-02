@@ -13,7 +13,7 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/metrics/dotnet")]
     [ApiController]
-    public class DotNetMetricsController : ControllerBase, IMetricsAgent
+    public class DotNetMetricsController : ControllerBase, IMetricsController
     {
         private IDotNetMetricsRepository _metricsRepository;
 
@@ -28,8 +28,10 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
+        public IActionResult Create([FromBody] IMetricCreateRequest requestData)
         {
+            DotNetMetricCreateRequest request = requestData as DotNetMetricCreateRequest;
+
             IMetric metric = new DotNetMetric
             {
                 Time = request.Time,

@@ -13,7 +13,7 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/metrics/hdd")]
     [ApiController]
-    public class HddMetricsController : ControllerBase, IMetricsAgent
+    public class HddMetricsController : ControllerBase, IMetricsController
     {
         private IHddMetricsRepository _metricsRepository;
 
@@ -28,8 +28,10 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] HddMetricCreateRequest request)
+        public IActionResult Create([FromBody] IMetricCreateRequest requestData)
         {
+            HddMetricCreateRequest request = requestData as HddMetricCreateRequest;
+
             IMetric metric = new HddMetric
             {
                 Time = request.Time,

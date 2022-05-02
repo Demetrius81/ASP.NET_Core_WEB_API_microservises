@@ -21,7 +21,7 @@ namespace MetricsAgentTests
         [Fact]
         public void CpuControllerTest()
         {
-            IMetricsAgent controller = new CpuMetricsController();
+            IMetricsController controller = new CpuMetricsController();
 
             IActionResult result = controller.GetMetrics(_fromTime, _toTime);
 

@@ -1,3 +1,4 @@
+using MetricsManager.Converter;
 using MetricsManager.Models;
 using MetricsManager.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -31,7 +32,8 @@ namespace MetricsManager
         {
             services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsManager", Version = "v1" });

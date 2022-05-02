@@ -13,7 +13,7 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/metrics/ram")]
     [ApiController]
-    public class RamMetricsController : ControllerBase, IMetricsAgent
+    public class RamMetricsController : ControllerBase, IMetricsController
     {
         private IRamMetricsRepository _metricsRepository;
 
@@ -28,8 +28,10 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] RamMetricCreateRequest request)
+        public IActionResult Create([FromBody] IMetricCreateRequest requestData)
         {
+            RamMetricCreateRequest request = requestData as RamMetricCreateRequest;
+
             IMetric metric = new RamMetric
             {
                 Time = request.Time,

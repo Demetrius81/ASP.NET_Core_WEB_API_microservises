@@ -21,7 +21,7 @@ namespace MetricsAgentTests
         [Fact]
         public void DotNetControllerTest()
         {
-            IMetricsAgent controller = new DotNetMetricsController();
+            IMetricsController controller = new DotNetMetricsController();
 
             IActionResult result = controller.GetMetrics(_fromTime, _toTime);
 
