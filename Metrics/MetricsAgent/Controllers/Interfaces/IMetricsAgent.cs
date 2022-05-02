@@ -5,6 +5,8 @@ namespace MetricsAgent.Controllers
 {
     public interface IMetricsAgent
     {
+
+
         /// <summary>
         /// Метод возвращает метрики по запросу
         /// </summary>

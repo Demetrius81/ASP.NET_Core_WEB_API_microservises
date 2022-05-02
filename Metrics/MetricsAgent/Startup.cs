@@ -13,7 +13,6 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MetricsAgent
@@ -31,10 +30,16 @@ namespace MetricsAgent
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureSqlLiteConnection(services);
-
+                        
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
 
             services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+
+            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
+
+            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
@@ -82,44 +87,28 @@ namespace MetricsAgent
         {
             using (SQLiteCommand command = new SQLiteCommand(connection))
             {
-                command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
+                List<string> TabNames = new List<string>()
+                {
+                    "cpumetrics",
+                    "dotnetmetrics",
+                    "hddmetrics",
+                    "networkmetrics",
+                    "rammetrics"
+                };
 
-                command.ExecuteNonQuery();
+                foreach (string TabName in TabNames)
+                {
+                    command.CommandText = $"DROP TABLE IF EXISTS {TabName}";
 
-                command.CommandText = @"CREATE TABLE cpumetrics(
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = $@"CREATE TABLE {TabName}(
                     id INTEGER PRIMARY KEY,
                     value INT, 
                     time INT)";
 
-                command.ExecuteNonQuery();
-
-                command.CommandText = @"CREATE TABLE dotnetmetrics(
-                    id INTEGER PRIMARY KEY,
-                    value INT, 
-                    time INT)";
-
-                command.ExecuteNonQuery();
-
-                command.CommandText = @"CREATE TABLE hddmetrics(
-                    id INTEGER PRIMARY KEY,
-                    value INT, 
-                    time INT)";
-
-                command.ExecuteNonQuery();
-
-                command.CommandText = @"CREATE TABLE networkmetrics(
-                    id INTEGER PRIMARY KEY,
-                    value INT, 
-                    time INT)";
-
-                command.ExecuteNonQuery();
-
-                command.CommandText = @"CREATE TABLE rammetrics(
-                    id INTEGER PRIMARY KEY,
-                    value INT, 
-                    time INT)";
-
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }                
             }
         }
     }

@@ -1,5 +1,7 @@
 ﻿using MetricsAgent.Models;
+using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
+using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,40 +11,36 @@ using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
-        /*
-         * api/metrics/dotnet/errors-count/from/{fromTime}/to/{toTime}
-         */
-
     [Route("api/metrics/dotnet")]
     [ApiController]
     public class DotNetMetricsController : ControllerBase, IMetricsAgent
     {
-        private IDotNetMetricsRepository _dotNetMetricsRepository;
+        private IDotNetMetricsRepository _metricsRepository;
 
         private ILogger<DotNetMetricsController> _logger;
 
         public DotNetMetricsController(ILogger<DotNetMetricsController> logger,
-            IDotNetMetricsRepository dotNetMetricsRepository)
+            IDotNetMetricsRepository metricsRepository)
         {
-            _dotNetMetricsRepository = dotNetMetricsRepository;
+            _metricsRepository = metricsRepository;
 
             _logger = logger;
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
         {
-            Metric cpuMetric = new Metric
+            IMetric metric = new DotNetMetric
             {
                 Time = request.Time,
 
                 Value = request.Value
             };
-            _dotNetMetricsRepository.Create(cpuMetric);
+            _metricsRepository.Create(metric);
 
             if (_logger is not null)
             {
-                _logger.LogDebug($"Успешно добавили новую метрику: {cpuMetric}");
+                _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
             }
 
             return Ok();
@@ -51,27 +49,58 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = _dotNetMetricsRepository.GetByTimePeriod();
+            IList<IMetric> metrics = _metricsRepository.GetAll();
 
-            var response = new CpuAllMetricsResponse()
+            DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<MetricDto>()
+                Metrics = new List<IMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new MetricDto
+                response.Metrics.Add(new DotNetMetricDto
                 {
                     Time = metric.Time,
+
                     Value = metric.Value,
+
                     Id = metric.Id
                 });
             }
+            if (_logger is not null)
+            {
+                _logger.LogDebug($"Успешно получили список всех метрик DotNet");
+            }
+                        
             return Ok(response);
         }
+
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            return Ok();
+            IList<IMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+
+            DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
+            {
+                Metrics = new List<IMetric>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new DotNetMetricDto
+                {
+                    Time = metric.Time,
+
+                    Value = metric.Value,
+
+                    Id = metric.Id
+                });
+            }
+            if (_logger is not null)
+            {
+                _logger.LogDebug($"Успешно получили список всех метрик DotNet в интервале времени от {fromTime.TotalSeconds} секунды до {toTime.TotalSeconds} секунды");
+            }
+
+            return Ok(response);
         }
     }
 }

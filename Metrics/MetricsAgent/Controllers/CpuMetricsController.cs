@@ -16,14 +16,14 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase, IMetricsAgent
     {
-        private ICpuMetricsRepository _cpuMetricsRepository;
+        private ICpuMetricsRepository _metricsRepository;
 
         private ILogger<CpuMetricsController> _logger;
 
         public CpuMetricsController(ILogger<CpuMetricsController> logger,
-            ICpuMetricsRepository cpuMetricsRepository)
+            ICpuMetricsRepository metricsRepository)
         {
-            _cpuMetricsRepository = cpuMetricsRepository;
+            _metricsRepository = metricsRepository;
 
             _logger = logger;
         }
@@ -31,17 +31,17 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
-            IMetric cpuMetric = new CpuMetric
+            IMetric metric = new CpuMetric
             {
                 Time = request.Time,
 
                 Value = request.Value
             };
-            _cpuMetricsRepository.Create(cpuMetric);
+            _metricsRepository.Create(metric);
 
             if (_logger is not null)
             {
-                _logger.LogDebug($"Успешно добавили новую метрику: {cpuMetric}");
+                _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
             }
 
             return Ok();
@@ -50,7 +50,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<IMetric> metrics = _cpuMetricsRepository.GetAll();
+            IList<IMetric> metrics = _metricsRepository.GetAll();
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
@@ -67,13 +67,18 @@ namespace MetricsAgent.Controllers
                     Id = metric.Id
                 });
             }
+            if (_logger is not null)
+            {
+                _logger.LogDebug($"Успешно получили список всех метрик Cpu");
+            }
+
             return Ok(response);
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<IMetric> metrics = _cpuMetricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<IMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
@@ -91,6 +96,11 @@ namespace MetricsAgent.Controllers
                     Id = metric.Id
                 });
             }
+            if (_logger is not null)
+            {
+                _logger.LogDebug($"Успешно получили список всех метрик Cpu в интервале времени от {fromTime.TotalSeconds} секунды до {toTime.TotalSeconds} секунды");
+            }
+
             return Ok(response);
         }
 

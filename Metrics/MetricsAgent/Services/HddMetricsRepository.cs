@@ -1,6 +1,7 @@
 ﻿using MetricsAgent.Models;
 using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace MetricsAgent.Services
@@ -31,7 +32,14 @@ namespace MetricsAgent.Services
             _operation.UpdateOperation(item);
         }
 
-        public IList<IMetric> GetByTimePeriod()
+        public IList<IMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            IMetric metric = new HddMetric();
+
+            return _operation.GetByTimePeriodOperation(fromTime, toTime, metric);
+        }
+
+        public IList<IMetric> GetAll()
         {
             IMetric metric = new HddMetric();
 
