@@ -1,5 +1,9 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models.Requests;
+using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
 using Xunit;
 
@@ -7,25 +11,31 @@ namespace MetricsAgentTests
 {
     public class NetworkControllerTests
     {
-        private TimeSpan _fromTime;
+        private Mock<INetworkMetricsRepository> _mockMetricsRepository;
 
-        private TimeSpan _toTime;
+        private IMetricsController _controller;
 
         public NetworkControllerTests()
         {
-            _fromTime = TimeSpan.FromSeconds(0);
+            _mockMetricsRepository = new Mock<INetworkMetricsRepository>();
 
-            _toTime = TimeSpan.FromSeconds(2);
+            _controller = new NetworkMetricsController(null, _mockMetricsRepository.Object);
         }
 
         [Fact]
-        public void NetworkControllerTest()
+        public void Create_ShouldCall_Create_From_Repository()
         {
-            IMetricsController controller = new NetworkMetricsController();
+            _mockMetricsRepository.Setup(repository =>
+                repository.Create(It.IsAny<IMetric>())).Verifiable();
 
-            IActionResult result = controller.GetMetrics(_fromTime, _toTime);
+            IActionResult result = _controller.Create(new NetworkMetricCreateRequest
+            {
+                Time = TimeSpan.FromSeconds(1),
+                Value = 50
+            });
 
-            Assert.IsAssignableFrom<IActionResult>(result);
+            _mockMetricsRepository.Verify(repository =>
+                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
         }
     }
 }

@@ -1,5 +1,9 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models.Requests;
+using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
 using Xunit;
 
@@ -7,25 +11,31 @@ namespace MetricsAgentTests
 {
     public class CpuControllerTests
     {
-        private TimeSpan _fromTime;
+        private Mock<ICpuMetricsRepository> _mockMetricsRepository;
 
-        private TimeSpan _toTime;
+        private IMetricsController _controller;
 
         public CpuControllerTests()
         {
-            _fromTime = TimeSpan.FromSeconds(0);
+            _mockMetricsRepository = new Mock<ICpuMetricsRepository>();
 
-            _toTime = TimeSpan.FromSeconds(2);
+            _controller = new CpuMetricsController(null, _mockMetricsRepository.Object);
         }
 
         [Fact]
-        public void CpuControllerTest()
-        {
-            IMetricsController controller = new CpuMetricsController();
+        public void Create_ShouldCall_Create_From_Repository()
+        {           
+            _mockMetricsRepository.Setup(repository => 
+                repository.Create(It.IsAny<IMetric>())).Verifiable();
 
-            IActionResult result = controller.GetMetrics(_fromTime, _toTime);
+            IActionResult result = _controller.Create(new CpuMetricCreateRequest
+            {
+                Time = TimeSpan.FromSeconds(1),
+                Value = 50
+            });
 
-            Assert.IsAssignableFrom<IActionResult>(result);
+            _mockMetricsRepository.Verify(repository => 
+                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
         }
     }
 }

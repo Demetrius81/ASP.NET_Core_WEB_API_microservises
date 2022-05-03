@@ -1,5 +1,9 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models.Requests;
+using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
 using Xunit;
 
@@ -7,25 +11,31 @@ namespace MetricsAgentTests
 {
     public class HddControllerTests
     {
-        private TimeSpan _fromTime;
+        private Mock<IHddMetricsRepository> _mockMetricsRepository;
 
-        private TimeSpan _toTime;
+        private IMetricsController _controller;
 
         public HddControllerTests()
         {
-            _fromTime = TimeSpan.FromSeconds(0);
+            _mockMetricsRepository = new Mock<IHddMetricsRepository>();
 
-            _toTime = TimeSpan.FromSeconds(2);
+            _controller = new HddMetricsController(null, _mockMetricsRepository.Object);
         }
 
         [Fact]
-        public void HddControllerTest()
+        public void Create_ShouldCall_Create_From_Repository()
         {
-            IMetricsController controller = new HddMetricsController();
+            _mockMetricsRepository.Setup(repository =>
+                repository.Create(It.IsAny<IMetric>())).Verifiable();
 
-            IActionResult result = controller.GetMetrics(_fromTime, _toTime);
+            IActionResult result = _controller.Create(new HddMetricCreateRequest
+            {
+                Time = TimeSpan.FromSeconds(1),
+                Value = 50
+            });
 
-            Assert.IsAssignableFrom<IActionResult>(result);
+            _mockMetricsRepository.Verify(repository =>
+                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
         }
     }
 }
