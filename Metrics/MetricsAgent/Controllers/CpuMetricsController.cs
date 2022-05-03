@@ -106,26 +106,26 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
-        #region sql-test
+        #region SQL_test
 
         //[HttpGet("sql-test")]
-        public IActionResult TryToSqlLite()
-        {
-            string sql = "Data Source=:memory:";
+        //public IActionResult TryToSqlLite()
+        //{
+        //    string sql = "Data Source=:memory:";
 
-            string request = "SELECT SQLITE_VERSION()";
+        //    string request = "SELECT SQLITE_VERSION()";
 
-            using (SQLiteConnection connection = new SQLiteConnection(sql))
-            {
-                connection.Open();
+        //    using (SQLiteConnection connection = new SQLiteConnection(sql))
+        //    {
+        //        connection.Open();
 
-                using SQLiteCommand command = new SQLiteCommand(request, connection);
+        //        using SQLiteCommand command = new SQLiteCommand(request, connection);
 
-                string version = command.ExecuteScalar().ToString();
+        //        string version = command.ExecuteScalar().ToString();
 
-                return Ok(version);
-            }
-        }
+        //        return Ok(version);
+        //    }
+        //}
 
         #endregion
     }

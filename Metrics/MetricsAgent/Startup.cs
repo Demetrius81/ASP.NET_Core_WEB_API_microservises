@@ -9,10 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MetricsAgent
@@ -29,8 +31,8 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureSqlLiteConnection();
-                        
+            ConfigureSqlLiteConnection(services);
+
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
 
             services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
@@ -47,6 +49,14 @@ namespace MetricsAgent
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
+
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
+                c.MapType<TimeSpan>(() => new OpenApiSchema
+                {
+                    Type = "string",
+                    Example = new OpenApiString("00:00:00")
+                });
             });
         }
 
@@ -72,7 +82,7 @@ namespace MetricsAgent
             });
         }
 
-        private void ConfigureSqlLiteConnection()
+        private void ConfigureSqlLiteConnection(IServiceCollection services)
         {
             const string connectionString = "Data Source = metrics.db; Version = 3; Pooling = true; Max Pool Size = 100;";
 
