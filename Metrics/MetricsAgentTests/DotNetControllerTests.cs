@@ -23,7 +23,7 @@ namespace MetricsAgentTests
         }
 
         [Fact]
-        public void Create_ShouldCall_Create_From_Repository()
+        public void Create_SendRequest_ShouldReturnOk()
         {           
             _mockMetricsRepository.Setup(repository =>
                 repository.Create(It.IsAny<IMetric>())).Verifiable();
@@ -36,6 +36,18 @@ namespace MetricsAgentTests
 
             _mockMetricsRepository.Verify(repository =>
                 repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll_SendRequest_ShouldReturnOk()
+        {
+
+        }
+
+        [Fact]
+        public void GetMetrics_SendRequest_ShouldReturnOk()
+        {
+
         }
     }
 }

@@ -5,27 +5,28 @@ using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MetricsAgentTests
 {
     public class CpuControllerTests
     {
-        private Mock<ICpuMetricsRepository> _mockMetricsRepository;
-
+        private Mock<IRamMetricsRepository> _mockMetricsRepository;
+        
         private IMetricsController _controller;
 
         public CpuControllerTests()
         {
-            _mockMetricsRepository = new Mock<ICpuMetricsRepository>();
+            _mockMetricsRepository = new Mock<IRamMetricsRepository>();
 
-            _controller = new CpuMetricsController(null, _mockMetricsRepository.Object);
+            _controller = new RamMetricsController(null, _mockMetricsRepository.Object);
         }
 
         [Fact]
-        public void Create_ShouldCall_Create_From_Repository()
-        {           
-            _mockMetricsRepository.Setup(repository => 
+        public void  Create_SendRequest_ShouldReturnOk()
+        {
+            _mockMetricsRepository.Setup(repository =>
                 repository.Create(It.IsAny<IMetric>())).Verifiable();
 
             IActionResult result = _controller.Create(new CpuMetricCreateRequest
@@ -34,8 +35,20 @@ namespace MetricsAgentTests
                 Value = 50
             });
 
-            _mockMetricsRepository.Verify(repository => 
+            _mockMetricsRepository.Verify(repository =>
                 repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll_SendRequest_ShouldReturnOk()
+        {
+            
+        }
+
+        [Fact]
+        public void GetMetrics_SendRequest_ShouldReturnOk()
+        {
+            
         }
     }
 }
