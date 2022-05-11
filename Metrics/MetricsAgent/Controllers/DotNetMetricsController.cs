@@ -55,7 +55,7 @@ namespace MetricsAgent.Controllers
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<DotNetMetricDto>()
             };
             foreach (var metric in metrics)
             {
@@ -83,7 +83,7 @@ namespace MetricsAgent.Controllers
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<DotNetMetricDto>()
             };
 
             foreach (var metric in metrics)

@@ -55,7 +55,7 @@ namespace MetricsAgent.Controllers
 
             RamAllMetricsResponse response = new RamAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<RamMetricDto>()
             };
             foreach (var metric in metrics)
             {
@@ -83,7 +83,7 @@ namespace MetricsAgent.Controllers
 
             RamAllMetricsResponse response = new RamAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<RamMetricDto>()
             };
 
             foreach (var metric in metrics)

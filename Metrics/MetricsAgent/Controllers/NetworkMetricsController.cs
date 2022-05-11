@@ -55,7 +55,7 @@ namespace MetricsAgent.Controllers
 
             NetworkAllMetricsResponse response = new NetworkAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<NetworkMetricDto>()
             };
             foreach (var metric in metrics)
             {
@@ -83,7 +83,7 @@ namespace MetricsAgent.Controllers
 
             NetworkAllMetricsResponse response = new NetworkAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<NetworkMetricDto>()
             };
 
             foreach (var metric in metrics)

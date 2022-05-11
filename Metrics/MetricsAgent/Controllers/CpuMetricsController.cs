@@ -33,7 +33,7 @@ namespace MetricsAgent.Controllers
         {
             CpuMetricCreateRequest request = requestData as CpuMetricCreateRequest;
 
-            IMetric metric = new CpuMetric
+            CpuMetric metric = new CpuMetric
             {
                 Time = request.Time,
 
@@ -56,7 +56,7 @@ namespace MetricsAgent.Controllers
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<CpuMetricDto>()
             };
             foreach (var metric in metrics)
             {
@@ -84,7 +84,7 @@ namespace MetricsAgent.Controllers
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<IMetric>()
+                Metrics = new List<CpuMetricDto>()
             };
 
             foreach (var metric in metrics)

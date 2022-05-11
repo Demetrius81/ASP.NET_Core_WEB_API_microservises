@@ -48,7 +48,7 @@ namespace MetricsAgent.Services
 
         public IMetric GetById(int id)
         {
-            IMetric metric = new CpuMetric();
+            CpuMetric metric = new CpuMetric();
 
             return _operation.GetByIdOperation(id, metric);
         }

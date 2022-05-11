@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace MetricsAgent.Models.Responses
 {
-    public class RamAllMetricsResponse : IAllMetricsResponse
+    public class RamAllMetricsResponse
     {
-        public List<IMetric> Metrics { get; set; }
+        public List<RamMetricDto> Metrics { get; set; }
     }
 }
