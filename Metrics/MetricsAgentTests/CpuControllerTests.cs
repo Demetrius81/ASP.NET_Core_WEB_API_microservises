@@ -1,31 +1,54 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models.Requests;
+using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MetricsAgentTests
 {
     public class CpuControllerTests
     {
-        private TimeSpan _fromTime;
-
-        private TimeSpan _toTime;
+        private Mock<IRamMetricsRepository> _mockMetricsRepository;
+        
+        private IMetricsController _controller;
 
         public CpuControllerTests()
         {
-            _fromTime = TimeSpan.FromSeconds(0);
+            _mockMetricsRepository = new Mock<IRamMetricsRepository>();
 
-            _toTime = TimeSpan.FromSeconds(2);
+            _controller = new RamMetricsController(null, _mockMetricsRepository.Object);
         }
 
         [Fact]
-        public void CpuControllerTest()
+        public void  Create_SendRequest_ShouldReturnOk()
         {
-            IMetricsAgent controller = new CpuMetricsController();
+            _mockMetricsRepository.Setup(repository =>
+                repository.Create(It.IsAny<IMetric>())).Verifiable();
 
-            IActionResult result = controller.GetMetrics(_fromTime, _toTime);
+            IActionResult result = _controller.Create(new CpuMetricCreateRequest
+            {
+                Time = TimeSpan.FromSeconds(1),
+                Value = 50
+            });
 
-            Assert.IsAssignableFrom<IActionResult>(result);
+            _mockMetricsRepository.Verify(repository =>
+                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll_SendRequest_ShouldReturnOk()
+        {
+            
+        }
+
+        [Fact]
+        public void GetMetrics_SendRequest_ShouldReturnOk()
+        {
+            
         }
     }
 }

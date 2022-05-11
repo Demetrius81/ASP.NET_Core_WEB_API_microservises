@@ -1,5 +1,9 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models.Requests;
+using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
 using Xunit;
 
@@ -7,25 +11,43 @@ namespace MetricsAgentTests
 {
     public class DotNetControllerTests
     {
-        private TimeSpan _fromTime;
+        private Mock<IDotNetMetricsRepository> _mockMetricsRepository;
 
-        private TimeSpan _toTime;
+        private IMetricsController _controller;
 
         public DotNetControllerTests()
         {
-            _fromTime = TimeSpan.FromSeconds(0);
+            _mockMetricsRepository = new Mock<IDotNetMetricsRepository>();
 
-            _toTime = TimeSpan.FromSeconds(2);
+            _controller = new DotNetMetricsController(null, _mockMetricsRepository.Object);
         }
 
         [Fact]
-        public void DotNetControllerTest()
+        public void Create_SendRequest_ShouldReturnOk()
+        {           
+            _mockMetricsRepository.Setup(repository =>
+                repository.Create(It.IsAny<IMetric>())).Verifiable();
+            
+            IActionResult result = _controller.Create(new DotNetMetricCreateRequest
+            {
+                Time = TimeSpan.FromSeconds(1),
+                Value = 50
+            });
+
+            _mockMetricsRepository.Verify(repository =>
+                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll_SendRequest_ShouldReturnOk()
         {
-            IMetricsAgent controller = new DotNetMetricsController();
 
-            IActionResult result = controller.GetMetrics(_fromTime, _toTime);
+        }
 
-            Assert.IsAssignableFrom<IActionResult>(result);
+        [Fact]
+        public void GetMetrics_SendRequest_ShouldReturnOk()
+        {
+
         }
     }
 }
