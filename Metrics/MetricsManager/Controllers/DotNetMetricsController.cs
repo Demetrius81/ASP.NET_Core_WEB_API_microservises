@@ -11,7 +11,7 @@ namespace MetricsManager.Controllers
     {
         private ILogger<DotNetMetricsController> _logger;
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger)
+        public DotNetMetricsController(ILogger<DotNetMetricsController> logger = null)
         {
             _logger = logger;
         }

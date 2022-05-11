@@ -11,7 +11,7 @@ namespace MetricsManager.Controllers
     {
         private ILogger<RamMetricsController> _logger;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger)
+        public RamMetricsController(ILogger<RamMetricsController> logger = null)
         {
             _logger = logger;
         }

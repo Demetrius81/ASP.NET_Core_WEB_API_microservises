@@ -11,7 +11,7 @@ namespace MetricsManager.Controllers
     {
         private ILogger<HddMetricsController> _logger;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger)
+        public HddMetricsController(ILogger<HddMetricsController> logger = null)
         {
             _logger = logger;
         }
