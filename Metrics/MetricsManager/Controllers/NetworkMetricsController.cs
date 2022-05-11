@@ -11,7 +11,7 @@ namespace MetricsManager.Controllers
     {
         private ILogger<NetworkMetricsController> _logger;
 
-        public NetworkMetricsController(ILogger<NetworkMetricsController> logger)
+        public NetworkMetricsController(ILogger<NetworkMetricsController> logger = null)
         {
             _logger = logger;
         }

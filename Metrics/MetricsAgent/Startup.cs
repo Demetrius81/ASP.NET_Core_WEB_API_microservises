@@ -118,7 +118,7 @@ namespace MetricsAgent
                     time INT)";
 
                     command.ExecuteNonQuery();
-                }                
+                }
             }
         }
     }

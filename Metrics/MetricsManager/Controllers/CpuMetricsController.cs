@@ -11,7 +11,7 @@ namespace MetricsManager.Controllers
     {
         private ILogger<CpuMetricsController> _logger;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger)
+        public CpuMetricsController(ILogger<CpuMetricsController> logger = null)
         {
             _logger = logger;
         }
