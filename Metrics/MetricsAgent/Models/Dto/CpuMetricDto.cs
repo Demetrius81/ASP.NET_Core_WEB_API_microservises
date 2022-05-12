@@ -3,7 +3,7 @@ using System;
 
 namespace MetricsAgent.Models
 {
-    public class CpuMetricDto : IMetric
+    public class CpuMetricDto
     {
         public int Id { get; set; }
 

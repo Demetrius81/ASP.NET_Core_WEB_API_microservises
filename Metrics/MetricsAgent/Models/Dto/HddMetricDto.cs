@@ -3,7 +3,7 @@ using System;
 
 namespace MetricsAgent.Models
 {
-    public class HddMetricDto : IMetric
+    public class HddMetricDto
     {
         public int Id { get; set; }
 

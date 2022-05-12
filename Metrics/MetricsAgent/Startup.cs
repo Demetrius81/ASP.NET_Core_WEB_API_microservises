@@ -1,3 +1,4 @@
+using AutoMapper;
 using MetricsAgent.Converter;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Interfaces;
@@ -31,17 +32,40 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new
+                MapperProfile()));
+
+            var mapper = mapperConfiguration.CreateMapper();
+
+            services.AddSingleton(mapper);
+
             ConfigureSqlLiteConnection(services);
 
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
 
-            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>().Configure<DatabaseOptions>(options =>
+                {
+                    Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+                });
 
-            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>().Configure<DatabaseOptions>(options =>
+                {
+                    Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+                });
 
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>().Configure<DatabaseOptions>(options =>
+                {
+                    Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+                });
 
-            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>().Configure<DatabaseOptions>(options =>
+                {
+                    Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+                });
+
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>().Configure<DatabaseOptions>(options =>
+                {
+                    Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+                });
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
