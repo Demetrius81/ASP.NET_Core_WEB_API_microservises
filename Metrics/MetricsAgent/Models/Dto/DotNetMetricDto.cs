@@ -3,7 +3,7 @@ using System;
 
 namespace MetricsAgent.Models
 {
-    public class DotNetMetricDto
+    public class DotNetMetricDto : IMetricDto
     {
         public int Id { get; set; }
 

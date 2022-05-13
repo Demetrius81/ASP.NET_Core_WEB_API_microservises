@@ -1,9 +1,14 @@
 ﻿using System;
 
-namespace MetricsAgent.Models.Interfaces
+namespace MetricsAgent.Models
 {
-    public interface IMetricCreateRequest
+    public interface IMetricDto
     {
+        /// <summary>
+        /// Идентификатор метрики
+        /// </summary>
+        int Id { get; set; }
+
         /// <summary>
         /// Время (тип данных TimeSpan)
         /// </summary>

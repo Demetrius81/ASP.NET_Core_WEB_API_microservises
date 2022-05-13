@@ -1,4 +1,5 @@
-﻿using MetricsAgent.Models;
+﻿using AutoMapper;
+using MetricsAgent.Models;
 using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Models.Responses;
@@ -15,27 +16,35 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class DotNetMetricsController : ControllerBase, IMetricsController
     {
-        private IDotNetMetricsRepository _metricsRepository;
+        private readonly IDotNetMetricsRepository _metricsRepository;
 
-        private ILogger<DotNetMetricsController> _logger;
+        private readonly ILogger<DotNetMetricsController> _logger;
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger,
-            IDotNetMetricsRepository metricsRepository)
+        private readonly IMapper _mapper;
+
+        public DotNetMetricsController(
+            IDotNetMetricsRepository metricsRepository,
+            IMapper mapper = null,
+            ILogger<DotNetMetricsController> logger = null)
         {
             _metricsRepository = metricsRepository;
 
             _logger = logger;
+
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Задать уровень метрики и время
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("create")]
-        public IActionResult Create([FromBody] IMetricCreateRequest requestData)
+        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
         {
-            DotNetMetricCreateRequest request = requestData as DotNetMetricCreateRequest;
-
-            IMetric metric = new DotNetMetric
+            DotNetMetric metric = new DotNetMetric
             {
-                Time = request.Time,
-
+                Time = request.Time.TotalSeconds,
                 Value = request.Value
             };
             _metricsRepository.Create(metric);
@@ -44,14 +53,13 @@ namespace MetricsAgent.Controllers
             {
                 _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
             }
-
             return Ok();
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<IMetric> metrics = _metricsRepository.GetAll();
+            IList<DotNetMetric> metrics = _metricsRepository.GetAll();
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
@@ -59,49 +67,33 @@ namespace MetricsAgent.Controllers
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricDto
-                {
-                    Time = metric.Time,
-
-                    Value = metric.Value,
-
-                    Id = metric.Id
-                });
+                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
             }
             if (_logger is not null)
             {
                 _logger.LogDebug($"Успешно получили список всех метрик DotNet");
             }
-                        
             return Ok(response);
         }
 
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<IMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<DotNetMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
                 Metrics = new List<DotNetMetricDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricDto
-                {
-                    Time = metric.Time,
-
-                    Value = metric.Value,
-
-                    Id = metric.Id
-                });
+                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
             }
             if (_logger is not null)
             {
-                _logger.LogDebug($"Успешно получили список всех метрик DotNet в интервале времени от {fromTime.TotalSeconds} секунды до {toTime.TotalSeconds} секунды");
+                _logger.LogDebug($"Успешно получили список всех метрик DotNet " +
+                    $"в интервале времени от {fromTime.TotalSeconds} секунды до {toTime.TotalSeconds} секунды");
             }
-
             return Ok(response);
         }
     }

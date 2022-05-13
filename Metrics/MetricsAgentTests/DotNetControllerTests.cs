@@ -1,5 +1,5 @@
 ﻿using MetricsAgent.Controllers;
-using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,20 +14,20 @@ namespace MetricsAgentTests
     {
         private Mock<IDotNetMetricsRepository> _mockMetricsRepository;
 
-        private IMetricsController _controller;
+        private DotNetMetricsController _controller;
 
         public DotNetControllerTests()
         {
             _mockMetricsRepository = new Mock<IDotNetMetricsRepository>();
 
-            _controller = new DotNetMetricsController(null, _mockMetricsRepository.Object);
+            _controller = new DotNetMetricsController(_mockMetricsRepository.Object);
         }
 
         [Fact]
         public void Create_SendRequest_ShouldReturnOk()
         {           
             _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<IMetric>())).Verifiable();
+                repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
             
             IActionResult result = _controller.Create(new DotNetMetricCreateRequest
             {
@@ -36,7 +36,7 @@ namespace MetricsAgentTests
             });
 
             _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+                repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetAll())
-                              .Returns(new List<IMetric>());
+                              .Returns(new List<DotNetMetric>());
 
             _controller.GetAll();
 
@@ -57,7 +57,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
-                              .Returns(new List<IMetric>());
+                              .Returns(new List<DotNetMetric>());
 
             _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
 

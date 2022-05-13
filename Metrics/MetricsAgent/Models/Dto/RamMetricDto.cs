@@ -3,7 +3,7 @@ using System;
 
 namespace MetricsAgent.Models
 {
-    public class RamMetricDto
+    public class RamMetricDto : IMetricDto
     {
         public int Id { get; set; }
 

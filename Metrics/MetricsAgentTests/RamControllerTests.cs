@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models;
 using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Services.Interfaces;
@@ -14,20 +15,20 @@ namespace MetricsAgentTests
     {
         private Mock<IRamMetricsRepository> _mockMetricsRepository;
 
-        private IMetricsController _controller;
+        private RamMetricsController _controller;
 
         public RamControllerTests()
         {
             _mockMetricsRepository = new Mock<IRamMetricsRepository>();
 
-            _controller = new RamMetricsController(null, _mockMetricsRepository.Object);
+            _controller = new RamMetricsController(_mockMetricsRepository.Object);
         }
 
         [Fact]
         public void Create_SendRequest_ShouldReturnOk()
         {
             _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<IMetric>())).Verifiable();
+                repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
             IActionResult result = _controller.Create(new RamMetricCreateRequest
             {
@@ -36,7 +37,7 @@ namespace MetricsAgentTests
             });
 
             _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+                repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetAll())
-                              .Returns(new List<IMetric>());
+                              .Returns(new List<RamMetric>());
 
             _controller.GetAll();
 
@@ -57,7 +58,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
-                              .Returns(new List<IMetric>());
+                              .Returns(new List<RamMetric>());
 
             _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
 

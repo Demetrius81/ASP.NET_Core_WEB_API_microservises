@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models;
 using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Services.Interfaces;
@@ -14,20 +15,20 @@ namespace MetricsAgentTests
     {
         private Mock<IHddMetricsRepository> _mockMetricsRepository;
 
-        private IMetricsController _controller;
+        private HddMetricsController _controller;
 
         public HddControllerTests()
         {
             _mockMetricsRepository = new Mock<IHddMetricsRepository>();
 
-            _controller = new HddMetricsController(null, _mockMetricsRepository.Object);
+            _controller = new HddMetricsController(_mockMetricsRepository.Object);
         }
 
         [Fact]
         public void Create_SendRequest_ShouldReturnOk()
         {
             _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<IMetric>())).Verifiable();
+                repository.Create(It.IsAny<HddMetric>())).Verifiable();
 
             IActionResult result = _controller.Create(new HddMetricCreateRequest
             {
@@ -36,7 +37,7 @@ namespace MetricsAgentTests
             });
 
             _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+                repository.Create(It.IsAny<HddMetric>()), Times.AtMostOnce());
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetAll())
-                              .Returns(new List<IMetric>());
+                              .Returns(new List<HddMetric>());
 
             _controller.GetAll();
 
@@ -57,7 +58,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
-                              .Returns(new List<IMetric>());
+                              .Returns(new List<HddMetric>());
 
             _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
 

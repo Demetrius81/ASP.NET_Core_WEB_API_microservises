@@ -1,4 +1,5 @@
-﻿using MetricsAgent.Models;
+﻿using AutoMapper;
+using MetricsAgent.Models;
 using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Models.Responses;
@@ -16,27 +17,35 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase, IMetricsController
     {
-        private ICpuMetricsRepository _metricsRepository;
+        private readonly ICpuMetricsRepository _metricsRepository;
 
-        private ILogger<CpuMetricsController> _logger;
+        private readonly ILogger<CpuMetricsController> _logger;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger,
-            ICpuMetricsRepository metricsRepository)
+        private readonly IMapper _mapper;
+
+        public CpuMetricsController(
+            ICpuMetricsRepository metricsRepository,
+            IMapper mapper = null,
+            ILogger<CpuMetricsController> logger = null)
         {
             _metricsRepository = metricsRepository;
 
             _logger = logger;
+
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Задать уровень метрики и время
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("create")]
-        public IActionResult Create([FromBody] IMetricCreateRequest requestData)
+        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
-            CpuMetricCreateRequest request = requestData as CpuMetricCreateRequest;
-
             CpuMetric metric = new CpuMetric
             {
-                Time = request.Time,
-
+                Time = request.Time.TotalSeconds,
                 Value = request.Value
             };
             _metricsRepository.Create(metric);
@@ -45,14 +54,13 @@ namespace MetricsAgent.Controllers
             {
                 _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
             }
-
             return Ok();
         }
-
+                
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<IMetric> metrics = _metricsRepository.GetAll();
+            IList<CpuMetric> metrics = _metricsRepository.GetAll();
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
@@ -60,49 +68,34 @@ namespace MetricsAgent.Controllers
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto
-                {
-                    Time = metric.Time,
-
-                    Value = metric.Value,
-
-                    Id = metric.Id
-                });
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
             if (_logger is not null)
             {
                 _logger.LogDebug($"Успешно получили список всех метрик Cpu");
             }
-
             return Ok(response);
         }
 
+        
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<IMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<CpuMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto
-                {
-                    Time = metric.Time,
-
-                    Value = metric.Value,
-
-                    Id = metric.Id
-                });
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
             if (_logger is not null)
             {
-                _logger.LogDebug($"Успешно получили список всех метрик Cpu в интервале времени от {fromTime.TotalSeconds} секунды до {toTime.TotalSeconds} секунды");
+                _logger.LogDebug($"Успешно получили список всех метрик Cpu " +
+                    $"в интервале времени от {fromTime.TotalSeconds} секунды до {toTime.TotalSeconds} секунды");
             }
-
             return Ok(response);
         }
 

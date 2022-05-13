@@ -28,7 +28,6 @@ namespace MetricsAgent.Services
                 new
                 {
                     value = item.Value,
-
                     time = item.Time
                 });
         }

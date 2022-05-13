@@ -27,7 +27,7 @@ namespace MetricsAgent.Services
             connection.Execute("INSERT INTO cpumetrics(value, time) VALUES(@value, @time)",            
                 new
                 {                
-                    value = item.Value,                
+                    value = item.Value,                    
                     time = item.Time
                 });
         }

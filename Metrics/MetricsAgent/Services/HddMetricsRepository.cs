@@ -13,8 +13,6 @@ namespace MetricsAgent.Services
     {
         private readonly IOptions<DatabaseOptions> _databaseOptions;
 
-        private MetricsRepoOperations _operation;
-
         public HddMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
             _databaseOptions = databaseOptions;
@@ -30,7 +28,6 @@ namespace MetricsAgent.Services
                 new
                 {
                     value = item.Value,
-
                     time = item.Time
                 });
         }
