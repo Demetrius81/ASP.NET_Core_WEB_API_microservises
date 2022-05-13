@@ -32,7 +32,7 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new
+            var mapperConfiguration = new MapperConfiguration(mapperProfile => mapperProfile.AddProfile(new
                 MapperProfile()));
 
             var mapper = mapperConfiguration.CreateMapper();

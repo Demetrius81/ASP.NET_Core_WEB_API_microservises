@@ -8,20 +8,30 @@ namespace MetricsAgent
     {
         public MapperProfile()
         {
-            CreateMap<CpuMetric, CpuMetricDto>().
-                ForMember(x => x.Time, opt => opt.MapFrom(src => TimeSpan.FromSeconds(src.Time)));
+            CreateMap<CpuMetric, CpuMetricDto>().ForMember(metric =>
+                metric.Time, options =>
+                options.MapFrom(source =>
+                TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<DotNetMetric, DotNetMetricDto>().
-                ForMember(x => x.Time, opt => opt.MapFrom(src => TimeSpan.FromSeconds(src.Time)));
+            CreateMap<DotNetMetric, DotNetMetricDto>().ForMember(metric =>
+                metric.Time, options =>
+                options.MapFrom(source =>
+                TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<NetworkMetric, NetworkMetricDto>().
-                ForMember(x => x.Time, opt => opt.MapFrom(src => TimeSpan.FromSeconds(src.Time)));
+            CreateMap<NetworkMetric, NetworkMetricDto>().ForMember(metric =>
+                metric.Time, options =>
+                options.MapFrom(source =>
+                TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<HddMetric, HddMetricDto>().
-                ForMember(x => x.Time, opt => opt.MapFrom(src => TimeSpan.FromSeconds(src.Time)));
+            CreateMap<HddMetric, HddMetricDto>().ForMember(metric =>
+                metric.Time, options =>
+                options.MapFrom(source =>
+                TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<RamMetric, RamMetricDto>().
-                ForMember(x => x.Time, opt => opt.MapFrom(src => TimeSpan.FromSeconds(src.Time)));
+            CreateMap<RamMetric, RamMetricDto>().ForMember(metric =>
+                metric.Time, options =>
+                options.MapFrom(source =>
+                TimeSpan.FromSeconds(source.Time)));
         }
     }
 }

@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 
 namespace MetricsAgent.Controllers
 {
@@ -56,7 +53,7 @@ namespace MetricsAgent.Controllers
             }
             return Ok();
         }
-                
+
         [HttpGet("all")]
         public IActionResult GetAll()
         {
@@ -77,7 +74,7 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
-        
+
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {

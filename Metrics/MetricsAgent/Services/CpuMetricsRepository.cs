@@ -10,7 +10,7 @@ using System.Linq;
 namespace MetricsAgent.Services
 {
     public class CpuMetricsRepository : ICpuMetricsRepository
-    { 
+    {
         private readonly IOptions<DatabaseOptions> _databaseOptions;
 
         public CpuMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
@@ -23,11 +23,12 @@ namespace MetricsAgent.Services
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
-            
-            connection.Execute("INSERT INTO cpumetrics(value, time) VALUES(@value, @time)",            
+
+            connection.Execute(
+                "INSERT INTO cpumetrics(value, time) VALUES(@value, @time)",
                 new
-                {                
-                    value = item.Value,                    
+                {
+                    value = item.Value,
                     time = item.Time
                 });
         }
@@ -36,14 +37,20 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM cpumetrics WHERE id=@id", new { id = id });
+            connection.Execute(
+                "DELETE FROM cpumetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
         public void Update(CpuMetric item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("UPDATE cpumetrics SET value = @value, time = @time WHERE id = @id",
+            connection.Execute(
+                "UPDATE cpumetrics SET value = @value, time = @time WHERE id = @id",
                 new
                 {
                     value = item.Value,
@@ -56,8 +63,13 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<CpuMetric> metrics = connection.Query<CpuMetric>($"SELECT * FROM cpumetrics WHERE time BETWEEN @timeFrom AND @timeTo",
-                new { timeFrom = fromTime.TotalSeconds, timeTo = toTime.TotalSeconds }).ToList();
+            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+                "SELECT * FROM cpumetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
 
             return metrics;
         }
@@ -66,7 +78,8 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<CpuMetric> metrics = connection.Query<CpuMetric>("SELECT * FROM cpumetrics").ToList();
+            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+                "SELECT * FROM cpumetrics").ToList();
 
             return metrics;
         }
@@ -75,8 +88,12 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            CpuMetric metric = connection.QuerySingle<CpuMetric>("SELECT Id, Time, Value FROM cpumetrics WHERE id = @id",
-                new { id = id });
+            CpuMetric metric = connection.QuerySingle<CpuMetric>(
+                "SELECT Id, Time, Value FROM cpumetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
 
             return metric;
         }

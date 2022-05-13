@@ -24,7 +24,8 @@ namespace MetricsAgent.Services
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
 
-            connection.Execute("INSERT INTO rammetrics(value, time) VALUES(@value, @time)",
+            connection.Execute(
+                "INSERT INTO rammetrics(value, time) VALUES(@value, @time)",
                 new
                 {
                     value = item.Value,
@@ -36,14 +37,20 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM rammetrics WHERE id=@id", new { id = id });
+            connection.Execute(
+                "DELETE FROM rammetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
         public void Update(RamMetric item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("UPDATE rammetrics SET value = @value, time = @time WHERE id = @id",
+            connection.Execute(
+                "UPDATE rammetrics SET value = @value, time = @time WHERE id = @id",
                 new
                 {
                     value = item.Value,
@@ -56,8 +63,13 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<RamMetric> metrics = connection.Query<RamMetric>($"SELECT * FROM rammetrics WHERE time BETWEEN @timeFrom AND @timeTo",
-                new { timeFrom = fromTime.TotalSeconds, timeTo = toTime.TotalSeconds }).ToList();
+            List<RamMetric> metrics = connection.Query<RamMetric>(
+                "SELECT * FROM rammetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
 
             return metrics;
         }
@@ -66,7 +78,8 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<RamMetric> metrics = connection.Query<RamMetric>("SELECT * FROM rammetrics").ToList();
+            List<RamMetric> metrics = connection.Query<RamMetric>(
+                "SELECT * FROM rammetrics").ToList();
 
             return metrics;
         }
@@ -75,8 +88,12 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            RamMetric metric = connection.QuerySingle<RamMetric>("SELECT Id, Time, Value FROM rammetrics WHERE id = @id",
-                new { id = id });
+            RamMetric metric = connection.QuerySingle<RamMetric>(
+                "SELECT Id, Time, Value FROM rammetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
 
             return metric;
         }

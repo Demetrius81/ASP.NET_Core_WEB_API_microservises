@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

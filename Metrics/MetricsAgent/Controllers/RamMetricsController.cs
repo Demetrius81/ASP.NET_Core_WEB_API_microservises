@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,7 +18,7 @@ namespace MetricsAgent.Controllers
 
         private readonly ILogger<RamMetricsController> _logger;
 
-        private readonly readonly IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public RamMetricsController(
             IRamMetricsRepository metricsRepository,

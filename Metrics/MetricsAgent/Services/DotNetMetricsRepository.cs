@@ -24,7 +24,8 @@ namespace MetricsAgent.Services
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
 
-            connection.Execute("INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)",
+            connection.Execute(
+                "INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)",
                 new
                 {
                     value = item.Value,
@@ -36,14 +37,20 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM dotnetmetrics WHERE id=@id", new { id = id });
+            connection.Execute(
+                "DELETE FROM dotnetmetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
         public void Update(DotNetMetric item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("UPDATE dotnetmetrics SET value = @value, time = @time WHERE id = @id",
+            connection.Execute(
+                "UPDATE dotnetmetrics SET value = @value, time = @time WHERE id = @id",
                 new
                 {
                     value = item.Value,
@@ -56,8 +63,13 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<DotNetMetric> metrics = connection.Query<DotNetMetric>($"SELECT * FROM dotnetmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
-                new { timeFrom = fromTime.TotalSeconds, timeTo = toTime.TotalSeconds }).ToList();
+            List<DotNetMetric> metrics = connection.Query<DotNetMetric>(
+                "SELECT * FROM dotnetmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
 
             return metrics;
         }
@@ -66,7 +78,8 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<DotNetMetric> metrics = connection.Query<DotNetMetric>("SELECT * FROM dotnetmetrics").ToList();
+            List<DotNetMetric> metrics = connection.Query<DotNetMetric>(
+                "SELECT * FROM dotnetmetrics").ToList();
 
             return metrics;
         }
@@ -75,8 +88,12 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            DotNetMetric metric = connection.QuerySingle<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics WHERE id = @id",
-                new { id = id });
+            DotNetMetric metric = connection.QuerySingle<DotNetMetric>(
+                "SELECT Id, Time, Value FROM dotnetmetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
 
             return metric;
         }

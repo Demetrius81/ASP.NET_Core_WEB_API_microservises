@@ -24,7 +24,8 @@ namespace MetricsAgent.Services
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
 
-            connection.Execute("INSERT INTO hddmetrics(value, time) VALUES(@value, @time)",
+            connection.Execute(
+                "INSERT INTO hddmetrics(value, time) VALUES(@value, @time)",
                 new
                 {
                     value = item.Value,
@@ -36,14 +37,20 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM hddmetrics WHERE id=@id", new { id = id });
+            connection.Execute(
+                "DELETE FROM hddmetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
         public void Update(HddMetric item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            connection.Execute("UPDATE hddmetrics SET value = @value, time = @time WHERE id = @id",
+            connection.Execute(
+                "UPDATE hddmetrics SET value = @value, time = @time WHERE id = @id",
                 new
                 {
                     value = item.Value,
@@ -56,8 +63,13 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<HddMetric> metrics = connection.Query<HddMetric>($"SELECT * FROM hddmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
-                new { timeFrom = fromTime.TotalSeconds, timeTo = toTime.TotalSeconds }).ToList();
+            List<HddMetric> metrics = connection.Query<HddMetric>(
+                "SELECT * FROM hddmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
 
             return metrics;
         }
@@ -66,7 +78,8 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<HddMetric> metrics = connection.Query<HddMetric>("SELECT * FROM hddmetrics").ToList();
+            List<HddMetric> metrics = connection.Query<HddMetric>(
+                "SELECT * FROM hddmetrics").ToList();
 
             return metrics;
         }
@@ -75,8 +88,12 @@ namespace MetricsAgent.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            HddMetric metric = connection.QuerySingle<HddMetric>("SELECT Id, Time, Value FROM hddmetrics WHERE id = @id",
-                new { id = id });
+            HddMetric metric = connection.QuerySingle<HddMetric>(
+                "SELECT Id, Time, Value FROM hddmetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
 
             return metric;
         }
