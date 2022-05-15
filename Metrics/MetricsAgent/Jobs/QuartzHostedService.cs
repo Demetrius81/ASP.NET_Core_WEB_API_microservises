@@ -31,7 +31,7 @@ namespace MetricsAgent.Jobs
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
-        {
+        {            
             Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
 
             Scheduler.JobFactory = _jobFactory;

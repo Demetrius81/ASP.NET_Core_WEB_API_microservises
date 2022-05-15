@@ -20,8 +20,7 @@ namespace MetricsAgent.Jobs
         }
 
         public void ReturnJob(IJob job)
-        {
-            throw new System.NotImplementedException();
+        {            
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using MetricsAgent.Services.Interfaces;
+﻿using MetricsAgent.Models;
+using MetricsAgent.Services.Interfaces;
 using Quartz;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace MetricsAgent.Jobs
@@ -8,14 +11,26 @@ namespace MetricsAgent.Jobs
     {
         private readonly IDotNetMetricsRepository _metricRepository;
 
+        private PerformanceCounter _performanceCounter;
+
         public DotNetMetricJob(IDotNetMetricsRepository metricRepository)
         {
             _metricRepository = metricRepository;
+
+            _performanceCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
         }
 
         public Task Execute(IJobExecutionContext context)
         {
+            float dotNet = _performanceCounter.NextValue();
 
+            TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+            _metricRepository.Create(new DotNetMetric
+            {
+                Time = time.TotalSeconds,
+                Value = (int)dotNet
+            });
 
             return Task.CompletedTask;
         }

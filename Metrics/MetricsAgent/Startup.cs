@@ -67,7 +67,7 @@ namespace MetricsAgent
             services.AddSingleton<DotNetMetricJob>();
 
             services.AddSingleton(new JobSchedule(
-                typeof(CpuMetricJob),
+                typeof(DotNetMetricJob),
                 "1/5 * * ? * * *"));
 
             services.AddSingleton<HddMetricJob>();
