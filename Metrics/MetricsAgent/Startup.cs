@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentMigrator.Runner;
 using MetricsAgent.Converter;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Interfaces;
@@ -32,6 +33,14 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    .AddSQLite()
+                    .WithGlobalConnectionString(Configuration
+                        .GetSection("Settings:DatabaseOptions:ConnectionString").Value)
+                    .ScanIn(typeof(Startup).Assembly).For.Migrations())
+                .AddLogging(lg => lg.AddFluentMigratorConsole());
+
             var mapperConfiguration = new MapperConfiguration(mapperProfile => mapperProfile.AddProfile(new
                 MapperProfile()));
 
@@ -39,30 +48,27 @@ namespace MetricsAgent
 
             services.AddSingleton(mapper);
 
-            ConfigureSqlLiteConnection(services);
-
-
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
@@ -85,7 +91,10 @@ namespace MetricsAgent
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
@@ -104,46 +113,47 @@ namespace MetricsAgent
             {
                 endpoints.MapControllers();
             });
+            migrationRunner.MigrateUp();
         }
 
-        private void ConfigureSqlLiteConnection(IServiceCollection services)
-        {
-            const string connectionString = "Data Source = metrics.db; Version = 3; Pooling = true; Max Pool Size = 100;";
+        //private void ConfigureSqlLiteConnection(IServiceCollection services)
+        //{
+        //    const string connectionString = "Data Source = metrics.db; Version = 3; Pooling = true; Max Pool Size = 100;";
 
-            SQLiteConnection connection = new SQLiteConnection(connectionString);
+        //    SQLiteConnection connection = new SQLiteConnection(connectionString);
 
-            connection.Open();
+        //    connection.Open();
 
-            PrepareSchema(connection);
-        }
+        //    PrepareSchema(connection);
+        //}
 
-        private void PrepareSchema(SQLiteConnection connection)
-        {
-            using (SQLiteCommand command = new SQLiteCommand(connection))
-            {
-                List<string> TabNames = new List<string>()
-                {
-                    "cpumetrics",
-                    "dotnetmetrics",
-                    "hddmetrics",
-                    "networkmetrics",
-                    "rammetrics"
-                };
+        //private void PrepareSchema(SQLiteConnection connection)
+        //{
+        //    using (SQLiteCommand command = new SQLiteCommand(connection))
+        //    {
+        //        List<string> TabNames = new List<string>()
+        //        {
+        //            "cpumetrics",
+        //            "dotnetmetrics",
+        //            "hddmetrics",
+        //            "networkmetrics",
+        //            "rammetrics"
+        //        };
 
-                foreach (string TabName in TabNames)
-                {
-                    command.CommandText = $"DROP TABLE IF EXISTS {TabName}";
+        //        foreach (string TabName in TabNames)
+        //        {
+        //            command.CommandText = $"DROP TABLE IF EXISTS {TabName}";
 
-                    command.ExecuteNonQuery();
+        //            command.ExecuteNonQuery();
 
-                    command.CommandText = $@"CREATE TABLE {TabName}(
-                    id INTEGER PRIMARY KEY,
-                    value INT, 
-                    time INT)";
+        //            command.CommandText = $@"CREATE TABLE {TabName}(
+        //            id INTEGER PRIMARY KEY,
+        //            value INT, 
+        //            time INT)";
 
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
+        //            command.ExecuteNonQuery();
+        //        }
+        //    }
+        //}
     }
 }
