@@ -17,7 +17,7 @@ namespace MetricsAgent.Jobs
         {
             _metricRepository = metricRepository;
 
-            _performanceCounter = new PerformanceCounter("LogicalDisk", "Disk Bytes/sec");
+            _performanceCounter = new PerformanceCounter("LogicalDisk", "% Disk Time", "_Total");
         }
 
         public Task Execute(IJobExecutionContext context)

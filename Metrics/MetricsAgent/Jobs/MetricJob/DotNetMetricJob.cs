@@ -17,7 +17,7 @@ namespace MetricsAgent.Jobs
         {
             _metricRepository = metricRepository;
 
-            _performanceCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            _performanceCounter = new PerformanceCounter(".NET CLR Exceptions", "# Exceps Thrown", "_Global_");
         }
 
         public Task Execute(IJobExecutionContext context)
