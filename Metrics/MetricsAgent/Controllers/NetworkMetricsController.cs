@@ -33,27 +33,31 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Задать уровень метрики и время
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
-        {
-            NetworkMetric metric = new NetworkMetric
-            {
-                Time = request.Time.TotalSeconds,
-                Value = request.Value
-            };
-            _metricsRepository.Create(metric);
+        #region For delete
 
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
-            }
-            return Ok();
-        }
+        ///// <summary>
+        ///// Задать уровень метрики и время
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
+        //{
+        //    NetworkMetric metric = new NetworkMetric
+        //    {
+        //        Time = request.Time.TotalSeconds,
+        //        Value = request.Value
+        //    };
+        //    _metricsRepository.Create(metric);
+
+        //    if (_logger is not null)
+        //    {
+        //        _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
+        //    }
+        //    return Ok();
+        //}
+
+        #endregion
 
         [HttpGet("all")]
         public IActionResult GetAll()

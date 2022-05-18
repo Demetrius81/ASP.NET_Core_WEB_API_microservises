@@ -32,27 +32,50 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Задать уровень метрики и время
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
-        {
-            CpuMetric metric = new CpuMetric
-            {
-                Time = request.Time.TotalSeconds,
-                Value = request.Value
-            };
-            _metricsRepository.Create(metric);
+        #region For delete
 
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
-            }
-            return Ok();
-        }
+        ///// <summary>
+        ///// Задать уровень метрики и время
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        //{
+        //    CpuMetric metric = new CpuMetric
+        //    {
+        //        Time = request.Time.TotalSeconds,
+        //        Value = request.Value
+        //    };
+        //    _metricsRepository.Create(metric);
+
+        //    if (_logger is not null)
+        //    {
+        //        _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
+        //    }
+        //    return Ok();
+        //}
+
+        //[HttpGet("sql-test")]
+        //public IActionResult TryToSqlLite()
+        //{
+        //    string sql = "Data Source=:memory:";
+
+        //    string request = "SELECT SQLITE_VERSION()";
+
+        //    using (SQLiteConnection connection = new SQLiteConnection(sql))
+        //    {
+        //        connection.Open();
+
+        //        using SQLiteCommand command = new SQLiteCommand(request, connection);
+
+        //        string version = command.ExecuteScalar().ToString();
+
+        //        return Ok(version);
+        //    }
+        //}
+
+        #endregion
 
         [HttpGet("all")]
         public IActionResult GetAll()
@@ -95,28 +118,5 @@ namespace MetricsAgent.Controllers
             }
             return Ok(response);
         }
-
-        #region SQL_test
-
-        //[HttpGet("sql-test")]
-        //public IActionResult TryToSqlLite()
-        //{
-        //    string sql = "Data Source=:memory:";
-
-        //    string request = "SELECT SQLITE_VERSION()";
-
-        //    using (SQLiteConnection connection = new SQLiteConnection(sql))
-        //    {
-        //        connection.Open();
-
-        //        using SQLiteCommand command = new SQLiteCommand(request, connection);
-
-        //        string version = command.ExecuteScalar().ToString();
-
-        //        return Ok(version);
-        //    }
-        //}
-
-        #endregion
     }
 }

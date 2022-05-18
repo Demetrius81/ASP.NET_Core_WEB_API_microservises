@@ -17,19 +17,19 @@ namespace MetricsAgent.Jobs
         {
             _metricRepository = metricRepository;
 
-            _performanceCounter = new PerformanceCounter("Network Segment", "% Network Utilization");
+            _performanceCounter = new PerformanceCounter("Processor", "Interrupts/sec", "_Total");
         }
 
         public Task Execute(IJobExecutionContext context)
         {
-            float networkUtilization = _performanceCounter.NextValue();
+            float network = _performanceCounter.NextValue();
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             _metricRepository.Create(new NetworkMetric
             {
                 Time = time.TotalSeconds,
-                Value = (int)networkUtilization
+                Value = (int)network
             });
 
             return Task.CompletedTask;
