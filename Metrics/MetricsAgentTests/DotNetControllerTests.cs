@@ -23,21 +23,25 @@ namespace MetricsAgentTests
             _controller = new DotNetMetricsController(_mockMetricsRepository.Object);
         }
 
-        [Fact]
-        public void Create_SendRequest_ShouldReturnOk()
-        {           
-            _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
-            
-            IActionResult result = _controller.Create(new DotNetMetricCreateRequest
-            {
-                Time = TimeSpan.FromSeconds(1),
-                Value = 50
-            });
+        #region For delete
 
-            _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
-        }
+        //[Fact]
+        //public void Create_SendRequest_ShouldReturnOk()
+        //{           
+        //    _mockMetricsRepository.Setup(repository =>
+        //        repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
+
+        //    IActionResult result = _controller.Create(new DotNetMetricCreateRequest
+        //    {
+        //        Time = TimeSpan.FromSeconds(1),
+        //        Value = 50
+        //    });
+
+        //    _mockMetricsRepository.Verify(repository =>
+        //        repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
+        //}
+
+        #endregion
 
         [Fact]
         public void GetAll_SendRequest_ShouldReturnOk()
