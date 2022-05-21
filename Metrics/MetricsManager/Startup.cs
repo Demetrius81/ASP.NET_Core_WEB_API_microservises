@@ -1,4 +1,3 @@
-using MetricsManager.Converter;
 using MetricsManager.Models;
 using MetricsManager.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Source.Converter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +48,9 @@ namespace MetricsManager
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
