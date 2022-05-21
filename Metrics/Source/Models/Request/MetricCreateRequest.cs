@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace MetricsAgent.Models.Interfaces
+namespace Source.Models.Request
 {
-    public interface IMetricCreateRequest
+    public abstract class MetricCreateRequest
     {
         /// <summary>
         /// Время (тип данных TimeSpan)
         /// </summary>
-        TimeSpan Time { get; set; }
+        public TimeSpan Time { get; set; }
 
         /// <summary>
         /// Значение метрики
         /// </summary>
-        int Value { get; set; }
+        public int Value { get; set; }
     }
 }

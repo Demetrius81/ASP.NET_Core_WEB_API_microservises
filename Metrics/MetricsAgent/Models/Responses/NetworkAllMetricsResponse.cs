@@ -1,13 +1,8 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System.Collections.Generic;
+﻿using Source.Models.Response;
 
 namespace MetricsAgent.Models.Responses
 {
-    public class NetworkAllMetricsResponse
+    public class NetworkAllMetricsResponse : AllMetricsResponse<NetworkMetricDto>
     {
-        /// <summary>
-        /// Коллекция метрик, сформированная для ответа контроллера
-        /// </summary>
-        public List<NetworkMetricDto> Metrics { get; set; }
     }
 }

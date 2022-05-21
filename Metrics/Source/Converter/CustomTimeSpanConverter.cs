@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MetricsAgent.Converter
+namespace Source.Converter
 {
     public class CustomTimeSpanConverter : JsonConverter<TimeSpan>
     {

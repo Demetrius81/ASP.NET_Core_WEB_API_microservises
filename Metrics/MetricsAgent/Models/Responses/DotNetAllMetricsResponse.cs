@@ -1,13 +1,8 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System.Collections.Generic;
+﻿using Source.Models.Response;
 
 namespace MetricsAgent.Models.Responses
 {
-    public class DotNetAllMetricsResponse
+    public class DotNetAllMetricsResponse : AllMetricsResponse<DotNetMetricDto>
     {
-        /// <summary>
-        /// Коллекция метрик, сформированная для ответа контроллера
-        /// </summary>
-        public List<DotNetMetricDto> Metrics { get; set; }
     }
 }

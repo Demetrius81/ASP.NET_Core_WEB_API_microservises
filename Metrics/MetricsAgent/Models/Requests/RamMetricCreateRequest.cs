@@ -1,12 +1,8 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System;
+﻿using Source.Models.Request;
 
 namespace MetricsAgent.Models.Requests
 {
-    public class RamMetricCreateRequest : IMetricCreateRequest
+    public class RamMetricCreateRequest : MetricCreateRequest
     {
-        public TimeSpan Time { get; set; }
-
-        public int Value { get; set; }
     }
 }

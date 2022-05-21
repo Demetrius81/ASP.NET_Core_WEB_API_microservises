@@ -20,4 +20,8 @@
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Source\Source.csproj" />
+  </ItemGroup>
+
 </Project>

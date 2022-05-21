@@ -1,17 +1,8 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System;
+﻿using Source.Models;
 
 namespace MetricsAgent.Models
 {
-    public class NetworkMetric : IMetric
+    public class NetworkMetric : Metric
     {
-        public int Id { get; set; }
-        public double Time { get; set; }
-        public int Value { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Id} - {Value} - {Time}";
-        }
     }
 }

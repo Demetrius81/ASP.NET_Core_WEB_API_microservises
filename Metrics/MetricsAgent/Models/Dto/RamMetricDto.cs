@@ -1,14 +1,9 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System;
+﻿using Source.Models;
 
 namespace MetricsAgent.Models
 {
-    public class RamMetricDto : IMetricDto
+    public class RamMetricDto : MetricDto
     {
-        public int Id { get; set; }
 
-        public int Value { get; set; }
-
-        public TimeSpan Time { get; set; }
     }
 }

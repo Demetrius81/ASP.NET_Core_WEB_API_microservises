@@ -1,6 +1,5 @@
 using AutoMapper;
 using FluentMigrator.Runner;
-using MetricsAgent.Converter;
 using MetricsAgent.Jobs;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Interfaces;
@@ -17,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using Source.Converter;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -161,6 +161,6 @@ namespace MetricsAgent
                 endpoints.MapControllers();
             });
             migrationRunner.MigrateUp();
-        }        
+        }
     }
 }

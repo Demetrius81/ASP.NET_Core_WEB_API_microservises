@@ -1,13 +1,8 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System.Collections.Generic;
+﻿using Source.Models.Response;
 
 namespace MetricsAgent.Models.Responses
 {
-    public class HddAllMetricsResponse
+    public class HddAllMetricsResponse : AllMetricsResponse<HddMetricDto>
     {
-        /// <summary>
-        /// Коллекция метрик, сформированная для ответа контроллера
-        /// </summary>
-        public List<HddMetricDto> Metrics { get; set; }
     }
 }

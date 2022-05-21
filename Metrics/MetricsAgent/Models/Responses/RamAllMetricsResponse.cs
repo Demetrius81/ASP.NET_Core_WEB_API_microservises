@@ -1,13 +1,8 @@
-﻿using MetricsAgent.Models.Interfaces;
-using System.Collections.Generic;
+﻿using Source.Models.Response;
 
 namespace MetricsAgent.Models.Responses
 {
-    public class RamAllMetricsResponse
+    public class RamAllMetricsResponse : AllMetricsResponse<RamMetricDto>
     {
-        /// <summary>
-        /// Коллекция метрик, сформированная для ответа контроллера
-        /// </summary>
-        public List<RamMetricDto> Metrics { get; set; }
     }
 }
