@@ -5,7 +5,7 @@ namespace MetricsManager.Models
     /// <summary>
     /// Класс модель агента
     /// </summary>
-    public class AgentInfo : IAgentInfo
+    public class AgentInfoDto : IAgentInfo
     {
         /// <summary>
         /// Идентификатор агента
@@ -15,7 +15,7 @@ namespace MetricsManager.Models
         /// <summary>
         /// Адрес агента
         /// </summary>
-        public Uri AgentAddress { get; set; }
+        public string AgentAddress { get; set; }
 
         /// <summary>
         /// Состояние агента (вкл/выкл)

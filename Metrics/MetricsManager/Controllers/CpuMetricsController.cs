@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Net.Http;
 
 namespace MetricsManager.Controllers
 {
@@ -9,10 +11,22 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase, IMetricsManager
     {
+
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        private readonly AgentPool _agentPool;
+
         private ILogger<CpuMetricsController> _logger;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger = null)
+        public CpuMetricsController(
+            IHttpClientFactory httpClientFactory,
+            AgentPool agentPool,
+            ILogger<CpuMetricsController> logger = null)
         {
+            _httpClientFactory = httpClientFactory;
+
+            _agentPool = agentPool;
+
             _logger = logger;
         }
 
@@ -20,6 +34,8 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsFromAgent(
             [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
+            HttpClient httpClient = new HttpClient();
+
             if (_logger is not null)
             {
                 _logger.LogDebug($"Успешно получили все метрики Cpu от агента {agentId}");

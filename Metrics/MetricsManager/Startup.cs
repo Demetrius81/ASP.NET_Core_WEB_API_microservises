@@ -1,5 +1,9 @@
+using AutoMapper;
+using FluentMigrator.Runner;
 using MetricsManager.Models;
 using MetricsManager.Models.Interfaces;
+using MetricsManager.Services;
+using MetricsManager.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +34,29 @@ namespace MetricsManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
+            services.AddFluentMigratorCore()
+               .ConfigureRunner(rb => rb
+                   .AddSQLite()
+                   .WithGlobalConnectionString(Configuration
+                       .GetSection("Settings:DatabaseOptions:ConnectionString").Value)
+                   .ScanIn(typeof(Startup).Assembly).For.Migrations())
+               .AddLogging(lg => lg.AddFluentMigratorConsole());
+
+            var mapperConfiguration = new MapperConfiguration(mapperProfile => mapperProfile.AddProfile(new
+                MapperProfile()));
+
+            var mapper = mapperConfiguration.CreateMapper();
+
+            services.AddSingleton(mapper);
+
+            services.AddHttpClient();
+
+            services.AddSingleton<IAgentsPoolRepository, AgentsPoolRepository>().Configure<DatabaseOptions>(options =>
+            {
+                Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+            });
+
+            //services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
@@ -50,7 +76,8 @@ namespace MetricsManager
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
@@ -69,6 +96,7 @@ namespace MetricsManager
             {
                 endpoints.MapControllers();
             });
+            migrationRunner.MigrateUp();
         }
     }
 }

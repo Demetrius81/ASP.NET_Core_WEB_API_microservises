@@ -1,7 +1,12 @@
-﻿using MetricsManager.Models;
+﻿using AutoMapper;
+using MetricsManager.Models;
 using MetricsManager.Models.Interfaces;
+using MetricsManager.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MetricsManager.Controllers
 {
@@ -12,15 +17,26 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class AgentsController : ControllerBase
     {
-        private IAgentPool<AgentInfo> _agentPool;
+        private readonly IAgentsPoolRepository _agentsPoolRepository;
+
+        private readonly ILogger<AgentsController> _logger;
+
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Конструктор класса
         /// </summary>
         /// <param name="agentPool"></param>
-        public AgentsController(IAgentPool<AgentInfo> agentPool)
+        public AgentsController(
+            IAgentsPoolRepository agentsPoolRepository,
+            IMapper mapper = null,
+            ILogger<AgentsController> logger = null)
         {
-            _agentPool = agentPool;
+            _agentsPoolRepository = agentsPoolRepository;
+
+            _mapper = mapper;
+
+            _logger = logger;
         }
 
         /// <summary>
@@ -33,7 +49,7 @@ namespace MetricsManager.Controllers
         {
             if (agentInfo != null)
             {
-                _agentPool.Add(agentInfo);
+                _agentsPoolRepository.Add(_mapper.Map<AgentInfoDto>(agentInfo));
             }
             return Ok();
         }
@@ -46,9 +62,13 @@ namespace MetricsManager.Controllers
         [HttpPut("enable/{agentId}")]
         public IActionResult EnableAgentById([FromRoute] int agentId)
         {
-            if (_agentPool.AgentsRepo.ContainsKey(agentId))
+            Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
+           
+            if (agentsRepo.ContainsKey(agentId))
             {
-                _agentPool.AgentsRepo[agentId].Enable = true;
+                agentsRepo[agentId].Enable = true;
+
+                _agentsPoolRepository.Update(agentsRepo[agentId]);
             }
             return Ok();
         }
@@ -61,9 +81,13 @@ namespace MetricsManager.Controllers
         [HttpPut("disable/{agentId}")]
         public IActionResult DisableAgentById([FromRoute] int agentId)
         {
-            if (_agentPool.AgentsRepo.ContainsKey(agentId))
+            Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
+
+            if (agentsRepo.ContainsKey(agentId))
             {
-                _agentPool.AgentsRepo[agentId].Enable = false;
+                agentsRepo[agentId].Enable = false;
+
+                _agentsPoolRepository.Update(agentsRepo[agentId]);
             }
             return Ok();
         }
@@ -76,12 +100,16 @@ namespace MetricsManager.Controllers
         [HttpPut("switch/{agentId}")]
         public IActionResult AgentSwitcById([FromRoute] int agentId)
         {
-            if (_agentPool.AgentsRepo.ContainsKey(agentId))
+            Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
+
+            if (agentsRepo.ContainsKey(agentId))
             {
-                _agentPool.AgentsRepo[agentId].Enable = 
-                    _agentPool.AgentsRepo[agentId].Enable == false ? true : false;
+                agentsRepo[agentId].Enable =
+                    agentsRepo[agentId].Enable == false ? true : false;
+
+                _agentsPoolRepository.Update(agentsRepo[agentId]);
             }
-            return Ok(_agentPool.AgentsRepo[agentId].Enable);// На интерфейс пользователя можно прикрутить лампочку (какой-нибудь switcher, radiobutton) и она будет показывать состояние агента
+            return Ok(agentsRepo[agentId].Enable);// На интерфейс пользователя можно прикрутить лампочку (какой-нибудь switcher, radiobutton) и она будет показывать состояние агента
         }
 
         /// <summary>
@@ -89,6 +117,17 @@ namespace MetricsManager.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("get")]
-        public IActionResult GetAllAgents() => Ok(_agentPool.Get());
+        public IActionResult GetAllAgents()
+        {
+            List<AgentInfoDto> agents = _agentsPoolRepository.Get().Values.ToList();
+
+            List<AgentInfo> result = new List<AgentInfo>();
+
+            foreach (AgentInfoDto agent in agents)
+            {
+                result.Add(_mapper.Map<AgentInfo>(agent));
+            }
+            return Ok(result.ToArray());
+        } 
     }
 }
