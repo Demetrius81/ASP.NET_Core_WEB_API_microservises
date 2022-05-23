@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using MetricsAgent.Models;
+using Source.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Source.Models;
 using Source.Models.Responses;
 using System;
 using System.Collections.Generic;

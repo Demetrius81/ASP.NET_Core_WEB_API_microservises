@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;

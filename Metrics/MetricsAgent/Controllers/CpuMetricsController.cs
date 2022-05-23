@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

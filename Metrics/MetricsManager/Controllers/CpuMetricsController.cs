@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Source.Models.Responses;
+using Newtonsoft.Json;
 
 namespace MetricsManager.Controllers
 {
@@ -83,7 +85,7 @@ namespace MetricsManager.Controllers
             {
                 string responseString = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                CpuAllMetricsResponse
+                CpuAllMetricsResponse cpuAllMetrics = JsonConvert.DeserializeObject<CpuAllMetricsResponse>(responseString);
 
                 return Ok();
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MetricsAgent.Models;
+using Source.Models;
 using System;
 
 namespace MetricsAgent

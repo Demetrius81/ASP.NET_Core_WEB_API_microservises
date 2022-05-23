@@ -1,4 +1,4 @@
-﻿using MetricsAgent.Models;
+﻿using Source.Models;
 
 namespace MetricsAgent.Services.Interfaces
 {

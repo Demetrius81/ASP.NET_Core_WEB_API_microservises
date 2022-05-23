@@ -1,6 +1,5 @@
 ﻿using MetricsAgent.Controllers;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

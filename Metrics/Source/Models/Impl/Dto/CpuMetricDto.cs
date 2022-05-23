@@ -1,6 +1,6 @@
 ﻿using Source.Models;
 
-namespace MetricsAgent.Models
+namespace Source.Models
 {
     public class CpuMetricDto : MetricDto
     {
