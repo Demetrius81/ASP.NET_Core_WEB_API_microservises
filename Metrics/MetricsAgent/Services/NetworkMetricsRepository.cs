@@ -18,7 +18,7 @@ namespace MetricsAgent.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Create(NetworkMetric item)
+        public void Create(NetworkMetricDto item)
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -45,7 +45,7 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(NetworkMetric item)
+        public void Update(NetworkMetricDto item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
@@ -59,11 +59,11 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<NetworkMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<NetworkMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<NetworkMetric> metrics = connection.Query<NetworkMetric>(
+            List<NetworkMetricDto> metrics = connection.Query<NetworkMetricDto>(
                 "SELECT * FROM networkmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +74,21 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<NetworkMetric> GetAll()
+        public IList<NetworkMetricDto> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<NetworkMetric> metrics = connection.Query<NetworkMetric>(
+            List<NetworkMetricDto> metrics = connection.Query<NetworkMetricDto>(
                 "SELECT * FROM networkmetrics").ToList();
 
             return metrics;
         }
 
-        public NetworkMetric GetById(int id)
+        public NetworkMetricDto GetById(int id)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            NetworkMetric metric = connection.QuerySingle<NetworkMetric>(
+            NetworkMetricDto metric = connection.QuerySingle<NetworkMetricDto>(
                 "SELECT Id, Time, Value FROM networkmetrics WHERE id = @id",
                 new
                 {

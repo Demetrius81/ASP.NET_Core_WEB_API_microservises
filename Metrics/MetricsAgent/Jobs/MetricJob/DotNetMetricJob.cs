@@ -26,7 +26,7 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            _metricRepository.Create(new DotNetMetric
+            _metricRepository.Create(new DotNetMetricDto
             {
                 Time = time.TotalSeconds,
                 Value = (int)dotNet

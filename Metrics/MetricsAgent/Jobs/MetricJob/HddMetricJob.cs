@@ -26,7 +26,7 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            _metricRepository.Create(new HddMetric
+            _metricRepository.Create(new HddMetricDto
             {
                 Time = time.TotalSeconds,
                 Value = (int)hddSpeed

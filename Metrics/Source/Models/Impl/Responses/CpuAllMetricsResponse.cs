@@ -1,8 +1,8 @@
 ﻿using Source.Models.Response;
 
-namespace MetricsAgent.Models.Responses
+namespace Source.Models.Responses
 {
-    public class CpuAllMetricsResponse : AllMetricsResponse<CpuMetricDto>
+    public class CpuAllMetricsResponse : AllMetricsResponse<CpuMetric>
     {        
     }
 }

@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
 
@@ -60,15 +61,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<NetworkMetric> metrics = _metricsRepository.GetAll();
+            IList<NetworkMetricDto> metrics = _metricsRepository.GetAll();
 
             NetworkAllMetricsResponse response = new NetworkAllMetricsResponse()
             {
-                Metrics = new List<NetworkMetricDto>()
+                Metrics = new List<NetworkMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<NetworkMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<NetworkMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -80,15 +81,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<NetworkMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<NetworkMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             NetworkAllMetricsResponse response = new NetworkAllMetricsResponse()
             {
-                Metrics = new List<NetworkMetricDto>()
+                Metrics = new List<NetworkMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<NetworkMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<NetworkMetric>(metric));
             }
             if (_logger is not null)
             {

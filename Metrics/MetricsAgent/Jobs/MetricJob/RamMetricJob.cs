@@ -26,7 +26,7 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            _metricRepository.Create(new RamMetric
+            _metricRepository.Create(new RamMetricDto
             {
                 Time = time.TotalSeconds,
                 Value = (int)RamAvailableSpace

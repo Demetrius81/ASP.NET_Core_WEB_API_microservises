@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
 
@@ -61,15 +61,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<RamMetric> metrics = _metricsRepository.GetAll();
+            IList<RamMetricDto> metrics = _metricsRepository.GetAll();
 
             RamAllMetricsResponse response = new RamAllMetricsResponse()
             {
-                Metrics = new List<RamMetricDto>()
+                Metrics = new List<RamMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<RamMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<RamMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -81,15 +81,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("available/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<RamMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<RamMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             RamAllMetricsResponse response = new RamAllMetricsResponse()
             {
-                Metrics = new List<RamMetricDto>()
+                Metrics = new List<RamMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<RamMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<RamMetric>(metric));
             }
             if (_logger is not null)
             {

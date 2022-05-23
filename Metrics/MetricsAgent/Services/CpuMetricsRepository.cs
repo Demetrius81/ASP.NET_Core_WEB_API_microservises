@@ -18,7 +18,7 @@ namespace MetricsAgent.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Create(CpuMetric item)
+        public void Create(CpuMetricDto item)
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -45,7 +45,7 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(CpuMetric item)
+        public void Update(CpuMetricDto item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
@@ -59,11 +59,11 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<CpuMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<CpuMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+            List<CpuMetricDto> metrics = connection.Query<CpuMetricDto>(
                 "SELECT * FROM cpumetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +74,21 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<CpuMetric> GetAll()
+        public IList<CpuMetricDto> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+            List<CpuMetricDto> metrics = connection.Query<CpuMetricDto>(
                 "SELECT * FROM cpumetrics").ToList();
 
             return metrics;
         }
 
-        public CpuMetric GetById(int id)
+        public CpuMetricDto GetById(int id)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            CpuMetric metric = connection.QuerySingle<CpuMetric>(
+            CpuMetricDto metric = connection.QuerySingle<CpuMetricDto>(
                 "SELECT Id, Time, Value FROM cpumetrics WHERE id = @id",
                 new
                 {

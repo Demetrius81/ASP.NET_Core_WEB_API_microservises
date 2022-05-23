@@ -1,8 +1,8 @@
 ﻿using Source.Models.Response;
 
-namespace MetricsAgent.Models.Responses
+namespace Source.Models.Responses
 {
-    public class DotNetAllMetricsResponse : AllMetricsResponse<DotNetMetricDto>
+    public class DotNetAllMetricsResponse : AllMetricsResponse<DotNetMetric>
     {
     }
 }

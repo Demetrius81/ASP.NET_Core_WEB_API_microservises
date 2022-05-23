@@ -8,27 +8,27 @@ namespace MetricsAgent
     {
         public MapperProfile()
         {
-            CreateMap<CpuMetric, CpuMetricDto>().ForMember(metric =>
+            CreateMap<CpuMetricDto, CpuMetric>().ForMember(metric =>
                 metric.Time, options =>
                 options.MapFrom(source =>
                 TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<DotNetMetric, DotNetMetricDto>().ForMember(metric =>
+            CreateMap<DotNetMetricDto, DotNetMetric>().ForMember(metric =>
                 metric.Time, options =>
                 options.MapFrom(source =>
                 TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<NetworkMetric, NetworkMetricDto>().ForMember(metric =>
+            CreateMap<NetworkMetricDto, NetworkMetric>().ForMember(metric =>
                 metric.Time, options =>
                 options.MapFrom(source =>
                 TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<HddMetric, HddMetricDto>().ForMember(metric =>
+            CreateMap<HddMetricDto, HddMetric>().ForMember(metric =>
                 metric.Time, options =>
                 options.MapFrom(source =>
                 TimeSpan.FromSeconds(source.Time)));
 
-            CreateMap<RamMetric, RamMetricDto>().ForMember(metric =>
+            CreateMap<RamMetricDto, RamMetric>().ForMember(metric =>
                 metric.Time, options =>
                 options.MapFrom(source =>
                 TimeSpan.FromSeconds(source.Time)));

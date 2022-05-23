@@ -48,7 +48,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetAll())
-                              .Returns(new List<CpuMetric>());
+                              .Returns(new List<CpuMetricDto>());
 
             _controller.GetAll();
 
@@ -61,7 +61,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
-                              .Returns(new List<CpuMetric>());
+                              .Returns(new List<CpuMetricDto>());
 
             _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
 

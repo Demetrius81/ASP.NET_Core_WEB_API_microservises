@@ -18,7 +18,7 @@ namespace MetricsAgent.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Create(RamMetric item)
+        public void Create(RamMetricDto item)
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -45,7 +45,7 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(RamMetric item)
+        public void Update(RamMetricDto item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
@@ -59,11 +59,11 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<RamMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<RamMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<RamMetric> metrics = connection.Query<RamMetric>(
+            List<RamMetricDto> metrics = connection.Query<RamMetricDto>(
                 "SELECT * FROM rammetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +74,21 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<RamMetric> GetAll()
+        public IList<RamMetricDto> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<RamMetric> metrics = connection.Query<RamMetric>(
+            List<RamMetricDto> metrics = connection.Query<RamMetricDto>(
                 "SELECT * FROM rammetrics").ToList();
 
             return metrics;
         }
 
-        public RamMetric GetById(int id)
+        public RamMetricDto GetById(int id)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            RamMetric metric = connection.QuerySingle<RamMetric>(
+            RamMetricDto metric = connection.QuerySingle<RamMetricDto>(
                 "SELECT Id, Time, Value FROM rammetrics WHERE id = @id",
                 new
                 {

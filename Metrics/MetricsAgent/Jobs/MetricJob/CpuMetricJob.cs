@@ -26,7 +26,7 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            _metricRepository.Create(new CpuMetric
+            _metricRepository.Create(new CpuMetricDto
             {
                 Time = time.TotalSeconds,
                 Value = (int)cpuUsageInPercent

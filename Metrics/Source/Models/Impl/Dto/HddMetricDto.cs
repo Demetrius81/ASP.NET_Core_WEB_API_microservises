@@ -3,7 +3,6 @@
 namespace MetricsAgent.Models
 {
     public class HddMetricDto : MetricDto
-    {
-        
+    {        
     }
 }

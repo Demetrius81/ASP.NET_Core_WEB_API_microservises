@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
 
@@ -61,15 +61,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<DotNetMetric> metrics = _metricsRepository.GetAll();
+            IList<DotNetMetricDto> metrics = _metricsRepository.GetAll();
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<DotNetMetricDto>()
+                Metrics = new List<DotNetMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<DotNetMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -81,15 +81,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<DotNetMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<DotNetMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<DotNetMetricDto>()
+                Metrics = new List<DotNetMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<DotNetMetric>(metric));
             }
             if (_logger is not null)
             {

@@ -4,6 +4,5 @@ namespace MetricsAgent.Models
 {
     public class CpuMetricDto : MetricDto
     {
-       
     }
 }

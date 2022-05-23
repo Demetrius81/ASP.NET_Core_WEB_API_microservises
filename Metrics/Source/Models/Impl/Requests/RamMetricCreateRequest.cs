@@ -1,6 +1,6 @@
 ﻿using Source.Models.Request;
 
-namespace MetricsAgent.Models.Requests
+namespace Source.Models.Requests
 {
     public class RamMetricCreateRequest : MetricCreateRequest
     {

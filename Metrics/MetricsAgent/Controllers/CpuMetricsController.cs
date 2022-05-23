@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
 
@@ -80,15 +80,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<CpuMetric> metrics = _metricsRepository.GetAll();
+            IList<CpuMetricDto> metrics = _metricsRepository.GetAll();
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<CpuMetricDto>()
+                Metrics = new List<CpuMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -101,15 +101,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<CpuMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<CpuMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<CpuMetricDto>()
+                Metrics = new List<CpuMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetric>(metric));
             }
             if (_logger is not null)
             {

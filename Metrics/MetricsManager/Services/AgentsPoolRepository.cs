@@ -24,7 +24,7 @@ namespace MetricsManager.Services
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
 
             connection.Execute(
-                "INSERT INTO agentsrepo(id, agentaddress, enable) VALUES(@id, @agentaddress, @enable)",
+                "INSERT INTO agentsrepo(agentaddress, enable) VALUES(@agentaddress, @enable)",
                 new
                 {
                     id = item.AgentId,
@@ -38,7 +38,7 @@ namespace MetricsManager.Services
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
-                "DELETE FROM agentsrepo WHERE id=@id",
+                "DELETE FROM agentsrepo WHERE Id=@id",
                 new
                 {
                     id = id
@@ -50,7 +50,7 @@ namespace MetricsManager.Services
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
-                "UPDATE agentsrepo SET agentaddress = @agentaddress, enable = @enable WHERE id = @id",
+                "UPDATE agentsrepo SET agentaddress = @agentaddress, enable = @enable WHERE Id = @id",
                 new
                 {
                     agentaddress = item.AgentAddress.ToString(),
@@ -63,13 +63,13 @@ namespace MetricsManager.Services
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<AgentInfoDto> agentsq = connection.Query<AgentInfoDto>(
-                "SELECT * FROM agentsrepo").ToList();
+            //List<AgentInfoDto> agentsq = connection.Query<AgentInfoDto>(
+            //    "SELECT * FROM agentsrepo").ToList();
 
-            Dictionary<int, AgentInfoDto> agents = agentsq.ToDictionary(x => x.AgentId, x => x);
+            //Dictionary<int, AgentInfoDto> agents = agentsq.ToDictionary(x => x.AgentId, x => x);
 
-            //Dictionary<int, AgentInfoDto> agents = connection.Query<AgentInfoDto>(
-            //    "SELECT * FROM agentsrepo").ToDictionary(x => x.AgentId, y => y);
+            Dictionary<int, AgentInfoDto> agents = connection.Query<AgentInfoDto>(
+                "SELECT * FROM agentsrepo").ToDictionary(x => x.AgentId, y => y);
 
             return agents;
         }
@@ -79,7 +79,7 @@ namespace MetricsManager.Services
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             AgentInfoDto agent = connection.QuerySingle<AgentInfoDto>(
-                "SELECT id, agentaddress, enable FROM agentsrepo WHERE id = @id",
+                "SELECT Id, agentaddress, enable FROM agentsrepo WHERE Id = @id",
                 new
                 {
                     id = id

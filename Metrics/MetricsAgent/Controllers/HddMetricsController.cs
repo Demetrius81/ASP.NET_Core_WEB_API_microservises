@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
 
@@ -62,15 +62,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<HddMetric> metrics = _metricsRepository.GetAll();
+            IList<HddMetricDto> metrics = _metricsRepository.GetAll();
 
             HddAllMetricsResponse response = new HddAllMetricsResponse()
             {
-                Metrics = new List<HddMetricDto>()
+                Metrics = new List<HddMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<HddMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<HddMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -82,15 +82,15 @@ namespace MetricsAgent.Controllers
         [HttpGet("left/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<HddMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<HddMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             HddAllMetricsResponse response = new HddAllMetricsResponse()
             {
-                Metrics = new List<HddMetricDto>()
+                Metrics = new List<HddMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<HddMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<HddMetric>(metric));
             }
             if (_logger is not null)
             {

@@ -1,8 +1,9 @@
 ﻿using Source.Models;
 
-namespace MetricsAgent.Models
+namespace Source.Models
 {
     public class RamMetric : Metric
     {
+
     }
 }
