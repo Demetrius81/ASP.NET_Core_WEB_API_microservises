@@ -8,5 +8,10 @@ namespace Source.Models.Response
         /// Коллекция метрик, сформированная для ответа контроллера
         /// </summary>
         public List<T> Metrics { get; set; }
+
+        /// <summary>
+        /// Идентификатор агента
+        /// </summary>
+        public int AgentID { get; set; }
     }
 }

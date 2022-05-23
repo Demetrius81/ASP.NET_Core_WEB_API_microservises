@@ -87,6 +87,8 @@ namespace MetricsManager.Controllers
 
                 CpuAllMetricsResponse cpuAllMetrics = JsonConvert.DeserializeObject<CpuAllMetricsResponse>(responseString);
 
+                cpuAllMetrics.AgentID = agentId;
+
                 return Ok();
 
                 LoggingSituation($"Успешно получили все метрики Cpu от агента {agentId}");
