@@ -11,7 +11,7 @@ namespace MetricsManagerTests
 
         public RamMetricsManagerTests()
         {
-            _ramMetricsController = new RamMetricsController();
+            //_ramMetricsController = new RamMetricsController();
         }
 
         [Fact]

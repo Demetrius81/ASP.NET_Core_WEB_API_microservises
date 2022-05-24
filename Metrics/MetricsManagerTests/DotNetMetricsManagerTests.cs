@@ -11,7 +11,7 @@ namespace MetricsManagerTests
 
         public DotNetMetricsManagerTests()
         {
-            _dotNetMetricsController = new DotNetMetricsController();
+            //_dotNetMetricsController = new DotNetMetricsController();
         }
 
         [Fact]

@@ -11,7 +11,7 @@ namespace MetricsManagerTests
 
         public NetworkMetricsManagerTests()
         {
-            _networkMetricsController = new NetworkMetricsController();
+            //_networkMetricsController = new NetworkMetricsController();
         }
 
         [Fact]

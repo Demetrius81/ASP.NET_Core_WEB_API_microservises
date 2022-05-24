@@ -16,8 +16,10 @@ namespace MetricsManager.Migrations
         public override void Up()
         {
            
-                Create.Table("agentsrepo").WithColumn("Id").AsInt32()
-                    .WithColumn("agentaddress").AsString().WithColumn("enable").AsBoolean();
+                Create.Table("agentsrepo")
+                    .WithColumn("id").AsInt32()
+                    .WithColumn("agentaddress").AsString()
+                    .WithColumn("enable").AsBoolean();
             
         }
     }

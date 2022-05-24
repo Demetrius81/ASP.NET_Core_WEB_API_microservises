@@ -24,7 +24,7 @@ namespace MetricsManager.Services
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
 
             connection.Execute(
-                "INSERT INTO agentsrepo(agentaddress, enable) VALUES(@agentaddress, @enable)",
+                "INSERT INTO agentsrepo(id, agentaddress, enable) VALUES(@id, @agentaddress, @enable)",
                 new
                 {
                     id = item.AgentId,
