@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Polly;
 using Source.Converter;
 using System;
 using System.Collections.Generic;
@@ -49,14 +50,27 @@ namespace MetricsManager
 
             services.AddSingleton(mapper);
 
-            services.AddHttpClient();
+            #region Old
+
+            //services.AddHttpClient();
+
+            //services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
+
+            #endregion
+
+            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
+                .AddTransientHttpErrorPolicy(p => p
+                    .WaitAndRetryAsync(retryCount: 3,
+                        sleepDurationProvider: (attemptCount) => TimeSpan.FromMilliseconds(2000),
+                        onRetry: (exception, sleepDuration, attemptNumber, context) =>
+                        {
+
+                        }));
 
             services.AddSingleton<IAgentsPoolRepository, AgentsPoolRepository>().Configure<DatabaseOptions>(options =>
             {
                 Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
             });
-
-            //services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
