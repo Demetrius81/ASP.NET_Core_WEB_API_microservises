@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models.Requests;
+using Source.Models.Responses;
 using System;
 
 namespace MetricsManager.Controllers
@@ -9,34 +12,31 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase, IMetricsManager
     {
-        private ILogger<HddMetricsController> _logger;
+        private readonly IMetricsAgentClient _metricsAgentClient;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger = null)
+        public HddMetricsController(IMetricsAgentClient metricsAgentClient)
         {
-            _logger = logger;
+            _metricsAgentClient = metricsAgentClient;
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent(
             [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
+            HddAllMetricsResponse hddAllMetricsResponse = _metricsAgentClient.GetHddAllMetrics(new HddMetricCreateRequest()
             {
-                _logger.LogDebug($"Успешно получили все метрики Hdd от агента {agentId}");
-            }
-
-            return Ok();
+                AgentId = agentId,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+            return Ok(hddAllMetricsResponse);
         }
 
         [HttpGet("clister/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster(
             [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно получили все метрики Hdd от всех агентов кластера");
-            }
-
+            
             return Ok();
         }
     }

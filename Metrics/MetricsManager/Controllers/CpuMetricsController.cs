@@ -18,6 +18,33 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase, IMetricsManager
     {
+        private readonly IMetricsAgentClient _metricsAgentClient;
+
+        public CpuMetricsController(IMetricsAgentClient metricsAgentClient)
+        {
+            _metricsAgentClient = metricsAgentClient;
+        }
+
+        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsFromAgent(
+            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        {
+            CpuAllMetricsResponse cpuAllMetricsResponse = _metricsAgentClient.GetCpuAllMetrics(new CpuMetricCreateRequest()
+            {
+                AgentId = agentId,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+            return Ok(cpuAllMetricsResponse);
+        }
+
+        [HttpGet("clister/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsFromAllCluster(
+            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        {
+            return Ok();
+        }
+
         #region Old
 
         //private readonly IHttpClientFactory _httpClientFactory;
@@ -29,13 +56,6 @@ namespace MetricsManager.Controllers
         //private readonly IMapper _mapper;
 
         #endregion
-
-        private readonly IMetricsAgentClient _metricsAgentClient;
-
-        public CpuMetricsController(IMetricsAgentClient metricsAgentClient)
-        {
-            _metricsAgentClient = metricsAgentClient;
-        }
 
         #region Old
 
@@ -115,26 +135,6 @@ namespace MetricsManager.Controllers
         //}
 
         #endregion
-
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            CpuAllMetricsResponse cpuAllMetricsResponse = _metricsAgentClient.GetCpuAllMetrics(new CpuMetricCreateRequest()
-            {
-                AgentId = agentId,
-                FromTime = fromTime,
-                ToTime = toTime
-            });
-            return Ok(cpuAllMetricsResponse);
-        }
-
-        [HttpGet("clister/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster(
-            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            return Ok();
-        }
 
         #region Old
 

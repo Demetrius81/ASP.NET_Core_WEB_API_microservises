@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models.Requests;
+using Source.Models.Responses;
 using System;
 
 namespace MetricsManager.Controllers
@@ -9,34 +12,31 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class RamMetricsController : ControllerBase, IMetricsManager
     {
-        private ILogger<RamMetricsController> _logger;
+        private readonly IMetricsAgentClient _metricsAgentClient;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger = null)
+        public RamMetricsController(IMetricsAgentClient metricsAgentClient)
         {
-            _logger = logger;
+            _metricsAgentClient = metricsAgentClient;
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent(
             [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
+            RamAllMetricsResponse ramAllMetricsResponse = _metricsAgentClient.GetRamAllMetrics(new RamMetricCreateRequest()
             {
-                _logger.LogDebug($"Успешно получили все метрики Ram от агента {agentId}");
-            }
-
-            return Ok();
+                AgentId = agentId,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+            return Ok(ramAllMetricsResponse);
         }
 
         [HttpGet("clister/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster(
             [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно получили все метрики Ram от всех агентов кластера");
-            }
-
+            
             return Ok();
         }
     }

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models.Requests;
+using Source.Models.Responses;
 using System;
 
 namespace MetricsManager.Controllers
@@ -9,34 +12,30 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class NetworkMetricsController : ControllerBase, IMetricsManager
     {
-        private ILogger<NetworkMetricsController> _logger;
+        private readonly IMetricsAgentClient _metricsAgentClient;
 
-        public NetworkMetricsController(ILogger<NetworkMetricsController> logger = null)
+        public NetworkMetricsController(IMetricsAgentClient metricsAgentClient)
         {
-            _logger = logger;
+            _metricsAgentClient = metricsAgentClient;
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent(
             [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
+            NetworkAllMetricsResponse networkAllMetricsResponse = _metricsAgentClient.GetNetworkAllMetrics(new NetworkMetricCreateRequest()
             {
-                _logger.LogDebug($"Успешно получили все метрики Network от агента {agentId}");
-            }
-
-            return Ok();
+                AgentId = agentId,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+            return Ok(networkAllMetricsResponse);
         }
 
         [HttpGet("clister/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster(
             [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно получили все метрики Network от всех агентов кластера");
-            }
-
+        {           
             return Ok();
         }
     }

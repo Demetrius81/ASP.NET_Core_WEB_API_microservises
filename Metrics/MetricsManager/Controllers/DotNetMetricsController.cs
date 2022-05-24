@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models.Requests;
+using Source.Models.Responses;
 using System;
 
 namespace MetricsManager.Controllers
@@ -9,34 +12,31 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class DotNetMetricsController : ControllerBase, IMetricsManager
     {
-        private ILogger<DotNetMetricsController> _logger;
+        private readonly IMetricsAgentClient _metricsAgentClient;
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger = null)
+        public DotNetMetricsController(IMetricsAgentClient metricsAgentClient)
         {
-            _logger = logger;
+            _metricsAgentClient = metricsAgentClient;
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent(
             [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
+            DotNetAllMetricsResponse dotNetAllMetricsResponse = _metricsAgentClient.GetDotNetAllMetrics(new DotNetMetricCreateRequest()
             {
-                _logger.LogDebug($"Успешно получили все метрики DotNet от агента {agentId}");
-            }
-
-            return Ok();
+                AgentId = agentId,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+            return Ok(dotNetAllMetricsResponse);
         }
 
         [HttpGet("clister/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster(
             [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно получили все метрики DotNet от всех агентов кластера");
-            }
-
+            
             return Ok();
         }
     }

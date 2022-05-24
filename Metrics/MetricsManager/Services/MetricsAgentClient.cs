@@ -105,5 +105,186 @@ namespace MetricsManager.Services
                 _logger.LogDebug(message);
             }
         }
+
+        public DotNetAllMetricsResponse GetDotNetAllMetrics(DotNetMetricCreateRequest dotNetMetricRequest)
+        {
+            try
+            {
+
+                IAgentInfo agent;
+
+                if (!_agentPool.AgentsRepo.TryGetValue(dotNetMetricRequest.AgentId, out agent))
+                {
+                    throw new Exception($"Agent Id# {dotNetMetricRequest.AgentId} not found.");
+                }
+                AgentInfo agentInfo = agent as AgentInfo;
+
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/dotnet/from/" +
+                    $"{dotNetMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
+                    $"{dotNetMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
+
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestQuery);
+
+                httpRequestMessage.Headers.Add("Accept", "application/json");
+                
+                HttpResponseMessage httpResponseMessage = _httpClient.SendAsync(httpRequestMessage).Result;
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    string responseString = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    DotNetAllMetricsResponse dotNetAllMetrics = JsonConvert.DeserializeObject<DotNetAllMetricsResponse>(responseString);
+
+                    dotNetAllMetrics.AgentID = dotNetMetricRequest.AgentId;
+
+                    LoggingSituation($"Успешно получили все метрики DotNet от агента {dotNetMetricRequest.AgentId}");
+
+                    return dotNetAllMetrics;
+                }
+                //HttpClient httpClient = new HttpClient();
+
+                LoggingSituation($"От агента: {dotNetMetricRequest.AgentId} пришел ответ {httpResponseMessage.StatusCode.ToString()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return null;
+        }
+
+        public HddAllMetricsResponse GetHddAllMetrics(HddMetricCreateRequest HddMetricRequest)
+        {
+            try
+            {
+
+                IAgentInfo agent;
+
+                if (!_agentPool.AgentsRepo.TryGetValue(HddMetricRequest.AgentId, out agent))
+                {
+                    throw new Exception($"Agent Id# {HddMetricRequest.AgentId} not found.");
+                }
+                AgentInfo agentInfo = agent as AgentInfo;
+
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/hdd/from/" +
+                    $"{HddMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
+                    $"{HddMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
+
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestQuery);
+
+                httpRequestMessage.Headers.Add("Accept", "application/json");
+
+                HttpResponseMessage httpResponseMessage = _httpClient.SendAsync(httpRequestMessage).Result;
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    string responseString = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    HddAllMetricsResponse hddAllMetrics = JsonConvert.DeserializeObject<HddAllMetricsResponse>(responseString);
+
+                    hddAllMetrics.AgentID = HddMetricRequest.AgentId;
+
+                    LoggingSituation($"Успешно получили все метрики Hdd от агента {HddMetricRequest.AgentId}");
+
+                    return hddAllMetrics;
+                }
+                
+                LoggingSituation($"От агента: {HddMetricRequest.AgentId} пришел ответ {httpResponseMessage.StatusCode.ToString()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return null;
+        }
+
+        public NetworkAllMetricsResponse GetNetworkAllMetrics(NetworkMetricCreateRequest NetworkMetricRequest)
+        {
+            try
+            {
+
+                IAgentInfo agent;
+
+                if (!_agentPool.AgentsRepo.TryGetValue(NetworkMetricRequest.AgentId, out agent))
+                {
+                    throw new Exception($"Agent Id# {NetworkMetricRequest.AgentId} not found.");
+                }
+                AgentInfo agentInfo = agent as AgentInfo;
+
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/network/from/" +
+                    $"{NetworkMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
+                    $"{NetworkMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
+
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestQuery);
+
+                httpRequestMessage.Headers.Add("Accept", "application/json");
+
+                HttpResponseMessage httpResponseMessage = _httpClient.SendAsync(httpRequestMessage).Result;
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    string responseString = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    NetworkAllMetricsResponse networkAllMetrics = JsonConvert.DeserializeObject<NetworkAllMetricsResponse>(responseString);
+
+                    networkAllMetrics.AgentID = NetworkMetricRequest.AgentId;
+
+                    LoggingSituation($"Успешно получили все метрики Cpu от агента {NetworkMetricRequest.AgentId}");
+
+                    return networkAllMetrics;
+                }
+                
+                LoggingSituation($"От агента: {NetworkMetricRequest.AgentId} пришел ответ {httpResponseMessage.StatusCode.ToString()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return null;
+        }
+
+        public RamAllMetricsResponse GetRamAllMetrics(RamMetricCreateRequest ramMetricRequest)
+        {
+            try
+            {
+
+                IAgentInfo agent;
+
+                if (!_agentPool.AgentsRepo.TryGetValue(ramMetricRequest.AgentId, out agent))
+                {
+                    throw new Exception($"Agent Id# {ramMetricRequest.AgentId} not found.");
+                }
+                AgentInfo agentInfo = agent as AgentInfo;
+
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/ram/from/" +
+                    $"{ramMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
+                    $"{ramMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
+
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestQuery);
+
+                httpRequestMessage.Headers.Add("Accept", "application/json");
+
+                HttpResponseMessage httpResponseMessage = _httpClient.SendAsync(httpRequestMessage).Result;
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    string responseString = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    RamAllMetricsResponse ramAllMetrics = JsonConvert.DeserializeObject<RamAllMetricsResponse>(responseString);
+
+                    ramAllMetrics.AgentID = ramMetricRequest.AgentId;
+
+                    LoggingSituation($"Успешно получили все метрики Cpu от агента {ramMetricRequest.AgentId}");
+
+                    return ramAllMetrics;
+                }
+                
+                LoggingSituation($"От агента: {ramMetricRequest.AgentId} пришел ответ {httpResponseMessage.StatusCode.ToString()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return null;
+        }
     }
 }
