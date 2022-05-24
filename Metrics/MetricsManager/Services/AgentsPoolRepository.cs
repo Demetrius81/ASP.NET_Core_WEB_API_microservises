@@ -17,7 +17,7 @@ namespace MetricsManager.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Add(AgentInfoDto item)
+        public void Add(AgentInfoDto item)   // сюда все значения приходят корректно
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -27,7 +27,7 @@ namespace MetricsManager.Services
                 "INSERT INTO agentsrepo(id, agentaddress, enable) VALUES(@id, @agentaddress, @enable)",
                 new
                 {
-                    id = item.AgentId,
+                    id = item.AgentId,   // не могу понять, почему этот параметр в базе равен 0
                     agentaddress = item.AgentAddress,
                     enable = item.Enable
                 });
@@ -69,7 +69,7 @@ namespace MetricsManager.Services
             //Dictionary<int, AgentInfoDto> agents = agentsq.ToDictionary(x => x.AgentId, x => x);
 
             Dictionary<int, AgentInfoDto> agents = connection.Query<AgentInfoDto>(
-                "SELECT * FROM agentsrepo").ToDictionary(x => x.AgentId, y => y);
+                "SELECT * FROM agentsrepo").ToDictionary(x => x.AgentId, y => y); // здесь соответственно возникает исключение если более одной записи, т.к. значения колонки id равны нулю
 
             return agents;
         }
