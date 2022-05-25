@@ -3,7 +3,7 @@ using MetricsAgent.Models.Interfaces;
 
 namespace MetricsAgent.Services.Interfaces
 {
-    public interface INetworkMetricsRepository : IRepository<IMetric>
+    public interface INetworkMetricsRepository : IRepository<NetworkMetric>
     {
     }
 }

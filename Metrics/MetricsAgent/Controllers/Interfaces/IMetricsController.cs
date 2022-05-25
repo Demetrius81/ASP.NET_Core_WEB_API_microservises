@@ -1,5 +1,4 @@
-﻿using MetricsAgent.Models.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace MetricsAgent.Controllers
@@ -7,26 +6,17 @@ namespace MetricsAgent.Controllers
     public interface IMetricsController
     {
         /// <summary>
-        /// Метод создает метрику и сохраняет ее в репозиторий
-        /// </summary>
-        /// <param name="requestData"></param>
-        /// <returns></returns>
-        IActionResult Create([FromBody] IMetricCreateRequest requestData);
-
-        /// <summary>
-        /// Метод возвращает все метрики из репозитория по запросу
+        /// Получить статистику по метрике за весь период
         /// </summary>
         /// <returns></returns>
         IActionResult GetAll();
 
         /// <summary>
-        /// Метод возвращает метрики из репозитория по запросу в заданном интервале времени
+        /// Получить статистику по метрике за период
         /// </summary>
-        /// <param name="fromTime"></param>
-        /// <param name="toTime"></param>
+        /// <param name="fromTime">Время начала периода</param>
+        /// <param name="toTime">Время окончания периода</param>
         /// <returns></returns>
         IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime);
-
-
     }
 }

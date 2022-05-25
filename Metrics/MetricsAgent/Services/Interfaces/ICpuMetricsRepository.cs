@@ -3,7 +3,7 @@ using MetricsAgent.Models.Interfaces;
 
 namespace MetricsAgent.Services.Interfaces
 {
-    public interface ICpuMetricsRepository : IRepository<IMetric>
+    public interface ICpuMetricsRepository : IRepository<CpuMetric>
     {
     }
 }

@@ -1,56 +1,101 @@
-﻿using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
+﻿using Dapper;
+using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Linq;
 
 namespace MetricsAgent.Services
 {
     public class NetworkMetricsRepository : INetworkMetricsRepository
     {
-        private const string _tabName = "networkmetrics";
+        private readonly IOptions<DatabaseOptions> _databaseOptions;
 
-        private MetricsRepoOperations _operation;
-
-        public NetworkMetricsRepository()
+        public NetworkMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
-            _operation = new MetricsRepoOperations(_tabName);
+            _databaseOptions = databaseOptions;
         }
 
-        public void Create(IMetric item)
+        public void Create(NetworkMetric item)
         {
-            _operation.CreateOperation(item);
+            DatabaseOptions databaseOptions = _databaseOptions.Value;
+
+            using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
+
+            connection.Execute(
+                "INSERT INTO networkmetrics(value, time) VALUES(@value, @time)",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time
+                });
         }
 
         public void Delete(int id)
         {
-            _operation.DeleteOperation(id);
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute(
+                "DELETE FROM networkmetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
-        public void Update(IMetric item)
+        public void Update(NetworkMetric item)
         {
-            _operation.UpdateOperation(item);
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute(
+                "UPDATE networkmetrics SET value = @value, time = @time WHERE id = @id",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time,
+                    id = item.Id
+                });
         }
 
-        public IList<IMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<NetworkMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
-            IMetric metric = new NetworkMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetByTimePeriodOperation(fromTime, toTime, metric);
+            List<NetworkMetric> metrics = connection.Query<NetworkMetric>(
+                "SELECT * FROM networkmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
+
+            return metrics;
         }
 
-        public IList<IMetric> GetAll()
+        public IList<NetworkMetric> GetAll()
         {
-            IMetric metric = new NetworkMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetAllOperation(metric);
+            List<NetworkMetric> metrics = connection.Query<NetworkMetric>(
+                "SELECT * FROM networkmetrics").ToList();
+
+            return metrics;
         }
 
-        public IMetric GetById(int id)
+        public NetworkMetric GetById(int id)
         {
-            IMetric metric = new NetworkMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetByIdOperation(id, metric);
+            NetworkMetric metric = connection.QuerySingle<NetworkMetric>(
+                "SELECT Id, Time, Value FROM networkmetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
+
+            return metric;
         }
     }
 }

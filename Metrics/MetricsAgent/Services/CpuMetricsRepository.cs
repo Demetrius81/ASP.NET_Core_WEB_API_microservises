@@ -1,56 +1,101 @@
-﻿using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
+﻿using Dapper;
+using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Linq;
 
 namespace MetricsAgent.Services
 {
     public class CpuMetricsRepository : ICpuMetricsRepository
     {
-        private const string _tabName = "cpumetrics";
+        private readonly IOptions<DatabaseOptions> _databaseOptions;
 
-        private MetricsRepoOperations _operation;
-
-        public CpuMetricsRepository()
+        public CpuMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
-            _operation = new MetricsRepoOperations(_tabName);
+            _databaseOptions = databaseOptions;
         }
 
-        public void Create(IMetric item)
+        public void Create(CpuMetric item)
         {
-            _operation.CreateOperation(item);
+            DatabaseOptions databaseOptions = _databaseOptions.Value;
+
+            using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
+
+            connection.Execute(
+                "INSERT INTO cpumetrics(value, time) VALUES(@value, @time)",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time
+                });
         }
 
         public void Delete(int id)
         {
-            _operation.DeleteOperation(id);
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute(
+                "DELETE FROM cpumetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
-        public void Update(IMetric item)
+        public void Update(CpuMetric item)
         {
-            _operation.UpdateOperation(item);
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute(
+                "UPDATE cpumetrics SET value = @value, time = @time WHERE id = @id",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time,
+                    id = item.Id
+                });
         }
 
-        public IList<IMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<CpuMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
-            IMetric metric = new CpuMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetByTimePeriodOperation(fromTime, toTime, metric);
+            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+                "SELECT * FROM cpumetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
+
+            return metrics;
         }
 
-        public IList<IMetric> GetAll()
+        public IList<CpuMetric> GetAll()
         {
-            IMetric metric = new CpuMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetAllOperation(metric);
+            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+                "SELECT * FROM cpumetrics").ToList();
+
+            return metrics;
         }
 
-        public IMetric GetById(int id)
+        public CpuMetric GetById(int id)
         {
-            IMetric metric = new CpuMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetByIdOperation(id, metric);
+            CpuMetric metric = connection.QuerySingle<CpuMetric>(
+                "SELECT Id, Time, Value FROM cpumetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
+
+            return metric;
         }
     }
 }

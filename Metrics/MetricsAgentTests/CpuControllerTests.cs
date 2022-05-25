@@ -1,5 +1,5 @@
 ﻿using MetricsAgent.Controllers;
-using MetricsAgent.Models.Interfaces;
+using MetricsAgent.Models;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +12,22 @@ namespace MetricsAgentTests
 {
     public class CpuControllerTests
     {
-        private Mock<IRamMetricsRepository> _mockMetricsRepository;
+        private Mock<ICpuMetricsRepository> _mockMetricsRepository;
         
-        private IMetricsController _controller;
+        private CpuMetricsController _controller;
 
         public CpuControllerTests()
         {
-            _mockMetricsRepository = new Mock<IRamMetricsRepository>();
+            _mockMetricsRepository = new Mock<ICpuMetricsRepository>();
 
-            _controller = new RamMetricsController(null, _mockMetricsRepository.Object);
+            _controller = new CpuMetricsController(_mockMetricsRepository.Object);
         }
 
         [Fact]
         public void  Create_SendRequest_ShouldReturnOk()
         {
             _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<IMetric>())).Verifiable();
+                repository.Create(It.IsAny<CpuMetric>())).Verifiable();
 
             IActionResult result = _controller.Create(new CpuMetricCreateRequest
             {
@@ -36,19 +36,33 @@ namespace MetricsAgentTests
             });
 
             _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<IMetric>()), Times.AtMostOnce());
+                repository.Create(It.IsAny<CpuMetric>()), Times.AtMostOnce());
         }
 
         [Fact]
         public void GetAll_SendRequest_ShouldReturnOk()
         {
-            
+            _mockMetricsRepository.Setup(repository =>
+                    repository.GetAll())
+                              .Returns(new List<CpuMetric>());
+
+            _controller.GetAll();
+
+            _mockMetricsRepository.Verify(repository =>
+                    repository.GetAll(), Times.AtMostOnce());
         }
 
         [Fact]
         public void GetMetrics_SendRequest_ShouldReturnOk()
         {
-            
+            _mockMetricsRepository.Setup(repository =>
+                    repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
+                              .Returns(new List<CpuMetric>());
+
+            _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
+
+            _mockMetricsRepository.Verify(repository =>
+                    repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()), Times.AtMostOnce());
         }
     }
 }

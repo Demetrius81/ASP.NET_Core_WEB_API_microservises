@@ -3,8 +3,11 @@ using System.Collections.Generic;
 
 namespace MetricsAgent.Models.Responses
 {
-    public class CpuAllMetricsResponse : IAllMetricsResponse
+    public class CpuAllMetricsResponse
     {
-        public List<IMetric> Metrics { get; set; }
+        /// <summary>
+        /// Коллекция метрик, сформированная для ответа контроллера
+        /// </summary>
+        public List<CpuMetricDto> Metrics { get; set; }
     }
 }

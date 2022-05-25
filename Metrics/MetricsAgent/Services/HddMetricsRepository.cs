@@ -1,56 +1,101 @@
-﻿using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
+﻿using Dapper;
+using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Linq;
 
 namespace MetricsAgent.Services
 {
     public class HddMetricsRepository : IHddMetricsRepository
     {
-        private const string _tabName = "hddmetrics";
+        private readonly IOptions<DatabaseOptions> _databaseOptions;
 
-        private MetricsRepoOperations _operation;
-
-        public HddMetricsRepository()
+        public HddMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
-            _operation = new MetricsRepoOperations(_tabName);
+            _databaseOptions = databaseOptions;
         }
 
-        public void Create(IMetric item)
+        public void Create(HddMetric item)
         {
-            _operation.CreateOperation(item);
+            DatabaseOptions databaseOptions = _databaseOptions.Value;
+
+            using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
+
+            connection.Execute(
+                "INSERT INTO hddmetrics(value, time) VALUES(@value, @time)",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time
+                });
         }
 
         public void Delete(int id)
         {
-            _operation.DeleteOperation(id);
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute(
+                "DELETE FROM hddmetrics WHERE id=@id",
+                new
+                {
+                    id = id
+                });
         }
 
-        public void Update(IMetric item)
+        public void Update(HddMetric item)
         {
-            _operation.UpdateOperation(item);
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute(
+                "UPDATE hddmetrics SET value = @value, time = @time WHERE id = @id",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time,
+                    id = item.Id
+                });
         }
 
-        public IList<IMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<HddMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
-            IMetric metric = new HddMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetByTimePeriodOperation(fromTime, toTime, metric);
+            List<HddMetric> metrics = connection.Query<HddMetric>(
+                "SELECT * FROM hddmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                }).ToList();
+
+            return metrics;
         }
 
-        public IList<IMetric> GetAll()
+        public IList<HddMetric> GetAll()
         {
-            IMetric metric = new HddMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetAllOperation(metric);
+            List<HddMetric> metrics = connection.Query<HddMetric>(
+                "SELECT * FROM hddmetrics").ToList();
+
+            return metrics;
         }
 
-        public IMetric GetById(int id)
+        public HddMetric GetById(int id)
         {
-            IMetric metric = new HddMetric();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return _operation.GetByIdOperation(id, metric);
+            HddMetric metric = connection.QuerySingle<HddMetric>(
+                "SELECT Id, Time, Value FROM hddmetrics WHERE id = @id",
+                new
+                {
+                    id = id
+                });
+
+            return metric;
         }
     }
 }

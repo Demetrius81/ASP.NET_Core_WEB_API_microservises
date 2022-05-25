@@ -1,6 +1,8 @@
-﻿namespace MetricsAgent.Models
+﻿using System;
+
+namespace MetricsAgent.Models
 {
-    public interface IMetric
+    public interface IMetricDto
     {
         /// <summary>
         /// Идентификатор метрики
@@ -8,9 +10,9 @@
         int Id { get; set; }
 
         /// <summary>
-        /// Время в секундах (тип данных double)
+        /// Время (тип данных TimeSpan)
         /// </summary>
-        double Time { get; set; }
+        TimeSpan Time { get; set; }
 
         /// <summary>
         /// Значение метрики
