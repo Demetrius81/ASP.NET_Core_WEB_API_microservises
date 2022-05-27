@@ -19,24 +19,42 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        [HttpGet("getNetworkMetricsFromAgent")]
+        [ProducesResponseType(typeof(NetworkAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+            [FromBody] NetworkMetricCreateRequest metricCreateRequest)
         {
             NetworkAllMetricsResponse networkAllMetricsResponse = _metricsAgentClient.GetNetworkAllMetrics(new NetworkMetricCreateRequest()
             {
-                AgentId = agentId,
-                FromTime = fromTime,
-                ToTime = toTime
+                AgentId = metricCreateRequest.AgentId,
+                FromTime = metricCreateRequest.FromTime,
+                ToTime = metricCreateRequest.ToTime
             });
             return Ok(networkAllMetricsResponse);
         }
 
-        [HttpGet("clister/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster(
-            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {           
-            return Ok();
-        }
+        #region GetMetricsFromAgent
+
+        //[HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAgent(
+        //    [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+        //    NetworkAllMetricsResponse networkAllMetricsResponse = _metricsAgentClient.GetNetworkAllMetrics(new NetworkMetricCreateRequest()
+        //    {
+        //        AgentId = agentId,
+        //        FromTime = fromTime,
+        //        ToTime = toTime
+        //    });
+        //    return Ok(networkAllMetricsResponse);
+        //}
+
+        //[HttpGet("clister/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAllCluster(
+        //    [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{           
+        //    return Ok();
+        //}
+
+        #endregion
     }
 }

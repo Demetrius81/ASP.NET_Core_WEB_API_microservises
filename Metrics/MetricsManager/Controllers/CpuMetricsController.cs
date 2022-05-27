@@ -25,25 +25,43 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        [HttpGet("getCpuMetricsFromAgent")]
+        [ProducesResponseType(typeof(CpuAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+            [FromBody] CpuMetricCreateRequest metricCreateRequest)
         {
             CpuAllMetricsResponse cpuAllMetricsResponse = _metricsAgentClient.GetCpuAllMetrics(new CpuMetricCreateRequest()
             {
-                AgentId = agentId,
-                FromTime = fromTime,
-                ToTime = toTime
+                AgentId = metricCreateRequest.AgentId,
+                FromTime = metricCreateRequest.FromTime,
+                ToTime = metricCreateRequest.ToTime
             });
             return Ok(cpuAllMetricsResponse);
         }
 
-        [HttpGet("clister/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster(
-            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            return Ok();
-        }
+        #region GetMetricsFromAgent&GetMetricsFromAllCluster
+
+        //[HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAgent(
+        //    [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+        //    CpuAllMetricsResponse cpuAllMetricsResponse = _metricsAgentClient.GetCpuAllMetrics(new CpuMetricCreateRequest()
+        //    {
+        //        AgentId = agentId,
+        //        FromTime = fromTime,
+        //        ToTime = toTime
+        //    });
+        //    return Ok(cpuAllMetricsResponse);
+        //}
+
+        //[HttpGet("clister/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAllCluster(
+        //    [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+        //    return Ok();
+        //}
+
+        #endregion
 
         #region Old
 

@@ -19,25 +19,43 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        [HttpGet("getHddMetricsFromAgent")]
+        [ProducesResponseType(typeof(HddAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+            [FromBody] HddMetricCreateRequest metricCreateRequest)
         {
             HddAllMetricsResponse hddAllMetricsResponse = _metricsAgentClient.GetHddAllMetrics(new HddMetricCreateRequest()
             {
-                AgentId = agentId,
-                FromTime = fromTime,
-                ToTime = toTime
+                AgentId = metricCreateRequest.AgentId,
+                FromTime = metricCreateRequest.FromTime,
+                ToTime = metricCreateRequest.ToTime
             });
             return Ok(hddAllMetricsResponse);
         }
 
-        [HttpGet("clister/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster(
-            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            
-            return Ok();
-        }
+        #region GetMetricsFromAgent
+
+        //[HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAgent(
+        //    [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+        //    HddAllMetricsResponse hddAllMetricsResponse = _metricsAgentClient.GetHddAllMetrics(new HddMetricCreateRequest()
+        //    {
+        //        AgentId = agentId,
+        //        FromTime = fromTime,
+        //        ToTime = toTime
+        //    });
+        //    return Ok(hddAllMetricsResponse);
+        //}
+
+        //[HttpGet("clister/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAllCluster(
+        //    [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+
+        //    return Ok();
+        //}
+
+        #endregion
     }
 }

@@ -98,6 +98,7 @@ namespace MetricsManager.Controllers
         /// <param name="agentId"></param>
         /// <returns></returns>
         [HttpPut("switch/{agentId}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         public IActionResult AgentSwitcById([FromRoute] int agentId)
         {
             Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
@@ -117,6 +118,7 @@ namespace MetricsManager.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("get")]
+        [ProducesResponseType(typeof(List<AgentInfo>), StatusCodes.Status200OK)]
         public IActionResult GetAllAgents()
         {
             List<AgentInfoDto> agents = _agentsPoolRepository.Get().Values.ToList();
@@ -127,7 +129,7 @@ namespace MetricsManager.Controllers
             {
                 result.Add(_mapper.Map<AgentInfo>(agent));
             }
-            return Ok(result.ToArray());
+            return Ok(result);
         } 
     }
 }
