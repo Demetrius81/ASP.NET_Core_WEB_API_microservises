@@ -15,7 +15,13 @@ namespace MetricsManager.Client
             Console.ReadKey();
         }
 
-        internal void AgentsMenuOutput()        
+        internal void PressAnyKey()
+        {
+            Console.WriteLine("Для продолжения нажмите любую клавишу...");
+            Console.ReadKey();
+        }
+
+        internal void AgentsMenuOutput()
         {
             Console.Clear();
             Console.WriteLine("Меню -> Операции с агентами");
@@ -34,7 +40,7 @@ namespace MetricsManager.Client
             Console.WriteLine($"Агент #{agent.AgentId}\tURL:{agent.AgentAddress.ToString()}\n{str}");
         }
 
-        internal void MetricsMenuOutput()        
+        internal void MetricsMenuOutput()
         {
             Console.Clear();
             Console.WriteLine("Меню -> Выбор агента -> Операции с метриками");
@@ -75,6 +81,80 @@ namespace MetricsManager.Client
             Console.WriteLine("==================================================");
             Console.Write("Введите номер задачи: ");
 
+        }
+
+        internal AgentInfo RequestToSelectAgent()
+        {
+            bool run = true;
+
+            Uri agentAddress = new Uri("");
+
+            int agentId = -1;
+
+            while (run)
+            {
+                Console.WriteLine("Введите ID агента: ");
+
+                if (int.TryParse(Console.ReadLine(), out agentId) && agentId > 0)
+                {
+                    run = false;
+                }
+                else
+                {
+                    Console.WriteLine("ID агента введен некорректно. Нажмите любую клавишу.");
+
+                    Console.ReadKey();
+                }
+            }
+
+            run = true;
+
+            while (run)
+            {
+                Console.WriteLine("Введите URL агента: ");
+
+                try
+                {
+                    run = false;
+
+                    agentAddress = new Uri(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("URL агента введен некорректно. Нажмите любую клавишу.");
+
+                    Console.ReadKey();
+
+                    run = true;
+                }
+            }
+
+            AgentInfo agent = new AgentInfo()
+            {
+                AgentAddress = agentAddress,
+                AgentId = agentId,
+                Enable = true
+            };
+
+            return agent;
+        }
+
+        internal void AgentsListOutput(List<AgentInfo> agents)
+        {
+            Console.Clear();
+
+            foreach (AgentInfo agent in agents)
+            {
+                AgentToConsole(agent);
+            }
+        }
+
+        internal void ShowCurrentAgent(AgentInfo agent)
+        {
+            if (agent is not null)
+            {
+                AgentToConsole(agent);
+            }
         }
     }
 }
