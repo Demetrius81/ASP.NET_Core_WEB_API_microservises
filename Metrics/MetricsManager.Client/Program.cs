@@ -7,22 +7,63 @@ namespace MetricsManager.Client
     {
         static void Main(string[] args)
         {
-            MetricsManagerClient metricsManagerClient = new MetricsManagerClient("https://localhost:44325",
+            MetricsManagerClient metricsManagerClient = new MetricsManagerClient(
+               "https://localhost:44325",
                new HttpClient());
+            UserInterface uI = new UserInterface();
 
+            // 1. подпрограмма работы с агентами
+            //      1. зарегестрировать агента
+            //      2. список агентов
+
+            // 2. запустить подпрограмму работы с метриками
+            //      1. выбрать агента
+            //      2. изменить статус агента
+            //      3. выбрать какие метрики вывести
+            //      4. выбрать все метрики
+
+
+
+
+            Core core = new Core(metricsManagerClient);
+
+            core.CoreMenuRunning();
+
+
+
+            Console.WriteLine("Агенты");
+            Console.WriteLine("==============================================");
             
+            Console.WriteLine("==============================================");
+            Console.Write("Введите номер задачи: ");
 
 
 
+
+            Console.WriteLine("Задачи");
+            Console.WriteLine("==============================================");
+            Console.WriteLine("1 - Выбрать агента");
+            Console.WriteLine("2 - Изменить статус агента");            
+            Console.WriteLine("0 - Выход в меню");
+            Console.WriteLine("==============================================");
+            Console.Write("Введите номер задачи: ");
+
+
+
+
+
+            Console.WriteLine("Задачи");
+            Console.WriteLine("==============================================");
+            Console.WriteLine("1 - Зарегестрировать агента");
+            Console.WriteLine("2 - Вывести список всех агентов");
+            Console.WriteLine("0 - Выход в меню");
+            Console.WriteLine("==============================================");
+            Console.Write("Введите номер задачи: ");
 
             while (true)
             {
-                Console.WriteLine("Задачи");
-                Console.WriteLine("==============================================");
-                Console.WriteLine("1 - Получить метрики за последнюю минуту (CPU)");
-                Console.WriteLine("0 - Завершение работы приложения");
-                Console.WriteLine("==============================================");
-                Console.Write("Введите номер задачи: ");
+                //uI.MetricsMenu();
+
                 if (int.TryParse(Console.ReadLine(), out int taskNumber))
                 {
                     switch (taskNumber)

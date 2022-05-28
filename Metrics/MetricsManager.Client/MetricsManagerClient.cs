@@ -48,6 +48,8 @@ namespace MetricsManager.Client
 
         partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings);
 
+        
+        // Не нашел, где посмотреть реализацию этих методов
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
@@ -422,390 +424,394 @@ namespace MetricsManager.Client
             }
         }
 
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CpuAllMetricsResponse> GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body)
-        {
-            return GetCpuMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
-        }
+        #region In MetricsManagerClientGets.cs
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CpuAllMetricsResponse> GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/cpu/getCpuMetricsFromAgent");
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual System.Threading.Tasks.Task<CpuAllMetricsResponse> GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body)
+        //{
+        //    return GetCpuMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
+        //}
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+        ///// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual async System.Threading.Tasks.Task<CpuAllMetricsResponse> GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        //{
+        //    var urlBuilder_ = new System.Text.StringBuilder();
+        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/cpu/getCpuMetricsFromAgent");
 
-                    PrepareRequest(client_, request_, urlBuilder_);
+        //    var client_ = _httpClient;
+        //    var disposeClient_ = false;
+        //    try
+        //    {
+        //        using (var request_ = new System.Net.Http.HttpRequestMessage())
+        //        {
+        //            var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+        //            content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+        //            request_.Content = content_;
+        //            request_.Method = new System.Net.Http.HttpMethod("GET");
+        //            request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+        //            PrepareRequest(client_, request_, urlBuilder_);
 
-                    PrepareRequest(client_, request_, url_);
+        //            var url_ = urlBuilder_.ToString();
+        //            request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
+        //            PrepareRequest(client_, request_, url_);
 
-                        ProcessResponse(client_, response_);
+        //            var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        //            var disposeResponse_ = true;
+        //            try
+        //            {
+        //                var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+        //                if (response_.Content != null && response_.Content.Headers != null)
+        //                {
+        //                    foreach (var item_ in response_.Content.Headers)
+        //                        headers_[item_.Key] = item_.Value;
+        //                }
 
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<CpuAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
+        //                ProcessResponse(client_, response_);
 
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DotNetAllMetricsResponse> GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body)
-        {
-            return GetDotNetMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
-        }
+        //                var status_ = (int)response_.StatusCode;
+        //                if (status_ == 200)
+        //                {
+        //                    var objectResponse_ = await ReadObjectResponseAsync<CpuAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+        //                    if (objectResponse_.Object == null)
+        //                    {
+        //                        throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+        //                    }
+        //                    return objectResponse_.Object;
+        //                }
+        //                else
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+        //                }
+        //            }
+        //            finally
+        //            {
+        //                if (disposeResponse_)
+        //                    response_.Dispose();
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (disposeClient_)
+        //            client_.Dispose();
+        //    }
+        //}
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DotNetAllMetricsResponse> GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/dotnet/getDotNetMetricsFromAgent");
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual System.Threading.Tasks.Task<DotNetAllMetricsResponse> GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body)
+        //{
+        //    return GetDotNetMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
+        //}
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+        ///// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual async System.Threading.Tasks.Task<DotNetAllMetricsResponse> GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        //{
+        //    var urlBuilder_ = new System.Text.StringBuilder();
+        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/dotnet/getDotNetMetricsFromAgent");
 
-                    PrepareRequest(client_, request_, urlBuilder_);
+        //    var client_ = _httpClient;
+        //    var disposeClient_ = false;
+        //    try
+        //    {
+        //        using (var request_ = new System.Net.Http.HttpRequestMessage())
+        //        {
+        //            var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+        //            content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+        //            request_.Content = content_;
+        //            request_.Method = new System.Net.Http.HttpMethod("GET");
+        //            request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+        //            PrepareRequest(client_, request_, urlBuilder_);
 
-                    PrepareRequest(client_, request_, url_);
+        //            var url_ = urlBuilder_.ToString();
+        //            request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
+        //            PrepareRequest(client_, request_, url_);
 
-                        ProcessResponse(client_, response_);
+        //            var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        //            var disposeResponse_ = true;
+        //            try
+        //            {
+        //                var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+        //                if (response_.Content != null && response_.Content.Headers != null)
+        //                {
+        //                    foreach (var item_ in response_.Content.Headers)
+        //                        headers_[item_.Key] = item_.Value;
+        //                }
 
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<DotNetAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
+        //                ProcessResponse(client_, response_);
 
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<HddAllMetricsResponse> GetHddMetricsFromAgentAsync(HddMetricCreateRequest body)
-        {
-            return GetHddMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
-        }
+        //                var status_ = (int)response_.StatusCode;
+        //                if (status_ == 200)
+        //                {
+        //                    var objectResponse_ = await ReadObjectResponseAsync<DotNetAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+        //                    if (objectResponse_.Object == null)
+        //                    {
+        //                        throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+        //                    }
+        //                    return objectResponse_.Object;
+        //                }
+        //                else
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+        //                }
+        //            }
+        //            finally
+        //            {
+        //                if (disposeResponse_)
+        //                    response_.Dispose();
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (disposeClient_)
+        //            client_.Dispose();
+        //    }
+        //}
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<HddAllMetricsResponse> GetHddMetricsFromAgentAsync(HddMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/hdd/getHddMetricsFromAgent");
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual System.Threading.Tasks.Task<HddAllMetricsResponse> GetHddMetricsFromAgentAsync(HddMetricCreateRequest body)
+        //{
+        //    return GetHddMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
+        //}
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+        ///// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual async System.Threading.Tasks.Task<HddAllMetricsResponse> GetHddMetricsFromAgentAsync(HddMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        //{
+        //    var urlBuilder_ = new System.Text.StringBuilder();
+        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/hdd/getHddMetricsFromAgent");
 
-                    PrepareRequest(client_, request_, urlBuilder_);
+        //    var client_ = _httpClient;
+        //    var disposeClient_ = false;
+        //    try
+        //    {
+        //        using (var request_ = new System.Net.Http.HttpRequestMessage())
+        //        {
+        //            var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+        //            content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+        //            request_.Content = content_;
+        //            request_.Method = new System.Net.Http.HttpMethod("GET");
+        //            request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+        //            PrepareRequest(client_, request_, urlBuilder_);
 
-                    PrepareRequest(client_, request_, url_);
+        //            var url_ = urlBuilder_.ToString();
+        //            request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
+        //            PrepareRequest(client_, request_, url_);
 
-                        ProcessResponse(client_, response_);
+        //            var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        //            var disposeResponse_ = true;
+        //            try
+        //            {
+        //                var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+        //                if (response_.Content != null && response_.Content.Headers != null)
+        //                {
+        //                    foreach (var item_ in response_.Content.Headers)
+        //                        headers_[item_.Key] = item_.Value;
+        //                }
 
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<HddAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
+        //                ProcessResponse(client_, response_);
 
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NetworkAllMetricsResponse> GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body)
-        {
-            return GetNetworkMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
-        }
+        //                var status_ = (int)response_.StatusCode;
+        //                if (status_ == 200)
+        //                {
+        //                    var objectResponse_ = await ReadObjectResponseAsync<HddAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+        //                    if (objectResponse_.Object == null)
+        //                    {
+        //                        throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+        //                    }
+        //                    return objectResponse_.Object;
+        //                }
+        //                else
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+        //                }
+        //            }
+        //            finally
+        //            {
+        //                if (disposeResponse_)
+        //                    response_.Dispose();
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (disposeClient_)
+        //            client_.Dispose();
+        //    }
+        //}
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NetworkAllMetricsResponse> GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/network/getNetworkMetricsFromAgent");
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual System.Threading.Tasks.Task<NetworkAllMetricsResponse> GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body)
+        //{
+        //    return GetNetworkMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
+        //}
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+        ///// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual async System.Threading.Tasks.Task<NetworkAllMetricsResponse> GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        //{
+        //    var urlBuilder_ = new System.Text.StringBuilder();
+        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/network/getNetworkMetricsFromAgent");
 
-                    PrepareRequest(client_, request_, urlBuilder_);
+        //    var client_ = _httpClient;
+        //    var disposeClient_ = false;
+        //    try
+        //    {
+        //        using (var request_ = new System.Net.Http.HttpRequestMessage())
+        //        {
+        //            var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+        //            content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+        //            request_.Content = content_;
+        //            request_.Method = new System.Net.Http.HttpMethod("GET");
+        //            request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+        //            PrepareRequest(client_, request_, urlBuilder_);
 
-                    PrepareRequest(client_, request_, url_);
+        //            var url_ = urlBuilder_.ToString();
+        //            request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
+        //            PrepareRequest(client_, request_, url_);
 
-                        ProcessResponse(client_, response_);
+        //            var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        //            var disposeResponse_ = true;
+        //            try
+        //            {
+        //                var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+        //                if (response_.Content != null && response_.Content.Headers != null)
+        //                {
+        //                    foreach (var item_ in response_.Content.Headers)
+        //                        headers_[item_.Key] = item_.Value;
+        //                }
 
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<NetworkAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
+        //                ProcessResponse(client_, response_);
 
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<RamAllMetricsResponse> GetRamMetricsFromAgentAsync(RamMetricCreateRequest body)
-        {
-            return GetRamMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
-        }
+        //                var status_ = (int)response_.StatusCode;
+        //                if (status_ == 200)
+        //                {
+        //                    var objectResponse_ = await ReadObjectResponseAsync<NetworkAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+        //                    if (objectResponse_.Object == null)
+        //                    {
+        //                        throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+        //                    }
+        //                    return objectResponse_.Object;
+        //                }
+        //                else
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+        //                }
+        //            }
+        //            finally
+        //            {
+        //                if (disposeResponse_)
+        //                    response_.Dispose();
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (disposeClient_)
+        //            client_.Dispose();
+        //    }
+        //}
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<RamAllMetricsResponse> GetRamMetricsFromAgentAsync(RamMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ram/getRamMetricsFromAgent");
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual System.Threading.Tasks.Task<RamAllMetricsResponse> GetRamMetricsFromAgentAsync(RamMetricCreateRequest body)
+        //{
+        //    return GetRamMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
+        //}
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+        ///// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        ///// <returns>Success</returns>
+        ///// <exception cref="ApiException">A server side error occurred.</exception>
+        //public virtual async System.Threading.Tasks.Task<RamAllMetricsResponse> GetRamMetricsFromAgentAsync(RamMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        //{
+        //    var urlBuilder_ = new System.Text.StringBuilder();
+        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ram/getRamMetricsFromAgent");
 
-                    PrepareRequest(client_, request_, urlBuilder_);
+        //    var client_ = _httpClient;
+        //    var disposeClient_ = false;
+        //    try
+        //    {
+        //        using (var request_ = new System.Net.Http.HttpRequestMessage())
+        //        {
+        //            var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+        //            content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+        //            request_.Content = content_;
+        //            request_.Method = new System.Net.Http.HttpMethod("GET");
+        //            request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+        //            PrepareRequest(client_, request_, urlBuilder_);
 
-                    PrepareRequest(client_, request_, url_);
+        //            var url_ = urlBuilder_.ToString();
+        //            request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
+        //            PrepareRequest(client_, request_, url_);
 
-                        ProcessResponse(client_, response_);
+        //            var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        //            var disposeResponse_ = true;
+        //            try
+        //            {
+        //                var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+        //                if (response_.Content != null && response_.Content.Headers != null)
+        //                {
+        //                    foreach (var item_ in response_.Content.Headers)
+        //                        headers_[item_.Key] = item_.Value;
+        //                }
 
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<RamAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
+        //                ProcessResponse(client_, response_);
+
+        //                var status_ = (int)response_.StatusCode;
+        //                if (status_ == 200)
+        //                {
+        //                    var objectResponse_ = await ReadObjectResponseAsync<RamAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+        //                    if (objectResponse_.Object == null)
+        //                    {
+        //                        throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+        //                    }
+        //                    return objectResponse_.Object;
+        //                }
+        //                else
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+        //                }
+        //            }
+        //            finally
+        //            {
+        //                if (disposeResponse_)
+        //                    response_.Dispose();
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (disposeClient_)
+        //            client_.Dispose();
+        //    }
+        //}
+
+        #endregion
 
         protected struct ObjectResponseResult<T>
         {
@@ -910,258 +916,262 @@ namespace MetricsManager.Client
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class AgentInfo
-    {
-        [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentId { get; set; }
+    #region In MetricsManagerClientModels.cs
 
-        [Newtonsoft.Json.JsonProperty("agentAddress", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri AgentAddress { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class AgentInfo
+    //{
+    //    [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("enable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool Enable { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("agentAddress", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public System.Uri AgentAddress { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("enable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public bool Enable { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class CpuAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<CpuMetric> Metrics { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class CpuAllMetricsResponse
+    //{
+    //    [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public System.Collections.Generic.ICollection<CpuMetric> Metrics { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentID { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class CpuMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class CpuMetric
+    //{
+    //    [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Id { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Value { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string Time { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class CpuMetricCreateRequest
-    {
-        [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentId { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string FromTime { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class CpuMetricCreateRequest
+    //{
+    //    [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ToTime { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string FromTime { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string ToTime { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class DotNetAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<DotNetMetric> Metrics { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class DotNetAllMetricsResponse
+    //{
+    //    [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public System.Collections.Generic.ICollection<DotNetMetric> Metrics { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentID { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class DotNetMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class DotNetMetric
+    //{
+    //    [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Id { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Value { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string Time { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class DotNetMetricCreateRequest
-    {
-        [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentId { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string FromTime { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class DotNetMetricCreateRequest
+    //{
+    //    [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ToTime { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string FromTime { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string ToTime { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class HddAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<HddMetric> Metrics { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class HddAllMetricsResponse
+    //{
+    //    [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public System.Collections.Generic.ICollection<HddMetric> Metrics { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentID { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class HddMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class HddMetric
+    //{
+    //    [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Id { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Value { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string Time { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class HddMetricCreateRequest
-    {
-        [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentId { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string FromTime { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class HddMetricCreateRequest
+    //{
+    //    [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ToTime { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string FromTime { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string ToTime { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class NetworkAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<NetworkMetric> Metrics { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class NetworkAllMetricsResponse
+    //{
+    //    [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public System.Collections.Generic.ICollection<NetworkMetric> Metrics { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentID { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class NetworkMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class NetworkMetric
+    //{
+    //    [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Id { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Value { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string Time { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class NetworkMetricCreateRequest
-    {
-        [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentId { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string FromTime { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class NetworkMetricCreateRequest
+    //{
+    //    [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ToTime { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string FromTime { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string ToTime { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class RamAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<RamMetric> Metrics { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class RamAllMetricsResponse
+    //{
+    //    [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public System.Collections.Generic.ICollection<RamMetric> Metrics { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentID { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class RamMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class RamMetric
+    //{
+    //    [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Id { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int Value { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string Time { get; set; }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class RamMetricCreateRequest
-    {
-        [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentId { get; set; }
+    //}
 
-        [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string FromTime { get; set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class RamMetricCreateRequest
+    //{
+    //    [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public int AgentId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ToTime { get; set; }
+    //    [Newtonsoft.Json.JsonProperty("fromTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string FromTime { get; set; }
 
-    }
+    //    [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    //    public string ToTime { get; set; }
 
+    //}
 
 
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class ApiException : System.Exception
-    {
-        public int StatusCode { get; private set; }
 
-        public string Response { get; private set; }
+    //[System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class ApiException : System.Exception
+    //{
+    //    public int StatusCode { get; private set; }
 
-        public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
+    //    public string Response { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
-            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
-        {
-            StatusCode = statusCode;
-            Response = response;
-            Headers = headers;
-        }
+    //    public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public override string ToString()
-        {
-            return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
-        }
-    }
+    //    public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
+    //        : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
+    //    {
+    //        StatusCode = statusCode;
+    //        Response = response;
+    //        Headers = headers;
+    //    }
 
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class ApiException<TResult> : ApiException
-    {
-        public TResult Result { get; private set; }
+    //    public override string ToString()
+    //    {
+    //        return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
+    //    }
+    //}
 
-        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
-            : base(message, statusCode, response, headers, innerException)
-        {
-            Result = result;
-        }
-    }
+    //[System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
+    //public partial class ApiException<TResult> : ApiException
+    //{
+    //    public TResult Result { get; private set; }
+
+    //    public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
+    //        : base(message, statusCode, response, headers, innerException)
+    //    {
+    //        Result = result;
+    //    }
+    //}
+
+    #endregion
 
 }
 
 #pragma warning restore 1591
 #pragma warning restore 1573
-#pragma warning restore  472
-#pragma warning restore  114
-#pragma warning restore  108
+#pragma warning restore 472
+#pragma warning restore 114
+#pragma warning restore 108
 #pragma warning restore 3016
 #pragma warning restore 8603

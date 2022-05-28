@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MetricsAgent.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Source.Models;
@@ -98,6 +99,7 @@ namespace MetricsAgent.Controllers
 
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
+        //[ProducesResponseType(typeof(CpuAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             IList<CpuMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);

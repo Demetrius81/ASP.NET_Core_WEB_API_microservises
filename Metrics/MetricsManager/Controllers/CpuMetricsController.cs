@@ -30,12 +30,8 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsFromAgent(
             [FromBody] CpuMetricCreateRequest metricCreateRequest)
         {
-            CpuAllMetricsResponse cpuAllMetricsResponse = _metricsAgentClient.GetCpuAllMetrics(new CpuMetricCreateRequest()
-            {
-                AgentId = metricCreateRequest.AgentId,
-                FromTime = metricCreateRequest.FromTime,
-                ToTime = metricCreateRequest.ToTime
-            });
+            CpuAllMetricsResponse cpuAllMetricsResponse = _metricsAgentClient.GetCpuAllMetrics(metricCreateRequest);
+
             return Ok(cpuAllMetricsResponse);
         }
 
