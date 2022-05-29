@@ -60,8 +60,7 @@ namespace MetricsManager.Client
 
             while (run)
             {
-                _uI.ShowCurrentAgent(_currentAgent);
-                _uI.MenuOutput();
+                _uI.MenuOutput(_currentAgent);
 
                 if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
@@ -108,9 +107,8 @@ namespace MetricsManager.Client
             bool run = true;
 
             while (run)
-            {
-                _uI.ShowCurrentAgent(_currentAgent);
-                _uI.AgentsMenuOutput();
+            {                
+                _uI.AgentsMenuOutput(_currentAgent);
 
                 if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
@@ -142,6 +140,9 @@ namespace MetricsManager.Client
                 case 2:
                     {                        
                         _uI.AgentsListOutput(_agentInfos);
+
+                        _uI.PressAnyKey();
+
                         break;
                     }
                 default:
@@ -157,8 +158,7 @@ namespace MetricsManager.Client
 
             while (run)
             {
-                _uI.ShowCurrentAgent(_currentAgent);
-                _uI.AgentChoiceMenuOutput();
+                _uI.AgentChoiceMenuOutput(_currentAgent);
 
                 if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
@@ -210,8 +210,7 @@ namespace MetricsManager.Client
 
             while (run)
             {
-                _uI.ShowCurrentAgent(_currentAgent);
-                _uI.MetricsMenuOutput();
+                _uI.MetricsMenuOutput(_currentAgent);
 
                 if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
@@ -232,46 +231,46 @@ namespace MetricsManager.Client
                     return false;
                 case 1:
                     {
-                        _logic.ShowCpuMetrics(_metricsManagerClient);
+                        _logic.ShowCpuMetrics(_metricsManagerClient, _currentAgent, _uI);
                         _uI.PressAnyKey();
                         break;
                     }
                 case 2:
                     {
-                        _logic.ShowDotNetMetrics(_metricsManagerClient);
+                        _logic.ShowDotNetMetrics(_metricsManagerClient, _currentAgent, _uI);
                         _uI.PressAnyKey();
                         break;
                     }
                 case 3:
                     {
-                        _logic.ShowHddMetrics(_metricsManagerClient);
+                        _logic.ShowHddMetrics(_metricsManagerClient, _currentAgent, _uI);
                         _uI.PressAnyKey();
                         break;
                     }
                 case 4:
                     {
-                        _logic.ShowNetworkMetrics(_metricsManagerClient);
+                        _logic.ShowNetworkMetrics(_metricsManagerClient, _currentAgent, _uI);
                         _uI.PressAnyKey();
                         break;
                     }
                 case 5:
                     {
-                        _logic.ShowRamMetrics(_metricsManagerClient);
+                        _logic.ShowRamMetrics(_metricsManagerClient, _currentAgent, _uI);
                         _uI.PressAnyKey();
                         break;
                     }
                 case 6:
                     {
                         Console.WriteLine("Cpu метрики:");
-                        _logic.ShowCpuMetrics(_metricsManagerClient);
+                        _logic.ShowCpuMetrics(_metricsManagerClient, _currentAgent, _uI);
                         Console.WriteLine("DotNet метрики:");
-                        _logic.ShowDotNetMetrics(_metricsManagerClient);
+                        _logic.ShowDotNetMetrics(_metricsManagerClient, _currentAgent, _uI);
                         Console.WriteLine("Hdd метрики:");
-                        _logic.ShowHddMetrics(_metricsManagerClient);
+                        _logic.ShowHddMetrics(_metricsManagerClient, _currentAgent, _uI);
                         Console.WriteLine("Network метрики:");
-                        _logic.ShowNetworkMetrics(_metricsManagerClient);
+                        _logic.ShowNetworkMetrics(_metricsManagerClient, _currentAgent, _uI);
                         Console.WriteLine("Ram метрики:");
-                        _logic.ShowRamMetrics(_metricsManagerClient);
+                        _logic.ShowRamMetrics(_metricsManagerClient, _currentAgent, _uI);
                         _uI.PressAnyKey();
                         break;
                     }
@@ -280,7 +279,7 @@ namespace MetricsManager.Client
             }
             return true;
         }
-
+         
         private void SelectAgent()
         {
             _uI.AgentsListOutput(_agentInfos);
@@ -293,17 +292,29 @@ namespace MetricsManager.Client
             {
                 Console.WriteLine("Введите ID агента из списка: ");
 
-                if (int.TryParse(Console.ReadLine(), out agentId) && agentId > 0))
+                if (int.TryParse(Console.ReadLine(), out agentId) && agentId >= 0)
                 {
+                    foreach (AgentInfo agent in _agentInfos)
+                    {
+                        if(agent.AgentId == agentId)
+                        {
+                            _currentAgent = agent;
+
+                            return;
+                        }                        
+                    }
+                    Console.WriteLine($"Агента с идентификатором {agentId} нет среди зарегестрированных агентов." +
+                                $"\nВведите другой идентификатор или зарегестрируйте нового агента.");
+
+                    _uI.PressAnyKey();
+
                     run = false;
-
-
                 }
                 else
                 {
-                    Console.WriteLine("ID агента введен некорректно. Нажмите любую клавишу.");
+                    Console.WriteLine("ID агента введен некорректно.");
 
-                    Console.ReadKey();
+                    _uI.PressAnyKey();
                 }
             }
         }

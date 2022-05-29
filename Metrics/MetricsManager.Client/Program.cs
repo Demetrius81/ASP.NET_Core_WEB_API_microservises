@@ -7,11 +7,9 @@ namespace MetricsManager.Client
     {
         static void Main(string[] args)
         {
+            Core core = new Core();
 
-
-            Logic logic = new Logic();
-
-            logic.ShowMetrics();
+            core.CoreMenuRunning();            
         }
     }
 }

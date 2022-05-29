@@ -9,45 +9,54 @@ namespace MetricsManager.Client
 {
     internal class Logic
     {        
-        private TimeSpan GetFromTime(ref TimeSpan toTime) => toTime - TimeSpan.FromSeconds(60);
-
-        private TimeSpan GetToTime() => TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-
-        internal void ShowCpuMetrics(MetricsManagerClient metricsManagerClient)
+        private TimeSpan GetTimePeriod(out TimeSpan toTime)
         {
-            TimeSpan toTime = GetToTime(); // new
+            toTime = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            TimeSpan fromTime = GetFromTime(ref toTime);
-
-            CpuMetricCreateRequest metricsRequest = new CpuMetricCreateRequest()
-            {
-                AgentId = 0,
-                FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
-                ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
-            };
-
-            try
-            {
-                CpuAllMetricsResponse metricsResponse =
-                metricsManagerClient.GetCpuMetricsFromAgentAsync(metricsRequest).Result;
-
-                OutputCpuMetrics(metricsResponse);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Произошла ошибка при попытке получить CPU метрики.\n{ex.Message}");
-            }
+             return (toTime - TimeSpan.FromSeconds(60));
         }
 
-        internal void ShowDotNetMetrics(MetricsManagerClient metricsManagerClient)
-        {
-            TimeSpan toTime = GetToTime(); // new
 
-            TimeSpan fromTime = GetFromTime(ref toTime);
+               
+        internal void ShowCpuMetrics(MetricsManagerClient metricsManagerClient, AgentInfo agent, UserInterface uI)
+        {
+            if (agent.Enable)
+            {
+                TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
+
+                CpuMetricCreateRequest metricsRequest = new CpuMetricCreateRequest()
+                {
+                    AgentId = agent.AgentId,
+                    FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
+                    ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
+                };
+
+                try
+                {
+                    CpuAllMetricsResponse metricsResponse =
+                    metricsManagerClient.GetCpuMetricsFromAgentAsync(metricsRequest).Result;
+
+                    OutputCpuMetrics(metricsResponse);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Произошла ошибка при попытке получить CPU метрики.\n{ex.Message}");
+                }
+            }
+            else
+            {
+                uI.AgentIsSleepOutput(agent);
+            }
+
+        }
+
+        internal void ShowDotNetMetrics(MetricsManagerClient metricsManagerClient, AgentInfo agent, UserInterface uI)
+        {
+            TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
             DotNetMetricCreateRequest MetricsRequest = new DotNetMetricCreateRequest()
             {
-                AgentId = 0,
+                AgentId = agent.AgentId,
                 FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
                 ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
             };
@@ -65,15 +74,13 @@ namespace MetricsManager.Client
             }
         }
 
-        internal void ShowHddMetrics(MetricsManagerClient metricsManagerClient)
+        internal void ShowHddMetrics(MetricsManagerClient metricsManagerClient, AgentInfo agent, UserInterface uI)
         {
-            TimeSpan toTime = GetToTime(); // new
-
-            TimeSpan fromTime = GetFromTime(ref toTime);
+            TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
             HddMetricCreateRequest metricsRequest = new HddMetricCreateRequest()
             {
-                AgentId = 0,
+                AgentId = agent.AgentId,
                 FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
                 ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
             };
@@ -91,15 +98,13 @@ namespace MetricsManager.Client
             }
         }
 
-        internal void ShowNetworkMetrics(MetricsManagerClient metricsManagerClient)
+        internal void ShowNetworkMetrics(MetricsManagerClient metricsManagerClient, AgentInfo agent, UserInterface uI)
         {
-            TimeSpan toTime = GetToTime(); // new
-
-            TimeSpan fromTime = GetFromTime(ref toTime);
+            TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
             NetworkMetricCreateRequest metricsRequest = new NetworkMetricCreateRequest()
             {
-                AgentId = 0,
+                AgentId = agent.AgentId,
                 FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
                 ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
             };
@@ -117,15 +122,13 @@ namespace MetricsManager.Client
             }
         }
 
-        internal void ShowRamMetrics(MetricsManagerClient metricsManagerClient)
+        internal void ShowRamMetrics(MetricsManagerClient metricsManagerClient, AgentInfo agent, UserInterface uI)
         {
-            TimeSpan toTime = GetToTime(); // new
-
-            TimeSpan fromTime = GetFromTime(ref toTime);
+            TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
             RamMetricCreateRequest metricsRequest = new RamMetricCreateRequest()
             {
-                AgentId = 0,
+                AgentId = agent.AgentId,
                 FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
                 ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
             };
@@ -149,9 +152,7 @@ namespace MetricsManager.Client
             {
                 Console.WriteLine(
                     $"{TimeSpan.Parse(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} > {metric.Value}");
-            }
-            Console.ReadKey(true);
-            Console.Clear();
+            }            
         }
 
         private void OutputRamMetrics(RamAllMetricsResponse metricsResponse)
@@ -160,9 +161,7 @@ namespace MetricsManager.Client
             {
                 Console.WriteLine(
                     $"{TimeSpan.Parse(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} > {metric.Value}");
-            }
-            Console.ReadKey(true);
-            Console.Clear();
+            }            
         }
 
         private void OutputHddMetrics(HddAllMetricsResponse metricsResponse)
@@ -171,9 +170,7 @@ namespace MetricsManager.Client
             {
                 Console.WriteLine(
                     $"{TimeSpan.Parse(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} > {metric.Value}");
-            }
-            Console.ReadKey(true);
-            Console.Clear();
+            }            
         }
 
         private void OutputDotNetMetrics(DotNetAllMetricsResponse metricsResponse)
@@ -182,9 +179,7 @@ namespace MetricsManager.Client
             {
                 Console.WriteLine(
                     $"{TimeSpan.Parse(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} > {metric.Value}");
-            }
-            Console.ReadKey(true);
-            Console.Clear();
+            }            
         }
 
         private void OutputNetworkMetrics(NetworkAllMetricsResponse metricsResponse)
@@ -193,9 +188,7 @@ namespace MetricsManager.Client
             {
                 Console.WriteLine(
                     $"{TimeSpan.Parse(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} > {metric.Value}");
-            }
-            Console.ReadKey(true);
-            Console.Clear();
+            }           
         }
 
 

@@ -18,12 +18,13 @@ namespace MetricsManager.Client
         internal void PressAnyKey()
         {
             Console.WriteLine("Для продолжения нажмите любую клавишу...");
-            Console.ReadKey();
+            Console.ReadKey(true);
         }
 
-        internal void AgentsMenuOutput()
+        internal void AgentsMenuOutput(AgentInfo agent)
         {
             Console.Clear();
+            ShowCurrentAgent(agent);
             Console.WriteLine("Меню -> Операции с агентами");
             Console.WriteLine("==============================================");
             Console.WriteLine("1 - Зарегестрировать агента");
@@ -40,9 +41,10 @@ namespace MetricsManager.Client
             Console.WriteLine($"Агент #{agent.AgentId}\tURL:{agent.AgentAddress.ToString()}\n{str}");
         }
 
-        internal void MetricsMenuOutput()
+        internal void MetricsMenuOutput(AgentInfo agent)
         {
             Console.Clear();
+            ShowCurrentAgent(agent);
             Console.WriteLine("Меню -> Выбор агента -> Операции с метриками");
             Console.WriteLine("==================================================");
             Console.WriteLine("1 - Получить метрики за последнюю минуту (CPU)");
@@ -56,9 +58,10 @@ namespace MetricsManager.Client
             Console.Write("Введите номер задачи: ");
         }
 
-        internal void AgentChoiceMenuOutput()
+        internal void AgentChoiceMenuOutput(AgentInfo agent)
         {
             Console.Clear();
+            ShowCurrentAgent(agent);
             Console.WriteLine("Меню -> Выбор агента");
             Console.WriteLine("==================================================");
             Console.WriteLine("1 - Выбрать агента");
@@ -70,9 +73,17 @@ namespace MetricsManager.Client
 
         }
 
-        internal void MenuOutput()
+        internal void AgentIsSleepOutput(AgentInfo agent)
+        {
+            Console.WriteLine("Невозможно вывести данные метрик от этого агента.");
+
+            AgentToConsole(agent);
+        }
+
+        internal void MenuOutput(AgentInfo agent)
         {
             Console.Clear();
+            ShowCurrentAgent(agent);
             Console.WriteLine("Меню");
             Console.WriteLine("==================================================");
             Console.WriteLine("1 - Операции с агентами");
