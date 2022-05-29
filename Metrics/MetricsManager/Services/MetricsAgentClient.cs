@@ -119,7 +119,7 @@ namespace MetricsManager.Services
                 }
                 AgentInfo agentInfo = agent as AgentInfo;
 
-                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/errors-count/from/" +
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/dotnet/errors-count/from/" +
                     $"{dotNetMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
                     $"{dotNetMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
 
@@ -165,7 +165,7 @@ namespace MetricsManager.Services
                 }
                 AgentInfo agentInfo = agent as AgentInfo;
 
-                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/left/from/" +
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/hdd/left/from/" +
                     $"{HddMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
                     $"{HddMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
 
@@ -255,7 +255,7 @@ namespace MetricsManager.Services
                 }
                 AgentInfo agentInfo = agent as AgentInfo;
 
-                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/available/from/" +
+                string requestQuery = $"{agentInfo.AgentAddress}api/metrics/ram/available/from/" +
                     $"{ramMetricRequest.FromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/" +
                     $"{ramMetricRequest.ToTime.ToString("dd\\.hh\\:mm\\:ss")}";
 
