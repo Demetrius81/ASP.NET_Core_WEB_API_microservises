@@ -19,17 +19,13 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("getHddMetricsFromAgent")]
+        [HttpPost("getHddMetricsFromAgent")]
         [ProducesResponseType(typeof(HddAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
             [FromBody] HddMetricCreateRequest metricCreateRequest)
         {
-            HddAllMetricsResponse hddAllMetricsResponse = _metricsAgentClient.GetHddAllMetrics(new HddMetricCreateRequest()
-            {
-                AgentId = metricCreateRequest.AgentId,
-                FromTime = metricCreateRequest.FromTime,
-                ToTime = metricCreateRequest.ToTime
-            });
+            HddAllMetricsResponse hddAllMetricsResponse = _metricsAgentClient.GetHddAllMetrics(metricCreateRequest);
+
             return Ok(hddAllMetricsResponse);
         }
 

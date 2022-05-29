@@ -19,17 +19,13 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("getRamMetricsFromAgent")]
+        [HttpPost("getRamMetricsFromAgent")]
         [ProducesResponseType(typeof(RamAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
             [FromBody] RamMetricCreateRequest metricCreateRequest)
         {
-            RamAllMetricsResponse ramAllMetricsResponse = _metricsAgentClient.GetRamAllMetrics(new RamMetricCreateRequest()
-            {
-                AgentId = metricCreateRequest.AgentId,
-                FromTime = metricCreateRequest.FromTime,
-                ToTime = metricCreateRequest.ToTime
-            });
+            RamAllMetricsResponse ramAllMetricsResponse = _metricsAgentClient.GetRamAllMetrics(metricCreateRequest);
+
             return Ok(ramAllMetricsResponse);
         }
 

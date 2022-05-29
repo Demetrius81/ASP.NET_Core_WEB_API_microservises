@@ -25,7 +25,7 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("getCpuMetricsFromAgent")]
+        [HttpPost("getCpuMetricsFromAgent")]
         [ProducesResponseType(typeof(CpuAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
             [FromBody] CpuMetricCreateRequest metricCreateRequest)

@@ -12,7 +12,7 @@ namespace MetricsManager.Client
         {
             Console.WriteLine();
             Console.WriteLine("Вы ввели некорректную команду.\nЧтобы продолжить нажмите любую клавишу.");
-            Console.ReadKey();
+            Console.ReadKey(true);
         }
 
         internal void PressAnyKey()
@@ -65,8 +65,9 @@ namespace MetricsManager.Client
             Console.WriteLine("Меню -> Выбор агента");
             Console.WriteLine("==================================================");
             Console.WriteLine("1 - Выбрать агента");
-            Console.WriteLine("2 - Изменить статус агента");
-            Console.WriteLine("3 - Просмотреть метрики с агента");
+            Console.WriteLine("2 - Включить агента");
+            Console.WriteLine("3 - Выключить агента");
+            Console.WriteLine("4 - Просмотреть метрики с агента");
             Console.WriteLine("0 - Выход в меню");
             Console.WriteLine("==================================================");
             Console.Write("Введите номер задачи: ");
@@ -98,7 +99,7 @@ namespace MetricsManager.Client
         {
             bool run = true;
 
-            Uri agentAddress = new Uri("");
+            Uri agentAddress = default;
 
             int agentId = -1;
 

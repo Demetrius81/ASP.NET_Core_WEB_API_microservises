@@ -17,7 +17,7 @@ namespace MetricsManager.Migrations
         {
            
                 Create.Table("agentsrepo")
-                    .WithColumn("id").AsInt32()   // здесь просто колонка, без первичного ключа и требований к уникальности. Хотел сделать первичный ключ и автоинкремент, но все значения = 0 
+                    .WithColumn("agentid").AsInt32().PrimaryKey()   // здесь просто колонка, без первичного ключа и требований к уникальности. Хотел сделать первичный ключ и автоинкремент, но все значения = 0 
                     .WithColumn("agentaddress").AsString()
                     .WithColumn("enable").AsBoolean();
             

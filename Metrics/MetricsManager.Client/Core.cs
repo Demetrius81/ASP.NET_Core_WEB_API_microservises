@@ -29,29 +29,30 @@ namespace MetricsManager.Client
 
             _logic = new Logic();
 
-            //_agentInfos = _metricsManagerClient.GetAsync().Result.ToList();
+            _agentInfos = _metricsManagerClient.GetAsync().Result.ToList<AgentInfo>();
 
-            _agentInfos = new List<AgentInfo>()
-            {
-                new AgentInfo()
-                {
-                    AgentId = 0,
-                    AgentAddress = new Uri("https://localhost:44325"),
-                    Enable = true
-                },
-                new AgentInfo()
-                {
-                    AgentId = 1,
-                    AgentAddress = new Uri("https://localhost:44339"),
-                    Enable = true
-                },
-                new AgentInfo()
-                {
-                    AgentId = 2,
-                    AgentAddress = new Uri("https://localhost:44335"),
-                    Enable = true
-                }
-            };
+
+            //_agentInfos = new List<AgentInfo>()
+            //{
+            //    new AgentInfo()
+            //    {
+            //        AgentId = 0,
+            //        AgentAddress = new Uri("https://localhost:44325"),
+            //        Enable = true
+            //    },
+            //    new AgentInfo()
+            //    {
+            //        AgentId = 1,
+            //        AgentAddress = new Uri("https://localhost:44339"),
+            //        Enable = true
+            //    },
+            //    new AgentInfo()
+            //    {
+            //        AgentId = 2,
+            //        AgentAddress = new Uri("https://localhost:44335"),
+            //        Enable = true
+            //    }
+            //};
         }
 
         internal void CoreMenuRunning()
@@ -107,7 +108,7 @@ namespace MetricsManager.Client
             bool run = true;
 
             while (run)
-            {                
+            {
                 _uI.AgentsMenuOutput(_currentAgent);
 
                 if (int.TryParse(Console.ReadLine(), out int userChoice))
@@ -133,12 +134,13 @@ namespace MetricsManager.Client
                 case 0:
                     return false;
                 case 1:
-                    {                        
+                    {
                         _metricsManagerClient.RegisterAsync(_uI.RequestToSelectAgent());
+
                         break;
                     }
                 case 2:
-                    {                        
+                    {
                         _uI.AgentsListOutput(_agentInfos);
 
                         _uI.PressAnyKey();
@@ -190,10 +192,21 @@ namespace MetricsManager.Client
                     }
                 case 2:
                     {
-                        _metricsManagerClient.SwitchAsync(_currentAgent.AgentId);
+                        _metricsManagerClient.EnableAsync(_currentAgent.AgentId);
+
+                        _currentAgent.Enable = true;
+
                         break;
                     }
                 case 3:
+                    {
+                        _metricsManagerClient.DisableAsync(_currentAgent.AgentId);
+
+                        _currentAgent.Enable = false;
+
+                        break;
+                    }
+                case 4:
                     {
                         CoreMetricsMenu();
                         break;
@@ -279,7 +292,7 @@ namespace MetricsManager.Client
             }
             return true;
         }
-         
+
         private void SelectAgent()
         {
             _uI.AgentsListOutput(_agentInfos);
@@ -296,12 +309,12 @@ namespace MetricsManager.Client
                 {
                     foreach (AgentInfo agent in _agentInfos)
                     {
-                        if(agent.AgentId == agentId)
+                        if (agent.AgentId == agentId)
                         {
                             _currentAgent = agent;
 
                             return;
-                        }                        
+                        }
                     }
                     Console.WriteLine($"Агента с идентификатором {agentId} нет среди зарегестрированных агентов." +
                                 $"\nВведите другой идентификатор или зарегестрируйте нового агента.");

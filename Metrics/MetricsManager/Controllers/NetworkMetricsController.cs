@@ -19,17 +19,13 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("getNetworkMetricsFromAgent")]
+        [HttpPost("getNetworkMetricsFromAgent")]
         [ProducesResponseType(typeof(NetworkAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
             [FromBody] NetworkMetricCreateRequest metricCreateRequest)
         {
-            NetworkAllMetricsResponse networkAllMetricsResponse = _metricsAgentClient.GetNetworkAllMetrics(new NetworkMetricCreateRequest()
-            {
-                AgentId = metricCreateRequest.AgentId,
-                FromTime = metricCreateRequest.FromTime,
-                ToTime = metricCreateRequest.ToTime
-            });
+            NetworkAllMetricsResponse networkAllMetricsResponse = _metricsAgentClient.GetNetworkAllMetrics(metricCreateRequest);
+
             return Ok(networkAllMetricsResponse);
         }
 
