@@ -10,8 +10,14 @@ namespace MetricsManager.Models
     /// </summary>
     public class AgentPool : IAgentPool<int, IAgentInfo>
     {
+        /// <summary>
+        /// Пеле репозиторий агентов
+        /// </summary>
         private Dictionary<int, IAgentInfo> _agentsRepo;
                 
+        /// <summary>
+        /// Свойство доступа к репозиторию агентов
+        /// </summary>
         public Dictionary<int, IAgentInfo> AgentsRepo { get => _agentsRepo; set => _agentsRepo = value; }        
     }
 }

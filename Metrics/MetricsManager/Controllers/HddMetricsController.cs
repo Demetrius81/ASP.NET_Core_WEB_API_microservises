@@ -4,12 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Source.Models.Requests;
 using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace MetricsManager.Controllers
 {
+    /// <summary>
+    /// Контроллер получения HDD метрик
+    /// </summary>
     [Route("api/hdd")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение HDD метрик")]
     public class HddMetricsController : ControllerBase, IMetricsManager
     {
         private readonly IMetricsAgentClient _metricsAgentClient;
@@ -19,8 +24,16 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
+        /// <summary>
+        /// Получение метрик HDD
+        /// </summary>
+        /// <param name="metricCreateRequest"></param>
+        /// <returns></returns>
         [HttpPost("getHddMetricsFromAgent")]
         [ProducesResponseType(typeof(HddAllMetricsResponse), StatusCodes.Status200OK)]
+        [SwaggerOperation(description: "Получение метрик HDD")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult GetMetricsFromAgent(
             [FromBody] HddMetricCreateRequest metricCreateRequest)
         {

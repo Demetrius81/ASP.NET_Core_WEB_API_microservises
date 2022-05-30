@@ -4,13 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Source.Models;
 using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
+    /// <summary>
+    /// Контроллер сбора RAM метрик
+    /// </summary>
     [Route("api/metrics/ram")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение RAM метрик")]
     public class RamMetricsController : ControllerBase, IMetricsController
     {
         private readonly IRamMetricsRepository _metricsRepository;
@@ -57,7 +62,13 @@ namespace MetricsAgent.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Получить метрики за весь период
+        /// </summary>
+        /// <returns>Результат операции</returns>
         [HttpGet("all")]
+        [SwaggerOperation(description: "Получение метрик CPU")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetAll()
         {
             IList<RamMetricDto> metrics = _metricsRepository.GetAll();
@@ -77,7 +88,15 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получить метрики за указанный период
+        /// </summary>
+        /// <param name="fromTime">Время с...</param>
+        /// <param name="toTime">Время по...</param>
+        /// <returns>Результат операции</returns>
         [HttpGet("available/from/{fromTime}/to/{toTime}")]
+        [SwaggerOperation(description: "Получение метрик RAM за указанный период")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             IList<RamMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);

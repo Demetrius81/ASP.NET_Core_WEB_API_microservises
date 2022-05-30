@@ -2,6 +2,10 @@
 
 namespace Source.Models.Response
 {
+    /// <summary>
+    /// Ответ агента
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class AllMetricsResponse<T> where T : class
     {
         /// <summary>

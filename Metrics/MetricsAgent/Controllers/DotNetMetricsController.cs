@@ -6,11 +6,16 @@ using Microsoft.Extensions.Logging;
 using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MetricsAgent.Controllers
 {
+    /// <summary>
+    /// Контроллер сбора .NET метрик
+    /// </summary>
     [Route("api/metrics/dotnet")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение .NET метрик")]
     public class DotNetMetricsController : ControllerBase, IMetricsController
     {
         private readonly IDotNetMetricsRepository _metricsRepository;
@@ -57,7 +62,13 @@ namespace MetricsAgent.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Получить метрики за весь период
+        /// </summary>
+        /// <returns>Результат операции</returns>
         [HttpGet("all")]
+        [SwaggerOperation(description: "Получение метрик .NET")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetAll()
         {
             IList<DotNetMetricDto> metrics = _metricsRepository.GetAll();
@@ -77,7 +88,15 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получить метрики за указанный период
+        /// </summary>
+        /// <param name="fromTime">Время с...</param>
+        /// <param name="toTime">Время по...</param>
+        /// <returns>Результат операции</returns>
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
+        [SwaggerOperation(description: "Получение метрик .NET за указанный период")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             IList<DotNetMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);

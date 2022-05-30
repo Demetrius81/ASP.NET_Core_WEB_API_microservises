@@ -18,7 +18,9 @@ using Polly;
 using Source.Converter;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MetricsManager
@@ -76,7 +78,29 @@ namespace MetricsManager
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsManager", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo 
+                {
+                    Version = "v1",
+                    Title = "API сервиса агента сбора метрик",
+                    Description = "Здесь можно отладить сервис",
+                    Contact = new OpenApiContact()
+                    {
+                        Name ="Dmitry Ryzhov",
+                        Email = String.Empty,
+                        Url =new Uri("https://gb.ru/")
+                    },
+                    License = new OpenApiLicense()
+                    {
+                        Name= "Лицензия на образовательную деятельность № 040485 от 03 декабря 2019 года",
+                        Url = new Uri("https://gb.ru/company?tab=license")
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.EnableAnnotations();
 
                 c.MapType<TimeSpan>(() => new OpenApiSchema
                 {

@@ -5,6 +5,7 @@ using MetricsManager.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,6 +16,7 @@ namespace MetricsManager.Controllers
     /// </summary>
     [Route("api/agents")]
     [ApiController]
+    [SwaggerTag("Предоставляет работу с агентами")]
     public class AgentsController : ControllerBase
     {
         private readonly IAgentsPoolRepository _agentsPoolRepository;
@@ -45,6 +47,9 @@ namespace MetricsManager.Controllers
         /// <param name="agentInfo"></param>
         /// <returns></returns>
         [HttpPost("register")]
+        [SwaggerOperation(description: "Регистрация нового агента в системе метрик")]
+        [SwaggerResponse(200, description: "Агент успешно зарегестрирован")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
         {
             if (agentInfo != null)
@@ -60,10 +65,13 @@ namespace MetricsManager.Controllers
         /// <param name="agentId"></param>
         /// <returns></returns>
         [HttpPut("enable/{agentId}")]
+        [SwaggerOperation(description: "Включение агента")]
+        [SwaggerResponse(200, description: "Агент готов к работе")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult EnableAgentById([FromRoute] int agentId)
         {
             Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
-           
+
             if (agentsRepo.ContainsKey(agentId))
             {
                 agentsRepo[agentId].Enable = true;
@@ -79,6 +87,9 @@ namespace MetricsManager.Controllers
         /// <param name="agentId"></param>
         /// <returns></returns>
         [HttpPut("disable/{agentId}")]
+        [SwaggerOperation(description: "Выключение агента")]
+        [SwaggerResponse(200, description: "Агент спит")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult DisableAgentById([FromRoute] int agentId)
         {
             Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
@@ -93,32 +104,14 @@ namespace MetricsManager.Controllers
         }
 
         /// <summary>
-        /// Метод переключает состояние агента на противоположное
-        /// </summary>
-        /// <param name="agentId"></param>
-        /// <returns></returns>
-        [HttpPut("switch/{agentId}")]
-        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public IActionResult AgentSwitcById([FromRoute] int agentId)
-        {
-            Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
-
-            if (agentsRepo.ContainsKey(agentId))
-            {
-                agentsRepo[agentId].Enable =
-                    agentsRepo[agentId].Enable == false ? true : false;
-
-                _agentsPoolRepository.Update(agentsRepo[agentId]);
-            }
-            return Ok(agentsRepo[agentId].Enable);// На интерфейс пользователя можно прикрутить лампочку (какой-нибудь switcher, radiobutton) и она будет показывать состояние агента
-        }
-
-        /// <summary>
-        /// Метод возвращает список всех агентов)
+        /// Метод возвращает список всех агентов
         /// </summary>
         /// <returns></returns>
         [HttpGet("get")]
         [ProducesResponseType(typeof(List<AgentInfo>), StatusCodes.Status200OK)]
+        [SwaggerOperation(description: "Получение списка всех агентов")]
+        [SwaggerResponse(200, description: "Список метрик получен")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult GetAllAgents()
         {
             List<AgentInfoDto> agents = _agentsPoolRepository.Get().Values.ToList();
@@ -130,6 +123,6 @@ namespace MetricsManager.Controllers
                 result.Add(_mapper.Map<AgentInfo>(agent));
             }
             return Ok(result);
-        } 
+        }
     }
 }

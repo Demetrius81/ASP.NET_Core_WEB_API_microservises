@@ -4,12 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Source.Models.Requests;
 using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace MetricsManager.Controllers
 {
+    /// <summary>
+    /// Контроллер получения Network метрик
+    /// </summary>
     [Route("api/network")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение Network метрик")]
     public class NetworkMetricsController : ControllerBase, IMetricsManager
     {
         private readonly IMetricsAgentClient _metricsAgentClient;
@@ -18,9 +23,16 @@ namespace MetricsManager.Controllers
         {
             _metricsAgentClient = metricsAgentClient;
         }
-
+        /// <summary>
+        /// Получение метрик Network
+        /// </summary>
+        /// <param name="metricCreateRequest"></param>
+        /// <returns></returns>
         [HttpPost("getNetworkMetricsFromAgent")]
         [ProducesResponseType(typeof(NetworkAllMetricsResponse), StatusCodes.Status200OK)]
+        [SwaggerOperation(description: "Получение метрик Network")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult GetMetricsFromAgent(
             [FromBody] NetworkMetricCreateRequest metricCreateRequest)
         {

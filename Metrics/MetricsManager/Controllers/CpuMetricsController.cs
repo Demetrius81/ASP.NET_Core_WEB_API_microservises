@@ -11,11 +11,16 @@ using AutoMapper;
 using Source.Models.Responses;
 using Newtonsoft.Json;
 using Source.Models.Requests;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MetricsManager.Controllers
 {
+    /// <summary>
+    /// Контроллер получения CPU метрик
+    /// </summary>
     [Route("api/cpu")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение CPU метрик")]
     public class CpuMetricsController : ControllerBase, IMetricsManager
     {
         private readonly IMetricsAgentClient _metricsAgentClient;
@@ -25,8 +30,16 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
+        /// <summary>
+        /// Получение метрик CPU
+        /// </summary>
+        /// <param name="metricCreateRequest"></param>
+        /// <returns></returns>
         [HttpPost("getCpuMetricsFromAgent")]
         [ProducesResponseType(typeof(CpuAllMetricsResponse), StatusCodes.Status200OK)]
+        [SwaggerOperation(description: "Получение метрик CPU")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult GetMetricsFromAgent(
             [FromBody] CpuMetricCreateRequest metricCreateRequest)
         {

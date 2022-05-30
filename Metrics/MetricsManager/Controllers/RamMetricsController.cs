@@ -4,12 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Source.Models.Requests;
 using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace MetricsManager.Controllers
 {
+    /// <summary>
+    /// Контроллер получения RAM метрик
+    /// </summary>
     [Route("api/ram")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение RAM метрик")]
     public class RamMetricsController : ControllerBase, IMetricsManager
     {
         private readonly IMetricsAgentClient _metricsAgentClient;
@@ -19,8 +24,16 @@ namespace MetricsManager.Controllers
             _metricsAgentClient = metricsAgentClient;
         }
 
+        /// <summary>
+        /// Получение метрик RAM
+        /// </summary>
+        /// <param name="metricCreateRequest"></param>
+        /// <returns></returns>
         [HttpPost("getRamMetricsFromAgent")]
         [ProducesResponseType(typeof(RamAllMetricsResponse), StatusCodes.Status200OK)]
+        [SwaggerOperation(description: "Получение метрик RAM")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
         public IActionResult GetMetricsFromAgent(
             [FromBody] RamMetricCreateRequest metricCreateRequest)
         {

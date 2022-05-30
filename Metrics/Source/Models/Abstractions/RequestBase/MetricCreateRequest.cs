@@ -2,18 +2,11 @@
 
 namespace Source.Models.Request
 {
+    /// <summary>
+    /// Запрос сервиса
+    /// </summary>
     public abstract class MetricCreateRequest
     {
-        ///// <summary>
-        ///// Время (тип данных TimeSpan)
-        ///// </summary>
-        //public TimeSpan Time { get; set; }
-
-        ///// <summary>
-        ///// Значение метрики
-        ///// </summary>
-        //public int Value { get; set; }
-
         /// <summary>
         /// Идентификатор агента
         /// </summary>
