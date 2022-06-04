@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -18,7 +18,7 @@ namespace MetricsAgent.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Create(HddMetric item)
+        public void Create(HddMetricDto item)
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -45,7 +45,7 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(HddMetric item)
+        public void Update(HddMetricDto item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
@@ -59,11 +59,11 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<HddMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<HddMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<HddMetric> metrics = connection.Query<HddMetric>(
+            List<HddMetricDto> metrics = connection.Query<HddMetricDto>(
                 "SELECT * FROM hddmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +74,21 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<HddMetric> GetAll()
+        public IList<HddMetricDto> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<HddMetric> metrics = connection.Query<HddMetric>(
+            List<HddMetricDto> metrics = connection.Query<HddMetricDto>(
                 "SELECT * FROM hddmetrics").ToList();
 
             return metrics;
         }
 
-        public HddMetric GetById(int id)
+        public HddMetricDto GetById(int id)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            HddMetric metric = connection.QuerySingle<HddMetric>(
+            HddMetricDto metric = connection.QuerySingle<HddMetricDto>(
                 "SELECT Id, Time, Value FROM hddmetrics WHERE id = @id",
                 new
                 {

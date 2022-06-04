@@ -1,6 +1,9 @@
-using MetricsManager.Converter;
+using AutoMapper;
+using FluentMigrator.Runner;
 using MetricsManager.Models;
 using MetricsManager.Models.Interfaces;
+using MetricsManager.Services;
+using MetricsManager.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,9 +14,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Polly;
+using Source.Converter;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MetricsManager
@@ -30,13 +37,70 @@ namespace MetricsManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
+            services.AddFluentMigratorCore()
+               .ConfigureRunner(rb => rb
+                   .AddSQLite()
+                   .WithGlobalConnectionString(Configuration
+                       .GetSection("Settings:DatabaseOptions:ConnectionString").Value)
+                   .ScanIn(typeof(Startup).Assembly).For.Migrations())
+               .AddLogging(lg => lg.AddFluentMigratorConsole());
+
+            var mapperConfiguration = new MapperConfiguration(mapperProfile => mapperProfile.AddProfile(new
+                MapperProfile()));
+
+            var mapper = mapperConfiguration.CreateMapper();
+
+            services.AddSingleton(mapper);
+
+            #region Old
+
+            //services.AddHttpClient();
+
+            //services.AddSingleton<IAgentPool<AgentInfo>, AgentPool>();
+
+            #endregion
+
+            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
+                .AddTransientHttpErrorPolicy(p => p
+                    .WaitAndRetryAsync(retryCount: 3,
+                        sleepDurationProvider: (attemptCount) => TimeSpan.FromMilliseconds(2000),
+                        onRetry: (exception, sleepDuration, attemptNumber, context) =>
+                        {
+
+                        }));
+
+            services.AddSingleton<IAgentsPoolRepository, AgentsPoolRepository>().Configure<DatabaseOptions>(options =>
+            {
+                Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+            });
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsManager", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo 
+                {
+                    Version = "v1",
+                    Title = "API сервиса агента сбора метрик",
+                    Description = "Здесь можно отладить сервис",
+                    Contact = new OpenApiContact()
+                    {
+                        Name ="Dmitry Ryzhov",
+                        Email = String.Empty,
+                        Url =new Uri("https://gb.ru/")
+                    },
+                    License = new OpenApiLicense()
+                    {
+                        Name= "Лицензия на образовательную деятельность № 040485 от 03 декабря 2019 года",
+                        Url = new Uri("https://gb.ru/company?tab=license")
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.EnableAnnotations();
 
                 c.MapType<TimeSpan>(() => new OpenApiSchema
                 {
@@ -48,7 +112,10 @@ namespace MetricsManager
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
@@ -67,6 +134,7 @@ namespace MetricsManager
             {
                 endpoints.MapControllers();
             });
+            migrationRunner.MigrateUp();
         }
     }
 }

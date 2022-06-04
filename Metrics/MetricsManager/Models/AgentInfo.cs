@@ -5,7 +5,7 @@ namespace MetricsManager.Models
     /// <summary>
     /// Класс модель агента
     /// </summary>
-    public class AgentInfo
+    public class AgentInfo : IAgentInfo
     {
         /// <summary>
         /// Идентификатор агента

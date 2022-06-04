@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -18,7 +18,7 @@ namespace MetricsAgent.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Create(DotNetMetric item)
+        public void Create(DotNetMetricDto item)
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -45,7 +45,7 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(DotNetMetric item)
+        public void Update(DotNetMetricDto item)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
@@ -59,11 +59,11 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<DotNetMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<DotNetMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<DotNetMetric> metrics = connection.Query<DotNetMetric>(
+            List<DotNetMetricDto> metrics = connection.Query<DotNetMetricDto>(
                 "SELECT * FROM dotnetmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +74,21 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<DotNetMetric> GetAll()
+        public IList<DotNetMetricDto> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<DotNetMetric> metrics = connection.Query<DotNetMetric>(
+            List<DotNetMetricDto> metrics = connection.Query<DotNetMetricDto>(
                 "SELECT * FROM dotnetmetrics").ToList();
 
             return metrics;
         }
 
-        public DotNetMetric GetById(int id)
+        public DotNetMetricDto GetById(int id)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            DotNetMetric metric = connection.QuerySingle<DotNetMetric>(
+            DotNetMetricDto metric = connection.QuerySingle<DotNetMetricDto>(
                 "SELECT Id, Time, Value FROM dotnetmetrics WHERE id = @id",
                 new
                 {

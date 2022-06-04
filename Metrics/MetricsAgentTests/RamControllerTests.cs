@@ -1,10 +1,8 @@
 ﻿using MetricsAgent.Controllers;
-using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
-using MetricsAgent.Models.Requests;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -24,28 +22,32 @@ namespace MetricsAgentTests
             _controller = new RamMetricsController(_mockMetricsRepository.Object);
         }
 
-        [Fact]
-        public void Create_SendRequest_ShouldReturnOk()
-        {
-            _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<RamMetric>())).Verifiable();
+        #region For delete
 
-            IActionResult result = _controller.Create(new RamMetricCreateRequest
-            {
-                Time = TimeSpan.FromSeconds(1),
-                Value = 50
-            });
+        //[Fact]
+        //public void Create_SendRequest_ShouldReturnOk()
+        //{
+        //    _mockMetricsRepository.Setup(repository =>
+        //        repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
-            _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
-        }
+        //    IActionResult result = _controller.Create(new RamMetricCreateRequest
+        //    {
+        //        Time = TimeSpan.FromSeconds(1),
+        //        Value = 50
+        //    });
+
+        //    _mockMetricsRepository.Verify(repository =>
+        //        repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
+        //}
+
+        #endregion
 
         [Fact]
         public void GetAll_SendRequest_ShouldReturnOk()
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetAll())
-                              .Returns(new List<RamMetric>());
+                              .Returns(new List<RamMetricDto>());
 
             _controller.GetAll();
 
@@ -58,7 +60,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
-                              .Returns(new List<RamMetric>());
+                              .Returns(new List<RamMetricDto>());
 
             _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
 
