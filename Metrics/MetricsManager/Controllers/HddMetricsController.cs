@@ -30,10 +30,10 @@ namespace MetricsManager.Controllers
         /// <param name="metricCreateRequest"></param>
         /// <returns></returns>
         [HttpPost("getHddMetricsFromAgent")]
-        [ProducesResponseType(typeof(HddAllMetricsResponse), StatusCodes.Status200OK)]
         [SwaggerOperation(description: "Получение метрик HDD")]
         [SwaggerResponse(200, description: "Метрики успешно получены")]
         [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [ProducesResponseType(typeof(HddAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
             [FromBody] HddMetricCreateRequest metricCreateRequest)
         {

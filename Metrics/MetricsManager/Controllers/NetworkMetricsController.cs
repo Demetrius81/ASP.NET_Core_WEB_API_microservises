@@ -29,10 +29,10 @@ namespace MetricsManager.Controllers
         /// <param name="metricCreateRequest"></param>
         /// <returns></returns>
         [HttpPost("getNetworkMetricsFromAgent")]
-        [ProducesResponseType(typeof(NetworkAllMetricsResponse), StatusCodes.Status200OK)]
         [SwaggerOperation(description: "Получение метрик Network")]
         [SwaggerResponse(200, description: "Метрики успешно получены")]
         [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [ProducesResponseType(typeof(NetworkAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
             [FromBody] NetworkMetricCreateRequest metricCreateRequest)
         {
