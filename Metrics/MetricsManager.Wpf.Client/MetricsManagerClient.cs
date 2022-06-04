@@ -13,7 +13,7 @@
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace MetricsManager.Client
+namespace MetricsManager.Wpf.Client
 {
     using System = global::System;
 
@@ -322,7 +322,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Список метрик получен</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AgentInfo>> GetAsync()
+        public virtual System.Threading.Tasks.Task GetAsync()
         {
             return GetAsync(System.Threading.CancellationToken.None);
         }
@@ -333,7 +333,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Список метрик получен</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AgentInfo>> GetAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task GetAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/agents/get");
@@ -345,7 +345,6 @@ namespace MetricsManager.Client
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -370,12 +369,7 @@ namespace MetricsManager.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<AgentInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 404)
@@ -412,7 +406,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CpuAllMetricsResponse> GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body)
+        public virtual System.Threading.Tasks.Task GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body)
         {
             return GetCpuMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
         }
@@ -423,7 +417,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CpuAllMetricsResponse> GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task GetCpuMetricsFromAgentAsync(CpuMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/cpu/getCpuMetricsFromAgent");
@@ -438,7 +432,6 @@ namespace MetricsManager.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -463,12 +456,7 @@ namespace MetricsManager.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<CpuAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 404)
@@ -505,7 +493,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DotNetAllMetricsResponse> GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body)
+        public virtual System.Threading.Tasks.Task GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body)
         {
             return GetDotNetMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
         }
@@ -516,7 +504,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DotNetAllMetricsResponse> GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task GetDotNetMetricsFromAgentAsync(DotNetMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/dotnet/getDotNetMetricsFromAgent");
@@ -531,7 +519,6 @@ namespace MetricsManager.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -556,12 +543,7 @@ namespace MetricsManager.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DotNetAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 404)
@@ -598,7 +580,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<HddAllMetricsResponse> GetHddMetricsFromAgentAsync(HddMetricCreateRequest body)
+        public virtual System.Threading.Tasks.Task GetHddMetricsFromAgentAsync(HddMetricCreateRequest body)
         {
             return GetHddMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
         }
@@ -609,7 +591,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<HddAllMetricsResponse> GetHddMetricsFromAgentAsync(HddMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task GetHddMetricsFromAgentAsync(HddMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/hdd/getHddMetricsFromAgent");
@@ -624,7 +606,6 @@ namespace MetricsManager.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -649,12 +630,7 @@ namespace MetricsManager.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<HddAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 404)
@@ -691,7 +667,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NetworkAllMetricsResponse> GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body)
+        public virtual System.Threading.Tasks.Task GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body)
         {
             return GetNetworkMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
         }
@@ -702,7 +678,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NetworkAllMetricsResponse> GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task GetNetworkMetricsFromAgentAsync(NetworkMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/network/getNetworkMetricsFromAgent");
@@ -717,7 +693,6 @@ namespace MetricsManager.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -742,12 +717,7 @@ namespace MetricsManager.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<NetworkAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 404)
@@ -784,7 +754,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<RamAllMetricsResponse> GetRamMetricsFromAgentAsync(RamMetricCreateRequest body)
+        public virtual System.Threading.Tasks.Task GetRamMetricsFromAgentAsync(RamMetricCreateRequest body)
         {
             return GetRamMetricsFromAgentAsync(body, System.Threading.CancellationToken.None);
         }
@@ -795,7 +765,7 @@ namespace MetricsManager.Client
         /// </summary>
         /// <returns>Метрики успешно получены</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<RamAllMetricsResponse> GetRamMetricsFromAgentAsync(RamMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task GetRamMetricsFromAgentAsync(RamMetricCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ram/getRamMetricsFromAgent");
@@ -810,7 +780,6 @@ namespace MetricsManager.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -835,12 +804,7 @@ namespace MetricsManager.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<RamAllMetricsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 404)
@@ -1002,31 +966,6 @@ namespace MetricsManager.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class CpuAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<CpuMetric> Metrics { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class CpuMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class CpuMetricCreateRequest
     {
         [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1037,31 +976,6 @@ namespace MetricsManager.Client
 
         [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ToTime { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class DotNetAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<DotNetMetric> Metrics { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class DotNetMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
 
     }
 
@@ -1080,31 +994,6 @@ namespace MetricsManager.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class HddAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<HddMetric> Metrics { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class HddMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class HddMetricCreateRequest
     {
         [Newtonsoft.Json.JsonProperty("agentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1115,31 +1004,6 @@ namespace MetricsManager.Client
 
         [Newtonsoft.Json.JsonProperty("toTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ToTime { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class NetworkAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<NetworkMetric> Metrics { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class NetworkMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
 
     }
 
@@ -1183,31 +1047,6 @@ namespace MetricsManager.Client
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class RamAllMetricsResponse
-    {
-        [Newtonsoft.Json.JsonProperty("metrics", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<RamMetric> Metrics { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("agentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AgentID { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.0.0 (NJsonSchema v10.7.1.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class RamMetric
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Value { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Time { get; set; }
 
     }
 

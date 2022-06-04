@@ -108,10 +108,10 @@ namespace MetricsManager.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("get")]
-        [ProducesResponseType(typeof(List<AgentInfo>), StatusCodes.Status200OK)]
         [SwaggerOperation(description: "Получение списка всех агентов")]
         [SwaggerResponse(200, description: "Список метрик получен")]
         [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [ProducesResponseType(typeof(List<AgentInfo>), StatusCodes.Status200OK)]
         public IActionResult GetAllAgents()
         {
             List<AgentInfoDto> agents = _agentsPoolRepository.Get().Values.ToList();
