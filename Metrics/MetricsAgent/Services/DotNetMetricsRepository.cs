@@ -16,6 +16,10 @@ namespace MetricsAgent.Services
         public DotNetMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM dotnetmetrics");
         }
 
         public void Create(DotNetMetricDto item)

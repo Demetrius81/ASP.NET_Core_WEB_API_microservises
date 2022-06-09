@@ -16,6 +16,10 @@ namespace MetricsAgent.Services
         public CpuMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM cpumetrics");
         }
 
         public void Create(CpuMetricDto item)

@@ -24,5 +24,6 @@ namespace MetricsManager.Wpf.Client
         {
             InitializeComponent();
         }
+               
     }
 }

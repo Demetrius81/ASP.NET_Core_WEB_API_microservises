@@ -16,6 +16,10 @@ namespace MetricsAgent.Services
         public RamMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM rammetrics");
         }
 
         public void Create(RamMetricDto item)

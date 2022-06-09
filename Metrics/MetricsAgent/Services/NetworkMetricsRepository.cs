@@ -16,6 +16,10 @@ namespace MetricsAgent.Services
         public NetworkMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM networkmetrics");
         }
 
         public void Create(NetworkMetricDto item)
