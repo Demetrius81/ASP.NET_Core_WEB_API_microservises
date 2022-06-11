@@ -40,6 +40,9 @@ namespace MetricsManager.Wpf.Client
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <summary>
+        /// Свойство "ColumnSeriesValues"
+        /// </summary>
         public SeriesCollection ColumnSeriesValues
         {
             get
@@ -53,6 +56,10 @@ namespace MetricsManager.Wpf.Client
                 OnPropertyChanged("ColumnSeriesValues");
             }
         }
+
+        /// <summary>
+        /// Свойство "PersentText"
+        /// </summary>
         public string PersentText
         {
             get
@@ -65,6 +72,10 @@ namespace MetricsManager.Wpf.Client
                 OnPropertyChanged("PersentText");
             }
         }
+
+        /// <summary>
+        /// Свойство "PersentTextDesciption"
+        /// </summary>
         public string PersentTextDesciption
         {
             get
@@ -78,8 +89,11 @@ namespace MetricsManager.Wpf.Client
             }
         }
 
-
-        public virtual void OnPropertyChanged(string propertyName = null)
+        /// <summary>
+        /// Реализация метода подписки на событие изменения свойства
+        /// </summary>
+        /// <param name="propertyName"></param>
+        protected virtual void OnPropertyChanged(string propertyName = null)
         {
             var handler = PropertyChanged;
 
@@ -89,6 +103,9 @@ namespace MetricsManager.Wpf.Client
             }
         }
 
+        /// <summary>
+        /// Конструктор класса с параметрами по умолчанию
+        /// </summary>
         public CpuChartControl()
         {
             InitializeComponent();
@@ -104,7 +121,11 @@ namespace MetricsManager.Wpf.Client
             _currentAgent = _agentInfos[0];  // TODO: Сделать выбор агента из списка
         }
 
-
+        /// <summary>
+        /// Метод, который запускается реагируя на событие нажатия кнопки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateOnСlick(object sender, RoutedEventArgs e)
         {
             Task.Run(() => 
@@ -146,7 +167,6 @@ namespace MetricsManager.Wpf.Client
                                     Values = new ChartValues<int>(metrics.Where(x => x != null).Select(x => x.Value).ToArray())
                                 }
                             };
-
                             TimePowerChart.Update(true);
                         });
 
@@ -160,6 +180,11 @@ namespace MetricsManager.Wpf.Client
             });
         }
 
+        /// <summary>
+        /// Метод вычисления периода времени
+        /// </summary>
+        /// <param name="toTime"></param>
+        /// <returns></returns>
         private TimeSpan GetTimePeriod(out TimeSpan toTime)
         {
             toTime = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());

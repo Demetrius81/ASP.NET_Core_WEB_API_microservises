@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <local:CpuChartControl HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="309" Width="513"/>
+        <local:CpuChartControl HorizontalAlignment="Center" VerticalAlignment="Top" Height="414" Width="780" Margin="0,10,0,0"/>
     </Grid>
 </Window>
