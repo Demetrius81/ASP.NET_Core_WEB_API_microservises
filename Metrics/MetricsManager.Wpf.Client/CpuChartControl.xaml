@@ -32,7 +32,7 @@
                     <Style.Triggers>
                         <Trigger Property="AxisOrientation" Value="Y">
                             <Setter Property="IsMerged" Value="True"></Setter>
-                            <Setter Property="MaxValue" Value="100"></Setter> 
+                            <Setter Property="MaxValue" Value="{Binding MaxValue}"></Setter> 
                         </Trigger>
                     </Style.Triggers>
                 </Style>

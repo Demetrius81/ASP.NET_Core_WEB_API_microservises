@@ -38,7 +38,23 @@ namespace MetricsManager.Wpf.Client
 
         private string _percentTextDescription;
 
+        private int _maxValue;
+
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public int MaxValue
+        {
+            get
+            {
+                return _maxValue;
+            }
+            set
+            {
+                _maxValue = value;
+
+                OnPropertyChanged("MaxValue");
+            }
+        }
 
         /// <summary>
         /// Свойство "ColumnSeriesValues"
@@ -156,6 +172,8 @@ namespace MetricsManager.Wpf.Client
                                 PersentTextDesciption = $"За последние {del.TotalSeconds} секунд средняя загрузка";
 
                                 double sum = (double)metrics.Where(x => x != null).Select(x => x.Value).ToArray().Sum(x => x);
+
+                                MaxValue = metricsResponse.Metrics.Max(x => x.Value);
 
                                 PersentText = $"{sum / metrics.Count():F2}";
                             }
