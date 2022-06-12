@@ -26,6 +26,12 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
+            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
+
+            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 120);
+
+            _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+
             _metricRepository.Create(new RamMetricDto
             {
                 Time = time.TotalSeconds,

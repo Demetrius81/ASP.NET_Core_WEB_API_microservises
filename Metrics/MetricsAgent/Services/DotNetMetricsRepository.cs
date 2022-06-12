@@ -101,5 +101,17 @@ namespace MetricsAgent.Services
 
             return metric;
         }
+
+        public void DeleteByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM dotnetmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                });
+        }
     }
 }

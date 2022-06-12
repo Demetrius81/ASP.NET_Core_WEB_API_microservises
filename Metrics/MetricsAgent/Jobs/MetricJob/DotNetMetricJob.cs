@@ -17,14 +17,20 @@ namespace MetricsAgent.Jobs
         {
             _metricRepository = metricRepository;
 
-            _performanceCounter = new PerformanceCounter(".NET CLR Memory", "# Bytes in all heaps", "_Global_");
+            _performanceCounter = new PerformanceCounter(".NET CLR Exceptions", "# of Exceps Thrown", "_Global_");
         }
 
         public Task Execute(IJobExecutionContext context)
         {
-            float dotNet = _performanceCounter.NextValue();
+            float dotNet = (_performanceCounter.NextValue())/1024;
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
+
+            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 120);
+
+            _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
 
             _metricRepository.Create(new DotNetMetricDto
             {

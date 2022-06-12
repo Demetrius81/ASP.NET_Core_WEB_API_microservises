@@ -17,7 +17,7 @@ namespace MetricsAgent.Jobs
         {
             _metricRepository = metricRepository;
 
-            _performanceCounter = new PerformanceCounter("Processor", "Interrupts/sec", "_Total");
+            _performanceCounter = new PerformanceCounter(".NET CLR Networking", "Connections Established", "_Global_");
         }
 
         public Task Execute(IJobExecutionContext context)
@@ -25,6 +25,12 @@ namespace MetricsAgent.Jobs
             float network = _performanceCounter.NextValue();
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
+
+            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 120);
+
+            _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
 
             _metricRepository.Create(new NetworkMetricDto
             {

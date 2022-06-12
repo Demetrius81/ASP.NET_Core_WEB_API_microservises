@@ -33,6 +33,13 @@ namespace MetricsAgent.Services.Interfaces
         void Create(T entity);
 
         /// <summary>
+        /// Метод удаляет метрики в указанном временном промежутке
+        /// </summary>
+        /// <param name="fromTime"></param>
+        /// <param name="toTime"></param>
+        void DeleteByTimePeriod(TimeSpan fromTime, TimeSpan toTime);
+
+        /// <summary>
         /// Метод обновляет метрику в коллекции
         /// </summary>
         /// <param name="entity"></param>

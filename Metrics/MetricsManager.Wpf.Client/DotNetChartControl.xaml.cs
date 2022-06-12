@@ -14,9 +14,9 @@ using System.Windows.Controls;
 namespace MetricsManager.Wpf.Client
 {
     /// <summary>
-    /// Interaction logic for CpuChartControl.xaml
+    /// Interaction logic for DotNetChartControl.xaml
     /// </summary>
-    public partial class CpuChartControl : UserControl, INotifyPropertyChanged
+    public partial class DotNetChartControl : UserControl
     {
         private SeriesCollection _columnSeriesValues;
 
@@ -114,7 +114,7 @@ namespace MetricsManager.Wpf.Client
         /// <summary>
         /// Конструктор класса с параметрами по умолчанию
         /// </summary>
-        public CpuChartControl()
+        public DotNetChartControl()
         {
             InitializeComponent();
 
@@ -136,13 +136,13 @@ namespace MetricsManager.Wpf.Client
         /// <param name="e"></param>
         private void UpdateOnСlick(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 while (true)
                 {
                     TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
-                    CpuMetricCreateRequest request = new CpuMetricCreateRequest()
+                    DotNetMetricCreateRequest request = new DotNetMetricCreateRequest()
                     {
                         AgentId = _currentAgent.AgentId,
                         FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
@@ -151,9 +151,9 @@ namespace MetricsManager.Wpf.Client
 
                     try
                     {
-                        CpuAllMetricsResponse metricsResponse = _metricsManagerClient.GetCpuMetricsFromAgentAsync(request).Result;
+                        DotNetAllMetricsResponse metricsResponse = _metricsManagerClient.GetDotNetMetricsFromAgentAsync(request).Result;
 
-                        CpuMetric[] metrics = metricsResponse.Metrics.ToArray();
+                        DotNetMetric[] metrics = metricsResponse.Metrics.ToArray();
 
                         Dispatcher.Invoke(() =>
                         {
@@ -161,7 +161,7 @@ namespace MetricsManager.Wpf.Client
                             {
                                 TimeSpan del = TimeSpan.Parse(metrics[metrics.Count() - 1].Time) - TimeSpan.Parse(metrics[0].Time);
 
-                                PersentTextDesciption = $"За последние {del.TotalSeconds} секунд средняя загрузка";
+                                PersentTextDesciption = $"За последние {del.TotalSeconds} секунд количество ошибок .NET";
 
                                 double sum = (double)metrics.Where(x => x != null).Select(x => x.Value).ToArray().Sum(x => x);
 
