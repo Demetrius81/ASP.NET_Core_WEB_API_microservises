@@ -30,7 +30,14 @@ namespace MetricsAgent.Jobs
 
             TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 120);
 
-            _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+            try
+            {
+                _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
 
             _metricRepository.Create(new HddMetricDto
             {

@@ -15,6 +15,8 @@ namespace MetricsAgent.Jobs
 
         public CpuMetricJob(ICpuMetricsRepository metricRepository)
         {
+            
+
             _metricRepository = metricRepository;
 
             _performanceCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
@@ -29,8 +31,14 @@ namespace MetricsAgent.Jobs
             TimeSpan timeFrom = TimeSpan.FromSeconds(0);
 
             TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 120);
-
-            _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+            try
+            {
+                _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
 
             _metricRepository.Create(new CpuMetricDto
             {

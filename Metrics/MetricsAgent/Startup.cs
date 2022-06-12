@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsAgent.Jobs;
+using MetricsAgent.Models;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;

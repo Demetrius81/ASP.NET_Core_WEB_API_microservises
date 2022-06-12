@@ -19,11 +19,7 @@ namespace MetricsManager.Wpf.Client
     public partial class CpuChartControl : UserControl, INotifyPropertyChanged
     {
         private SeriesCollection _columnSeriesValues;
-
-        private List<AgentInfo> _agentInfos;
-
-        private AgentInfo _currentAgent;
-
+                
         private MetricsManagerClient _metricsManagerClient;
 
         private string _percentText;
@@ -118,15 +114,9 @@ namespace MetricsManager.Wpf.Client
         {
             InitializeComponent();
 
-            _metricsManagerClient = new MetricsManagerClient(
-              "https://localhost:44353/",
-              new HttpClient());
+            _metricsManagerClient = AgentManager.MetricsManagerClient;
 
             DataContext = this;
-
-            _agentInfos = _metricsManagerClient.GetAsync().Result.ToList();
-
-            _currentAgent = _agentInfos[0];  // TODO: Сделать выбор агента из списка
         }
 
         /// <summary>
@@ -142,9 +132,13 @@ namespace MetricsManager.Wpf.Client
                 {
                     TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
+                    AgentManager.Agents = AgentManager.ReadAgents();
+
+                    AgentManager.CurrentAgent = AgentManager.Agents[0];
+
                     CpuMetricCreateRequest request = new CpuMetricCreateRequest()
                     {
-                        AgentId = _currentAgent.AgentId,
+                        AgentId = AgentManager.CurrentAgent.AgentId,
                         FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
                         ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
                     };
