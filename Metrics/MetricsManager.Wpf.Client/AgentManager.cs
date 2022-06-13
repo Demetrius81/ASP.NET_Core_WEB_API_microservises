@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -18,9 +19,9 @@ namespace MetricsManager.Wpf.Client
         public static AgentInfo CurrentAgent { get => _currentAgent; set => _currentAgent = value; }
 
 
-        private static List<AgentInfo> _agents = new List<AgentInfo>();
+        private static ObservableCollection<AgentInfo> _agents = new ObservableCollection<AgentInfo>();
 
-        public static List<AgentInfo> Agents
+        public static ObservableCollection<AgentInfo> Agents
         { 
             get
             {
@@ -39,9 +40,17 @@ namespace MetricsManager.Wpf.Client
             MetricsManagerClient.RegisterAsync(agent);
         }
 
-        public static List<AgentInfo> ReadAgents()
+        public static ObservableCollection<AgentInfo> ReadAgents()
         {
-            return _agents = MetricsManagerClient.GetAsync().Result.ToList();
+            var agents = _metricsManagerClient.GetAsync().Result;
+
+            ObservableCollection<AgentInfo> agentCollections = new ObservableCollection<AgentInfo>();
+
+            foreach (var agent in agents)
+            {
+                agentCollections.Add(agent);
+            }
+            return agentCollections;
         }
     }
 }

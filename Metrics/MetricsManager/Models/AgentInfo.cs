@@ -21,5 +21,17 @@ namespace MetricsManager.Models
         /// Состояние агента (вкл/выкл)
         /// </summary>
         public bool Enable { get; set; }
+
+        public override string ToString()
+        {
+            if (Enable)
+            {
+                return $"Агент {AgentId} URL{AgentAddress} активен";
+            }
+            else
+            {
+                return $"Агент {AgentId} URL{AgentAddress} спит";
+            }
+        }
     }
 }

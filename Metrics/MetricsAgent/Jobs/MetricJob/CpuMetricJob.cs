@@ -30,7 +30,7 @@ namespace MetricsAgent.Jobs
 
             TimeSpan timeFrom = TimeSpan.FromSeconds(0);
 
-            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 120);
+            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 600);
             try
             {
                 _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);

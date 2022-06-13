@@ -17,7 +17,7 @@ namespace MetricsManager.Services
             _databaseOptions = databaseOptions;
         }
 
-        public void Add(AgentInfoDto item)   // сюда все значения приходят корректно
+        public void Add(AgentInfoDto item)   
         {
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
@@ -27,7 +27,7 @@ namespace MetricsManager.Services
                 "INSERT INTO agentsrepo(agentid, agentaddress, enable) VALUES(@id, @agentaddress, @enable)",
                 new
                 {
-                    id = item.AgentId,   // не могу понять, почему этот параметр в базе равен 0
+                    id = item.AgentId,   
                     agentaddress = item.AgentAddress,
                     enable = item.Enable
                 });

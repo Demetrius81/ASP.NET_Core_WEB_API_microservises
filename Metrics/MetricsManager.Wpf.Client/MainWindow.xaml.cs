@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,17 @@ namespace MetricsManager.Wpf.Client
         public MainWindow()
         {
             InitializeComponent();
+
+            AgentManager.Agents = AgentManager.ReadAgents();
+
+            agentsList.ItemsSource = AgentManager.Agents;
+
+            agentsList.Text = agentsList.ItemsSource.ToString();
         }
 
+        private void agentsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AgentManager.CurrentAgent = (AgentInfo)agentsList.SelectedItem;
+        }
     }
 }
