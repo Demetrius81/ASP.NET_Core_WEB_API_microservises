@@ -67,7 +67,7 @@ namespace MetricsManager.Controllers
         [HttpPut("enable/{agentId}")]
         [SwaggerOperation(description: "Включение агента")]
         [SwaggerResponse(200, description: "Агент готов к работе")]
-        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [SwaggerResponse(404, description: "Связь с менеджером не установлена")]
         public IActionResult EnableAgentById([FromRoute] int agentId)
         {
             Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
@@ -82,6 +82,22 @@ namespace MetricsManager.Controllers
         }
 
         /// <summary>
+        /// Удаление агента по идентификатору
+        /// </summary>
+        /// <param name="agentId">Идентификатор агента</param>
+        /// <returns></returns>
+        [HttpPut("remove/{agentId}")]
+        [SwaggerOperation(description: "Удаление агента")]
+        [SwaggerResponse(200, description: "Агент удален")]
+        [SwaggerResponse(404, description: "Связь с менеджером не установлена")]
+        public IActionResult DeleteAgentById([FromRoute] int agentId)
+        {
+           _agentsPoolRepository.Remove(agentId);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Метод выключает активного агента
         /// </summary>
         /// <param name="agentId"></param>
@@ -89,7 +105,7 @@ namespace MetricsManager.Controllers
         [HttpPut("disable/{agentId}")]
         [SwaggerOperation(description: "Выключение агента")]
         [SwaggerResponse(200, description: "Агент спит")]
-        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [SwaggerResponse(404, description: "Связь с менеджером не установлена")]
         public IActionResult DisableAgentById([FromRoute] int agentId)
         {
             Dictionary<int, AgentInfoDto> agentsRepo = (Dictionary<int, AgentInfoDto>)_agentsPoolRepository.Get();
@@ -110,7 +126,7 @@ namespace MetricsManager.Controllers
         [HttpGet("get")]
         [SwaggerOperation(description: "Получение списка всех агентов")]
         [SwaggerResponse(200, description: "Список метрик получен")]
-        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [SwaggerResponse(404, description: "Связь с менеджером не установлена")]
         [ProducesResponseType(typeof(List<AgentInfo>), StatusCodes.Status200OK)]
         public IActionResult GetAllAgents()
         {

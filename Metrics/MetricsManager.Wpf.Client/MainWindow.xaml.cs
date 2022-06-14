@@ -37,5 +37,31 @@ namespace MetricsManager.Wpf.Client
         {
             AgentManager.CurrentAgent = (AgentInfo)agentsList.SelectedItem;
         }
+
+        private void Button_Add_Click(object sender, RoutedEventArgs e)
+        {
+            AddAgentWindow window = new AddAgentWindow();
+
+            window.Show();
+
+            this.Close();
+        }
+
+        private void Button_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            AgentManager.MetricsManagerClient.RemoveAsync(AgentManager.CurrentAgent.AgentId);
+
+            AgentManager.Agents.Remove(AgentManager.CurrentAgent);
+
+            agentsList.SelectedItem = null;
+
+            MessageBox.Show("Агент успешно удален");
+        }
+
+        private void Button_GetMetrics_Click(object sender, RoutedEventArgs e)
+        {
+            CpuChartControl cpuChartControl = new CpuChartControl();
+            cpuChartControl.OnClick(cpuChartControl, new RoutedEventArgs());
+        }
     }
 }

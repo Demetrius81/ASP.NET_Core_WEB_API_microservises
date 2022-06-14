@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:MetricsManager.Wpf.Client"
         mc:Ignorable="d"
         Title="Клиент сервиса получения системных метрик" Height="768" Width="1600">
@@ -21,20 +22,21 @@
         <local:HddChartControl Grid.Row="1" Margin="10,10,10,10"/>
         <local:NetworkChartControl Grid.Column="1" Grid.Row="1" Margin="10,10,10,10"/>
         <local:RamChartControl Grid.Column="2" Grid.Row="1" Margin="10,10,10,10"/>
-        <ComboBox x:Name="agentsList" 
-                  HorizontalAlignment="Left" 
-                  Margin="10,122,0,0" 
-                  VerticalAlignment="Top" 
-                  Width="360" SelectionChanged="agentsList_SelectionChanged"
+        <StackPanel>
+            <TextBlock Text="Клиент сервиса получения системных метрик" FontWeight="Bold" FontSize="22" Margin="20 0 0 40" />
+
+            <TextBlock Text="Выберите из списка агента для получения метрик" FontSize="12" Margin="10 0 0 10" />
+            <ComboBox x:Name="agentsList"                    
+                  Margin="10 0 0 10" 
+                  Width="514" SelectionChanged="agentsList_SelectionChanged"
                   />
-        <Label Content="Выберите из списка агента для получения метрик" FontSize="15" HorizontalAlignment="Left" Height="31" Margin="10,86,0,0" VerticalAlignment="Top" Width="360"/>
-        <Label Content="Для регистрации агента заполните поля и нажмите зарегестрировать" FontSize="15" HorizontalAlignment="Center" Margin="0,199,0,0" VerticalAlignment="Top" Width="513"/>
-        <Label Content="Для удаления выберите агента из списка и нажмите удалить" FontSize="15" HorizontalAlignment="Left" Margin="10,149,0,0" VerticalAlignment="Top" Width="523"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,234,0,0" FontSize="12" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="329" Height="25"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,264,0,0" FontSize="12" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="329" Height="25"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="375,122,0,0" VerticalAlignment="Top" Height="22" Width="148"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="344,234,0,0" VerticalAlignment="Top" Height="56" Width="165"/>
-        <CheckBox x:Name="agentCondition" Content="Состояние агента" IsEnabled="True" IsChecked="True" HorizontalAlignment="Left" Margin="10,294,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.49,2.321" Width="116"/>
-        <Label Content="Клиент сервиса получения системных метрик" FontStyle="Normal" FontSize="24" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="52" Width="514"/>
+            <TextBlock Text="Для получения системных метрик выберите агента из списка и нажмите получить метрики" FontSize="12" Margin="10 0 0 10" />
+            <Button Content="Получить метрики" Click="Button_GetMetrics_Click"/>
+            <TextBlock Text="Для удаления выберите агента из списка и нажмите удалить" FontSize="12" Margin="10 0 0 10" />
+            <Button Content="Удалить агента из списка" Click="Button_Delete_Click" />
+            <TextBlock Text="Для добавления агента в список нажмите добавить агента" FontSize="12" Margin="10 0 0 10" />
+            <Button Content="Добавить нового агента" Style="{StaticResource MaterialDesignFlatButton}" Click="Button_Add_Click"/>
+
+        </StackPanel>
     </Grid>
 </Window>

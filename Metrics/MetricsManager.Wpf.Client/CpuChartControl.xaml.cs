@@ -119,6 +119,11 @@ namespace MetricsManager.Wpf.Client
             DataContext = this;
         }
 
+        public void OnClick(object sender, RoutedEventArgs e)
+        {
+            UpdateOnСlick(sender, e);
+        }
+
         /// <summary>
         /// Метод, который запускается реагируя на событие нажатия кнопки
         /// </summary>
