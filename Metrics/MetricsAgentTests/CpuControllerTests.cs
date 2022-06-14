@@ -23,21 +23,25 @@ namespace MetricsAgentTests
             _controller = new CpuMetricsController(_mockMetricsRepository.Object);
         }
 
-        [Fact]
-        public void  Create_SendRequest_ShouldReturnOk()
-        {
-            _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<CpuMetric>())).Verifiable();
+        #region For delete
 
-            IActionResult result = _controller.Create(new CpuMetricCreateRequest
-            {
-                Time = TimeSpan.FromSeconds(1),
-                Value = 50
-            });
+        //[Fact]
+        //public void  Create_SendRequest_ShouldReturnOk()
+        //{
+        //    _mockMetricsRepository.Setup(repository =>
+        //        repository.Create(It.IsAny<CpuMetric>())).Verifiable();
 
-            _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<CpuMetric>()), Times.AtMostOnce());
-        }
+        //    IActionResult result = _controller.Create(new CpuMetricCreateRequest
+        //    {
+        //        Time = TimeSpan.FromSeconds(1),
+        //        Value = 50
+        //    });
+
+        //    _mockMetricsRepository.Verify(repository =>
+        //        repository.Create(It.IsAny<CpuMetric>()), Times.AtMostOnce());
+        //}
+
+        #endregion
 
         [Fact]
         public void GetAll_SendRequest_ShouldReturnOk()

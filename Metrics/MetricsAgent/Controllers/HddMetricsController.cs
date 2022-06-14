@@ -32,28 +32,32 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Задать уровень метрики и время
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] HddMetricCreateRequest request)
-        {
-            HddMetric metric = new HddMetric
-            {
-                Time = request.Time.TotalSeconds,
-                Value = request.Value
-            };
-            _metricsRepository.Create(metric);
+        #region For delete
 
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
-            }
+        ///// <summary>
+        ///// Задать уровень метрики и время
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] HddMetricCreateRequest request)
+        //{
+        //    HddMetric metric = new HddMetric
+        //    {
+        //        Time = request.Time.TotalSeconds,
+        //        Value = request.Value
+        //    };
+        //    _metricsRepository.Create(metric);
 
-            return Ok();
-        }
+        //    if (_logger is not null)
+        //    {
+        //        _logger.LogDebug($"Успешно добавили новую метрику: {metric}");
+        //    }
+
+        //    return Ok();
+        //}
+
+        #endregion
 
         [HttpGet("all")]
         public IActionResult GetAll()

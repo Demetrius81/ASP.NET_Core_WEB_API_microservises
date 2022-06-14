@@ -24,21 +24,25 @@ namespace MetricsAgentTests
             _controller = new RamMetricsController(_mockMetricsRepository.Object);
         }
 
-        [Fact]
-        public void Create_SendRequest_ShouldReturnOk()
-        {
-            _mockMetricsRepository.Setup(repository =>
-                repository.Create(It.IsAny<RamMetric>())).Verifiable();
+        #region For delete
 
-            IActionResult result = _controller.Create(new RamMetricCreateRequest
-            {
-                Time = TimeSpan.FromSeconds(1),
-                Value = 50
-            });
+        //[Fact]
+        //public void Create_SendRequest_ShouldReturnOk()
+        //{
+        //    _mockMetricsRepository.Setup(repository =>
+        //        repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
-            _mockMetricsRepository.Verify(repository =>
-                repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
-        }
+        //    IActionResult result = _controller.Create(new RamMetricCreateRequest
+        //    {
+        //        Time = TimeSpan.FromSeconds(1),
+        //        Value = 50
+        //    });
+
+        //    _mockMetricsRepository.Verify(repository =>
+        //        repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
+        //}
+
+        #endregion
 
         [Fact]
         public void GetAll_SendRequest_ShouldReturnOk()

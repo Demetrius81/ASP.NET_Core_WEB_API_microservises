@@ -1,5 +1,7 @@
 using AutoMapper;
+using FluentMigrator.Runner;
 using MetricsAgent.Converter;
+using MetricsAgent.Jobs;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +14,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -32,6 +37,14 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    .AddSQLite()
+                    .WithGlobalConnectionString(Configuration
+                        .GetSection("Settings:DatabaseOptions:ConnectionString").Value)
+                    .ScanIn(typeof(Startup).Assembly).For.Migrations())
+                .AddLogging(lg => lg.AddFluentMigratorConsole());
+
             var mapperConfiguration = new MapperConfiguration(mapperProfile => mapperProfile.AddProfile(new
                 MapperProfile()));
 
@@ -39,33 +52,73 @@ namespace MetricsAgent
 
             services.AddSingleton(mapper);
 
-            ConfigureSqlLiteConnection(services);
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
+            services.AddSingleton<IJobFactory, SingletonJobFactory>();
 
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>().Configure<DatabaseOptions>(options =>
+            #region MetricsJob
+
+            services.AddSingleton<CpuMetricJob>();
+
+            services.AddSingleton(new JobSchedule(
+                typeof(CpuMetricJob),
+                "0/5 * * ? * * *"));
+
+            services.AddSingleton<DotNetMetricJob>();
+
+            services.AddSingleton(new JobSchedule(
+                typeof(DotNetMetricJob),
+                "1/5 * * ? * * *"));
+
+            services.AddSingleton<HddMetricJob>();
+
+            services.AddSingleton(new JobSchedule(
+                typeof(HddMetricJob),
+                "2/5 * * ? * * *"));
+
+            services.AddSingleton<NetworkMetricJob>();
+
+            services.AddSingleton(new JobSchedule(
+                typeof(NetworkMetricJob),
+                "3/5 * * ? * * *"));
+
+            services.AddSingleton<RamMetricJob>();
+
+            services.AddSingleton(new JobSchedule(
+                typeof(RamMetricJob),
+                "4/5 * * ? * * *"));
+            #endregion
+
+            services.AddHostedService<QuartzHostedService>();
+
+            #region MetricsRepository
+
+            services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
 
-            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>().Configure<DatabaseOptions>(options =>
+            services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>().Configure<DatabaseOptions>(options =>
                 {
                     Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
                 });
+
+            #endregion
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
@@ -85,7 +138,10 @@ namespace MetricsAgent
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
@@ -104,46 +160,7 @@ namespace MetricsAgent
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private void ConfigureSqlLiteConnection(IServiceCollection services)
-        {
-            const string connectionString = "Data Source = metrics.db; Version = 3; Pooling = true; Max Pool Size = 100;";
-
-            SQLiteConnection connection = new SQLiteConnection(connectionString);
-
-            connection.Open();
-
-            PrepareSchema(connection);
-        }
-
-        private void PrepareSchema(SQLiteConnection connection)
-        {
-            using (SQLiteCommand command = new SQLiteCommand(connection))
-            {
-                List<string> TabNames = new List<string>()
-                {
-                    "cpumetrics",
-                    "dotnetmetrics",
-                    "hddmetrics",
-                    "networkmetrics",
-                    "rammetrics"
-                };
-
-                foreach (string TabName in TabNames)
-                {
-                    command.CommandText = $"DROP TABLE IF EXISTS {TabName}";
-
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = $@"CREATE TABLE {TabName}(
-                    id INTEGER PRIMARY KEY,
-                    value INT, 
-                    time INT)";
-
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
+            migrationRunner.MigrateUp();
+        }        
     }
 }
