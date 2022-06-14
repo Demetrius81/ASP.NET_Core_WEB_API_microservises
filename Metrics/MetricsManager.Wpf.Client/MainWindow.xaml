@@ -31,11 +31,11 @@
                   Width="514" SelectionChanged="agentsList_SelectionChanged"
                   />
             <TextBlock Text="Для получения системных метрик выберите агента из списка и нажмите получить метрики" FontSize="12" Margin="10 0 0 10" />
-            <Button Content="Получить метрики" Click="Button_GetMetrics_Click"/>
+            <Button x:Name="buttonGet" Width="520" Content="Получить метрики" Click="Button_GetMetrics_Click"/>
             <TextBlock Text="Для удаления выберите агента из списка и нажмите удалить" FontSize="12" Margin="10 0 0 10" />
-            <Button Content="Удалить агента из списка" Click="Button_Delete_Click" />
+            <Button x:Name="buttonDelete" Width="520" Content="Удалить агента из списка" Click="Button_Delete_Click" />
             <TextBlock Text="Для добавления агента в список нажмите добавить агента" FontSize="12" Margin="10 0 0 10" />
-            <Button Content="Добавить нового агента" Style="{StaticResource MaterialDesignFlatButton}" Click="Button_Add_Click"/>
+            <Button x:Name="buttonAdd" Width="520" Content="Добавить нового агента" Style="{StaticResource MaterialDesignFlatButton}" Click="Button_Add_Click"/>
 
         </StackPanel>
     </Grid>

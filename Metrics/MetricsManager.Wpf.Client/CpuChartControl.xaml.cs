@@ -19,7 +19,7 @@ namespace MetricsManager.Wpf.Client
     public partial class CpuChartControl : UserControl, INotifyPropertyChanged
     {
         private SeriesCollection _columnSeriesValues;
-                
+
         private MetricsManagerClient _metricsManagerClient;
 
         private string _percentText;
@@ -29,6 +29,8 @@ namespace MetricsManager.Wpf.Client
         private int _maxValue;
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        object locker = new();
 
         public int MaxValue
         {
@@ -131,22 +133,26 @@ namespace MetricsManager.Wpf.Client
         /// <param name="e"></param>
         private void UpdateOnСlick(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 while (true)
                 {
                     TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
-                    AgentManager.Agents = AgentManager.ReadAgents();
+                    CpuMetricCreateRequest request = new CpuMetricCreateRequest();
 
-                    AgentManager.CurrentAgent = AgentManager.Agents[0];
-
-                    CpuMetricCreateRequest request = new CpuMetricCreateRequest()
+                    lock (locker)
                     {
-                        AgentId = AgentManager.CurrentAgent.AgentId,
-                        FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
-                        ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
-                    };
+                        AgentManager.Agents = AgentManager.ReadAgents();
+
+                        AgentManager.CurrentAgent = AgentManager.Agents[0];
+
+                        request.AgentId = AgentManager.CurrentAgent.AgentId;
+
+                        request.FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss");
+
+                        request.ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss");
+                    }
 
                     try
                     {
@@ -184,7 +190,7 @@ namespace MetricsManager.Wpf.Client
                     {
                         Debug.WriteLine(ex.Message);
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
             });
         }

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 
 namespace MetricsManager.Wpf.Client
 {
@@ -31,6 +32,20 @@ namespace MetricsManager.Wpf.Client
             agentsList.ItemsSource = AgentManager.Agents;
 
             agentsList.Text = agentsList.ItemsSource.ToString();
+
+            DoubleAnimation animation = new DoubleAnimation();
+
+            animation.From = 0;
+
+            animation.To = 520;
+
+            animation.Duration = TimeSpan.FromSeconds(2);
+
+            buttonGet.BeginAnimation(Button.WidthProperty, animation);
+
+            buttonDelete.BeginAnimation(Button.WidthProperty, animation);
+
+            buttonAdd.BeginAnimation(Button.WidthProperty, animation);
         }
 
         private void agentsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -49,19 +64,38 @@ namespace MetricsManager.Wpf.Client
 
         private void Button_Delete_Click(object sender, RoutedEventArgs e)
         {
-            AgentManager.MetricsManagerClient.RemoveAsync(AgentManager.CurrentAgent.AgentId);
+            if (AgentManager.CurrentAgent == null)
+            {
+                MessageBox.Show("Агент не выбран");
+            }
+            else
+            {
+                AgentManager.MetricsManagerClient.RemoveAsync(AgentManager.CurrentAgent.AgentId);
 
-            AgentManager.Agents.Remove(AgentManager.CurrentAgent);
+                AgentManager.Agents.Remove(AgentManager.CurrentAgent);
 
-            agentsList.SelectedItem = null;
+                agentsList.SelectedItem = null;
 
-            MessageBox.Show("Агент успешно удален");
+                MessageBox.Show("Агент успешно удален");
+            }
         }
 
         private void Button_GetMetrics_Click(object sender, RoutedEventArgs e)
         {
+            // Через эту кнопку методы работают, метрики исправно получают, но не отоброжаются.
+            // Как заставить ChartControl отображать все метрики по нажатию этой кнопки?
+
             CpuChartControl cpuChartControl = new CpuChartControl();
-            cpuChartControl.OnClick(cpuChartControl, new RoutedEventArgs());
+            DotNetChartControl dotNetChartControl = new DotNetChartControl();
+            HddChartControl hddChartControl = new HddChartControl();
+            NetworkChartControl networkChartControl = new NetworkChartControl();
+            RamChartControl ramChartControl = new RamChartControl();
+
+            cpuChartControl.OnClick(null, new RoutedEventArgs());
+            dotNetChartControl.OnClick(null, new RoutedEventArgs());
+            hddChartControl.OnClick(null, new RoutedEventArgs());
+            networkChartControl.OnClick(null, new RoutedEventArgs());
+            ramChartControl.OnClick(null, new RoutedEventArgs());
         }
     }
 }

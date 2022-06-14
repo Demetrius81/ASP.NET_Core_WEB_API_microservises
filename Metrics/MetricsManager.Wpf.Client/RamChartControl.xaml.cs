@@ -28,6 +28,8 @@ namespace MetricsManager.Wpf.Client
 
         private int _maxValue;
 
+        object locker = new();
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public int MaxValue
@@ -119,6 +121,11 @@ namespace MetricsManager.Wpf.Client
             DataContext = this;
         }
 
+        public void OnClick(object sender, RoutedEventArgs e)
+        {
+            UpdateOnСlick(sender, e);
+        }
+
         /// <summary>
         /// Метод, который запускается реагируя на событие нажатия кнопки
         /// </summary>
@@ -132,16 +139,20 @@ namespace MetricsManager.Wpf.Client
                 {
                     TimeSpan fromTime = GetTimePeriod(out TimeSpan toTime);
 
-                    AgentManager.Agents = AgentManager.ReadAgents();
+                    RamMetricCreateRequest request = new RamMetricCreateRequest();
 
-                    AgentManager.CurrentAgent = AgentManager.Agents[0];
-
-                    RamMetricCreateRequest request = new RamMetricCreateRequest()
+                    lock (locker)
                     {
-                        AgentId = AgentManager.CurrentAgent.AgentId,
-                        FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss"),
-                        ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss")
-                    };
+                        AgentManager.Agents = AgentManager.ReadAgents();
+
+                        AgentManager.CurrentAgent = AgentManager.Agents[0];
+
+                        request.AgentId = AgentManager.CurrentAgent.AgentId;
+
+                        request.FromTime = fromTime.ToString("dd\\.hh\\:mm\\:ss");
+
+                        request.ToTime = toTime.ToString("dd\\.hh\\:mm\\:ss");
+                    }
 
                     try
                     {
@@ -179,7 +190,7 @@ namespace MetricsManager.Wpf.Client
                     {
                         Debug.WriteLine(ex.Message);
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
             });
         }
