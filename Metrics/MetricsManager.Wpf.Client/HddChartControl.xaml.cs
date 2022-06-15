@@ -14,7 +14,7 @@ namespace MetricsManager.Wpf.Client
     /// <summary>
     /// Interaction logic for HddChartControl.xaml
     /// </summary>
-    public partial class HddChartControl : UserControl, INotifyPropertyChanged
+    public partial class HddChartControl : UserControl, INotifyPropertyChanged, ICpuChartControl
     {
         private SeriesCollection _columnSeriesValues;
 
@@ -119,9 +119,9 @@ namespace MetricsManager.Wpf.Client
             DataContext = this;
         }
 
-        public void OnClick(object sender, RoutedEventArgs e)
+        public void OnClick()
         {
-            UpdateOnСlick(sender, e);
+            UpdateOnСlick(null, new RoutedEventArgs());
         }
 
         /// <summary>

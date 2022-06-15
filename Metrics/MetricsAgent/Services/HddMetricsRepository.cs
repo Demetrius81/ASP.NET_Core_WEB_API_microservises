@@ -20,9 +20,9 @@ namespace MetricsAgent.Services
 
             _databaseOptions = databaseOptions;
 
-            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+            //using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM hddmetrics");
+            //connection.Execute("DELETE FROM hddmetrics");
         }
 
         public void Create(HddMetricDto item)

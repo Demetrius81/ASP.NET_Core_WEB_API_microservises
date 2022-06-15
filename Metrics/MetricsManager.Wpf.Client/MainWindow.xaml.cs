@@ -48,11 +48,21 @@ namespace MetricsManager.Wpf.Client
             buttonAdd.BeginAnimation(Button.WidthProperty, animation);
         }
 
+        /// <summary>
+        /// Метод - обработчик события изменения текущего агента
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void agentsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             AgentManager.CurrentAgent = (AgentInfo)agentsList.SelectedItem;
         }
 
+        /// <summary>
+        /// Метод - обработчик события нажатия на кнопку "добавить"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
             AddAgentWindow window = new AddAgentWindow();
@@ -62,6 +72,11 @@ namespace MetricsManager.Wpf.Client
             this.Close();
         }
 
+        /// <summary>
+        /// Метод - обработчик события нажатия на кнопку "удалить"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Delete_Click(object sender, RoutedEventArgs e)
         {
             if (AgentManager.CurrentAgent == null)
@@ -80,22 +95,18 @@ namespace MetricsManager.Wpf.Client
             }
         }
 
+        /// <summary>
+        /// Метод - обработчик события нажатия на кнопку "получить метрики"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_GetMetrics_Click(object sender, RoutedEventArgs e)
         {
-            // Через эту кнопку методы работают, метрики исправно получают, но не отоброжаются.
-            // Как заставить ChartControl отображать все метрики по нажатию этой кнопки?
-
-            CpuChartControl cpuChartControl = new CpuChartControl();
-            DotNetChartControl dotNetChartControl = new DotNetChartControl();
-            HddChartControl hddChartControl = new HddChartControl();
-            NetworkChartControl networkChartControl = new NetworkChartControl();
-            RamChartControl ramChartControl = new RamChartControl();
-
-            cpuChartControl.OnClick(null, new RoutedEventArgs());
-            dotNetChartControl.OnClick(null, new RoutedEventArgs());
-            hddChartControl.OnClick(null, new RoutedEventArgs());
-            networkChartControl.OnClick(null, new RoutedEventArgs());
-            ramChartControl.OnClick(null, new RoutedEventArgs());
+            cpuChartControl.OnClick();
+            dotNetChartControl.OnClick();
+            hddChartControl.OnClick();
+            networkChartControl.OnClick();
+            ramChartControl.OnClick();
         }
     }
 }

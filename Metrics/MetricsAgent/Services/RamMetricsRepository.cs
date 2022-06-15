@@ -20,9 +20,9 @@ namespace MetricsAgent.Services
 
             _databaseOptions = databaseOptions;
 
-            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+            //using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM rammetrics");
+            //connection.Execute("DELETE FROM rammetrics");
         }
 
         public void Create(RamMetricDto item)

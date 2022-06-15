@@ -21,9 +21,9 @@ namespace MetricsAgent.Services
 
             _databaseOptions = databaseOptions;
 
-            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+            //using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM cpumetrics");
+            //connection.Execute("DELETE FROM cpumetrics");
         }
 
         public void Create(CpuMetricDto item)
