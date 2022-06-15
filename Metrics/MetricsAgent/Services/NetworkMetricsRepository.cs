@@ -20,9 +20,9 @@ namespace MetricsAgent.Services
 
             _databaseOptions = databaseOptions;
 
-            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+            //using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
 
-            connection.Execute("DELETE FROM networkmetrics");
+            //connection.Execute("DELETE FROM networkmetrics");
         }
 
         public void Create(NetworkMetricDto item)

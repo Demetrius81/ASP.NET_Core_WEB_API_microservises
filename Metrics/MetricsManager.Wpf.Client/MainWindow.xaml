@@ -17,11 +17,11 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <local:CpuChartControl Grid.Column="1" Margin="10,10,10,10"/>
-        <local:DotNetChartControl Grid.Column="2" Margin="10,10,10,10"/>
-        <local:HddChartControl Grid.Row="1" Margin="10,10,10,10"/>
-        <local:NetworkChartControl Grid.Column="1" Grid.Row="1" Margin="10,10,10,10"/>
-        <local:RamChartControl Grid.Column="2" Grid.Row="1" Margin="10,10,10,10"/>
+        <local:CpuChartControl x:Name="cpuChartControl" Grid.Column="1" Margin="10,10,10,10"/>
+        <local:DotNetChartControl x:Name="dotNetChartControl" Grid.Column="2" Margin="10,10,10,10"/>
+        <local:HddChartControl x:Name="hddChartControl" Grid.Row="1" Margin="10,10,10,10"/>
+        <local:NetworkChartControl x:Name="networkChartControl" Grid.Column="1" Grid.Row="1" Margin="10,10,10,10"/>
+        <local:RamChartControl x:Name="ramChartControl" Grid.Column="2" Grid.Row="1" Margin="10,10,10,10"/>
         <StackPanel>
             <TextBlock Text="Клиент сервиса получения системных метрик" FontWeight="Bold" FontSize="22" Margin="20 0 0 40" />
 

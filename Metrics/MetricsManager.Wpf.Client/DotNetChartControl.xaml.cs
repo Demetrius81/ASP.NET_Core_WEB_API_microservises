@@ -16,7 +16,7 @@ namespace MetricsManager.Wpf.Client
     /// <summary>
     /// Interaction logic for DotNetChartControl.xaml
     /// </summary>
-    public partial class DotNetChartControl : UserControl, INotifyPropertyChanged
+    public partial class DotNetChartControl : UserControl, INotifyPropertyChanged, ICpuChartControl
     {
         private SeriesCollection _columnSeriesValues;
 
@@ -121,9 +121,9 @@ namespace MetricsManager.Wpf.Client
             DataContext = this;
         }
 
-        public void OnClick(object sender, RoutedEventArgs e)
+        public void OnClick()
         {
-            UpdateOnСlick(sender, e);
+            UpdateOnСlick(null, new RoutedEventArgs());
         }
 
         /// <summary>
