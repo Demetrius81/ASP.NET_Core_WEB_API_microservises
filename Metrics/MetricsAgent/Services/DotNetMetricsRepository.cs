@@ -2,6 +2,7 @@
 using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -15,11 +16,19 @@ namespace MetricsAgent.Services
 
         public DotNetMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
+            //DataBaseModel.DotNetMetricDtoDB = new List<DotNetMetricDto>();
+
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM dotnetmetrics");
         }
 
-        public void Create(DotNetMetric item)
+        public void Create(DotNetMetricDto item)
         {
+            //DataBaseModel.DotNetMetricDtoDB.Add(item);
+
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
@@ -35,6 +44,8 @@ namespace MetricsAgent.Services
 
         public void Delete(int id)
         {
+            //DataBaseModel.DotNetMetricDtoDB.Remove(DataBaseModel.DotNetMetricDtoDB.FirstOrDefault(x => x.Id == id));
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -45,8 +56,12 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(DotNetMetric item)
+        public void Update(DotNetMetricDto item)
         {
+            //DataBaseModel.DotNetMetricDtoDB.Remove(DataBaseModel.DotNetMetricDtoDB.FirstOrDefault(x => x == item));
+
+            //DataBaseModel.DotNetMetricDtoDB.Add(item);
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -59,11 +74,13 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<DotNetMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<DotNetMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
+            //return DataBaseModel.DotNetMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds).ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<DotNetMetric> metrics = connection.Query<DotNetMetric>(
+            List<DotNetMetricDto> metrics = connection.Query<DotNetMetricDto>(
                 "SELECT * FROM dotnetmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +91,25 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<DotNetMetric> GetAll()
+        public IList<DotNetMetricDto> GetAll()
         {
+            //return DataBaseModel.DotNetMetricDtoDB.ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<DotNetMetric> metrics = connection.Query<DotNetMetric>(
+            List<DotNetMetricDto> metrics = connection.Query<DotNetMetricDto>(
                 "SELECT * FROM dotnetmetrics").ToList();
 
             return metrics;
         }
 
-        public DotNetMetric GetById(int id)
+        public DotNetMetricDto GetById(int id)
         {
+            //return DataBaseModel.DotNetMetricDtoDB.Where(x => x.Id == id).FirstOrDefault();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            DotNetMetric metric = connection.QuerySingle<DotNetMetric>(
+            DotNetMetricDto metric = connection.QuerySingle<DotNetMetricDto>(
                 "SELECT Id, Time, Value FROM dotnetmetrics WHERE id = @id",
                 new
                 {
@@ -96,6 +117,29 @@ namespace MetricsAgent.Services
                 });
 
             return metric;
+        }
+
+        public void DeleteByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            //IEnumerable<DotNetMetricDto> todelete = DataBaseModel.DotNetMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds);
+
+            //if (todelete is not null)
+            //{
+            //    foreach (var item in todelete)
+            //    {
+            //        DataBaseModel.DotNetMetricDtoDB.Remove(item);
+            //    }
+            //}
+
+
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM dotnetmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                });
         }
     }
 }

@@ -1,17 +1,21 @@
 ﻿using AutoMapper;
-using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
+    /// <summary>
+    /// Контроллер сбора RAM метрик
+    /// </summary>
     [Route("api/metrics/ram")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение RAM метрик")]
     public class RamMetricsController : ControllerBase, IMetricsController
     {
         private readonly IRamMetricsRepository _metricsRepository;
@@ -58,18 +62,24 @@ namespace MetricsAgent.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Получить метрики за весь период
+        /// </summary>
+        /// <returns>Результат операции</returns>
         [HttpGet("all")]
+        [SwaggerOperation(description: "Получение метрик CPU")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetAll()
         {
-            IList<RamMetric> metrics = _metricsRepository.GetAll();
+            IList<RamMetricDto> metrics = _metricsRepository.GetAll();
 
             RamAllMetricsResponse response = new RamAllMetricsResponse()
             {
-                Metrics = new List<RamMetricDto>()
+                Metrics = new List<RamMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<RamMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<RamMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -78,18 +88,26 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получить метрики за указанный период
+        /// </summary>
+        /// <param name="fromTime">Время с...</param>
+        /// <param name="toTime">Время по...</param>
+        /// <returns>Результат операции</returns>
         [HttpGet("available/from/{fromTime}/to/{toTime}")]
+        [SwaggerOperation(description: "Получение метрик RAM за указанный период")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<RamMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<RamMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             RamAllMetricsResponse response = new RamAllMetricsResponse()
             {
-                Metrics = new List<RamMetricDto>()
+                Metrics = new List<RamMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<RamMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<RamMetric>(metric));
             }
             if (_logger is not null)
             {

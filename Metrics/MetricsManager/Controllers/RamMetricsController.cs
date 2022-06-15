@@ -1,43 +1,70 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models.Requests;
+using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace MetricsManager.Controllers
 {
+    /// <summary>
+    /// Контроллер получения RAM метрик
+    /// </summary>
     [Route("api/ram")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение RAM метрик")]
     public class RamMetricsController : ControllerBase, IMetricsManager
     {
-        private ILogger<RamMetricsController> _logger;
+        private readonly IMetricsAgentClient _metricsAgentClient;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger = null)
+        public RamMetricsController(IMetricsAgentClient metricsAgentClient)
         {
-            _logger = logger;
+            _metricsAgentClient = metricsAgentClient;
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        /// <summary>
+        /// Получение метрик RAM
+        /// </summary>
+        /// <param name="metricCreateRequest"></param>
+        /// <returns></returns>
+        [HttpPost("getRamMetricsFromAgent")]
+        [SwaggerOperation(description: "Получение метрик RAM")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
+        [SwaggerResponse(404, description: "Связь с агентом не установлена")]
+        [ProducesResponseType(typeof(RamAllMetricsResponse), StatusCodes.Status200OK)]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+            [FromBody] RamMetricCreateRequest metricCreateRequest)
         {
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно получили все метрики Ram от агента {agentId}");
-            }
+            RamAllMetricsResponse ramAllMetricsResponse = _metricsAgentClient.GetRamAllMetrics(metricCreateRequest);
 
-            return Ok();
+            return Ok(ramAllMetricsResponse);
         }
 
-        [HttpGet("clister/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster(
-            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            if (_logger is not null)
-            {
-                _logger.LogDebug($"Успешно получили все метрики Ram от всех агентов кластера");
-            }
+        #region GetMetricsFromAgent
 
-            return Ok();
-        }
+        //[HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAgent(
+        //    [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+        //    RamAllMetricsResponse ramAllMetricsResponse = _metricsAgentClient.GetRamAllMetrics(new RamMetricCreateRequest()
+        //    {
+        //        AgentId = agentId,
+        //        FromTime = fromTime,
+        //        ToTime = toTime
+        //    });
+        //    return Ok(ramAllMetricsResponse);
+        //}
+
+        //[HttpGet("clister/from/{fromTime}/to/{toTime}")]
+        //public IActionResult GetMetricsFromAllCluster(
+        //    [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+
+        //    return Ok();
+        //}
+
+        #endregion
     }
 }

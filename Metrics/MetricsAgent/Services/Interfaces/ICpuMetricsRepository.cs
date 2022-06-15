@@ -1,9 +1,8 @@
-﻿using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
+﻿using Source.Models;
 
 namespace MetricsAgent.Services.Interfaces
 {
-    public interface ICpuMetricsRepository : IRepository<CpuMetric>
+    public interface ICpuMetricsRepository : IRepository<CpuMetricDto>
     {
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Source.Models.Requests;
 using System;
 using Xunit;
 
@@ -11,31 +12,20 @@ namespace MetricsManagerTests
 
         public RamMetricsManagerTests()
         {
-            _ramMetricsController = new RamMetricsController();
+            _ramMetricsController = new RamMetricsController(null);
         }
 
         [Fact]
         public void GetMetricsFromAgent_ReturnOk()
         {
-            int agentId = 1;
+            RamMetricCreateRequest request = new RamMetricCreateRequest()
+            {
+                AgentId = 1,
+                FromTime = TimeSpan.FromSeconds(0),
+                ToTime = TimeSpan.FromSeconds(100)
+            };
 
-            TimeSpan fromTime = TimeSpan.FromSeconds(0);
-
-            TimeSpan toTime = TimeSpan.FromSeconds(100);
-
-            IActionResult result = _ramMetricsController.GetMetricsFromAgent(agentId, fromTime, toTime);
-
-            Assert.IsAssignableFrom<IActionResult>(result);
-        }
-
-        [Fact]
-        public void GetMetricsFromAllCluster_ReturnOk()
-        {
-            TimeSpan fromTime = TimeSpan.FromSeconds(0);
-
-            TimeSpan toTime = TimeSpan.FromSeconds(100);
-
-            IActionResult result = _ramMetricsController.GetMetricsFromAllCluster(fromTime, toTime);
+            IActionResult result = _ramMetricsController.GetMetricsFromAgent(request);
 
             Assert.IsAssignableFrom<IActionResult>(result);
         }

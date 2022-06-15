@@ -1,9 +1,8 @@
-﻿using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
+﻿using Source.Models;
 
 namespace MetricsAgent.Services.Interfaces
 {
-    public interface INetworkMetricsRepository : IRepository<NetworkMetric>
+    public interface INetworkMetricsRepository : IRepository<NetworkMetricDto>
     {
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Dapper;
-using MetricsAgent.Models;
+using Source.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using MetricsAgent.Models;
 
 namespace MetricsAgent.Services
 {
@@ -15,11 +16,19 @@ namespace MetricsAgent.Services
 
         public RamMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
+            //DataBaseModel.RamMetricDtoDB = new List<RamMetricDto>();
+
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM rammetrics");
         }
 
-        public void Create(RamMetric item)
+        public void Create(RamMetricDto item)
         {
+            //DataBaseModel.RamMetricDtoDB.Add(item);
+
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
@@ -35,6 +44,8 @@ namespace MetricsAgent.Services
 
         public void Delete(int id)
         {
+            //DataBaseModel.RamMetricDtoDB.Remove(DataBaseModel.RamMetricDtoDB.FirstOrDefault(x => x.Id == id));
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -45,8 +56,12 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(RamMetric item)
+        public void Update(RamMetricDto item)
         {
+            //DataBaseModel.RamMetricDtoDB.Remove(DataBaseModel.RamMetricDtoDB.FirstOrDefault(x => x == item));
+
+            //DataBaseModel.RamMetricDtoDB.Add(item);
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -59,11 +74,13 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<RamMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<RamMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
+            //return DataBaseModel.RamMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds).ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<RamMetric> metrics = connection.Query<RamMetric>(
+            List<RamMetricDto> metrics = connection.Query<RamMetricDto>(
                 "SELECT * FROM rammetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +91,25 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<RamMetric> GetAll()
+        public IList<RamMetricDto> GetAll()
         {
+            //return DataBaseModel.RamMetricDtoDB.ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<RamMetric> metrics = connection.Query<RamMetric>(
+            List<RamMetricDto> metrics = connection.Query<RamMetricDto>(
                 "SELECT * FROM rammetrics").ToList();
 
             return metrics;
         }
 
-        public RamMetric GetById(int id)
+        public RamMetricDto GetById(int id)
         {
+            //return DataBaseModel.RamMetricDtoDB.Where(x => x.Id == id).FirstOrDefault();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            RamMetric metric = connection.QuerySingle<RamMetric>(
+            RamMetricDto metric = connection.QuerySingle<RamMetricDto>(
                 "SELECT Id, Time, Value FROM rammetrics WHERE id = @id",
                 new
                 {
@@ -96,6 +117,29 @@ namespace MetricsAgent.Services
                 });
 
             return metric;
+        }
+
+        public void DeleteByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            //IEnumerable<RamMetricDto> todelete = DataBaseModel.RamMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds);
+
+            //if (todelete is not null)
+            //{
+            //    foreach (var item in todelete)
+            //    {
+            //        DataBaseModel.RamMetricDtoDB.Remove(item);
+            //    }
+            //}
+
+
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM rammetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                });
         }
     }
 }

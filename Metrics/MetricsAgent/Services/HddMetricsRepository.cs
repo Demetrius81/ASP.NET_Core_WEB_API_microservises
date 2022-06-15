@@ -2,6 +2,7 @@
 using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -15,11 +16,19 @@ namespace MetricsAgent.Services
 
         public HddMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
+            //DataBaseModel.HddMetricDtoDB = new List<HddMetricDto>();
+
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM hddmetrics");
         }
 
-        public void Create(HddMetric item)
+        public void Create(HddMetricDto item)
         {
+            //DataBaseModel.HddMetricDtoDB.Add(item);
+
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
@@ -35,6 +44,8 @@ namespace MetricsAgent.Services
 
         public void Delete(int id)
         {
+            //DataBaseModel.HddMetricDtoDB.Remove(DataBaseModel.HddMetricDtoDB.FirstOrDefault(x => x.Id == id));
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -45,8 +56,12 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(HddMetric item)
+        public void Update(HddMetricDto item)
         {
+            //DataBaseModel.HddMetricDtoDB.Remove(DataBaseModel.HddMetricDtoDB.FirstOrDefault(x => x == item));
+
+            //DataBaseModel.HddMetricDtoDB.Add(item);
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -59,11 +74,13 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<HddMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public IList<HddMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
+            //return DataBaseModel.HddMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds).ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<HddMetric> metrics = connection.Query<HddMetric>(
+            List<HddMetricDto> metrics = connection.Query<HddMetricDto>(
                 "SELECT * FROM hddmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +91,25 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<HddMetric> GetAll()
+        public IList<HddMetricDto> GetAll()
         {
+            //return DataBaseModel.HddMetricDtoDB.ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<HddMetric> metrics = connection.Query<HddMetric>(
+            List<HddMetricDto> metrics = connection.Query<HddMetricDto>(
                 "SELECT * FROM hddmetrics").ToList();
 
             return metrics;
         }
 
-        public HddMetric GetById(int id)
+        public HddMetricDto GetById(int id)
         {
+            //return DataBaseModel.HddMetricDtoDB.Where(x => x.Id == id).FirstOrDefault();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            HddMetric metric = connection.QuerySingle<HddMetric>(
+            HddMetricDto metric = connection.QuerySingle<HddMetricDto>(
                 "SELECT Id, Time, Value FROM hddmetrics WHERE id = @id",
                 new
                 {
@@ -96,6 +117,29 @@ namespace MetricsAgent.Services
                 });
 
             return metric;
+        }
+
+        public void DeleteByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            //IEnumerable<HddMetricDto> todelete = DataBaseModel.HddMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds);
+
+            //if (todelete is not null)
+            //{
+            //    foreach (var item in todelete)
+            //    {
+            //        DataBaseModel.HddMetricDtoDB.Remove(item);
+            //    }
+            //}
+
+
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM hddmetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                });
         }
     }
 }

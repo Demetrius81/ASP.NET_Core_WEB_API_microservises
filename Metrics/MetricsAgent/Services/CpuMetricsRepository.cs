@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using MetricsAgent.Models;
 using MetricsAgent.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Source.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -15,11 +17,19 @@ namespace MetricsAgent.Services
 
         public CpuMetricsRepository(IOptions<DatabaseOptions> databaseOptions)
         {
+            //DataBaseModel.CpuMetricDtoDB = new List<CpuMetricDto>();
+
             _databaseOptions = databaseOptions;
+
+            using var connection = new SQLiteConnection(databaseOptions.Value.ConnectionString);
+
+            connection.Execute("DELETE FROM cpumetrics");
         }
 
-        public void Create(CpuMetric item)
+        public void Create(CpuMetricDto item)
         {
+            //DataBaseModel.CpuMetricDtoDB.Add(item);
+
             DatabaseOptions databaseOptions = _databaseOptions.Value;
 
             using var connection = new SQLiteConnection(databaseOptions.ConnectionString);
@@ -35,6 +45,8 @@ namespace MetricsAgent.Services
 
         public void Delete(int id)
         {
+            //DataBaseModel.CpuMetricDtoDB.Remove(DataBaseModel.CpuMetricDtoDB.FirstOrDefault(x => x.Id == id));
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -45,8 +57,12 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public void Update(CpuMetric item)
+        public void Update(CpuMetricDto item)
         {
+            //DataBaseModel.CpuMetricDtoDB.Remove(DataBaseModel.CpuMetricDtoDB.FirstOrDefault(x => x == item));
+
+            //DataBaseModel.CpuMetricDtoDB.Add(item);
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
             connection.Execute(
@@ -59,11 +75,36 @@ namespace MetricsAgent.Services
                 });
         }
 
-        public IList<CpuMetric> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public void DeleteByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
+            //IEnumerable<CpuMetricDto> todelete = DataBaseModel.CpuMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds);
+
+            //if (todelete is not null)
+            //{
+            //    foreach (var item in todelete)
+            //    {
+            //        DataBaseModel.CpuMetricDtoDB.Remove(item);
+            //    }
+            //}
+
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+            connection.Execute("DELETE FROM cpumetrics WHERE time BETWEEN @timeFrom AND @timeTo",
+                new
+                {
+                    timeFrom = fromTime.TotalSeconds,
+                    timeTo = toTime.TotalSeconds
+                });
+        }
+
+        public IList<CpuMetricDto> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            //return DataBaseModel.CpuMetricDtoDB.Where(x => x.Time < toTime.TotalSeconds && x.Time > fromTime.TotalSeconds).ToList();
+
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+
+            List<CpuMetricDto> metrics = connection.Query<CpuMetricDto>(
                 "SELECT * FROM cpumetrics WHERE time BETWEEN @timeFrom AND @timeTo",
                 new
                 {
@@ -74,21 +115,25 @@ namespace MetricsAgent.Services
             return metrics;
         }
 
-        public IList<CpuMetric> GetAll()
+        public IList<CpuMetricDto> GetAll()
         {
+            //return DataBaseModel.CpuMetricDtoDB.ToList();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            List<CpuMetric> metrics = connection.Query<CpuMetric>(
+            List<CpuMetricDto> metrics = connection.Query<CpuMetricDto>(
                 "SELECT * FROM cpumetrics").ToList();
 
             return metrics;
         }
 
-        public CpuMetric GetById(int id)
+        public CpuMetricDto GetById(int id)
         {
+            //return DataBaseModel.CpuMetricDtoDB.Where(x => x.Id == id).FirstOrDefault();
+
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            CpuMetric metric = connection.QuerySingle<CpuMetric>(
+            CpuMetricDto metric = connection.QuerySingle<CpuMetricDto>(
                 "SELECT Id, Time, Value FROM cpumetrics WHERE id = @id",
                 new
                 {

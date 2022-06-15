@@ -1,17 +1,21 @@
 ﻿using AutoMapper;
-using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
+using Source.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models.Responses;
 using System;
 using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MetricsAgent.Controllers
 {
+    /// <summary>
+    /// Контроллер сбора .NET метрик
+    /// </summary>
     [Route("api/metrics/dotnet")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение .NET метрик")]
     public class DotNetMetricsController : ControllerBase, IMetricsController
     {
         private readonly IDotNetMetricsRepository _metricsRepository;
@@ -58,18 +62,24 @@ namespace MetricsAgent.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Получить метрики за весь период
+        /// </summary>
+        /// <returns>Результат операции</returns>
         [HttpGet("all")]
+        [SwaggerOperation(description: "Получение метрик .NET")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetAll()
         {
-            IList<DotNetMetric> metrics = _metricsRepository.GetAll();
+            IList<DotNetMetricDto> metrics = _metricsRepository.GetAll();
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<DotNetMetricDto>()
+                Metrics = new List<DotNetMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<DotNetMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -78,18 +88,26 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получить метрики за указанный период
+        /// </summary>
+        /// <param name="fromTime">Время с...</param>
+        /// <param name="toTime">Время по...</param>
+        /// <returns>Результат операции</returns>
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
+        [SwaggerOperation(description: "Получение метрик .NET за указанный период")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<DotNetMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<DotNetMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             DotNetAllMetricsResponse response = new DotNetAllMetricsResponse()
             {
-                Metrics = new List<DotNetMetricDto>()
+                Metrics = new List<DotNetMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<DotNetMetric>(metric));
             }
             if (_logger is not null)
             {
