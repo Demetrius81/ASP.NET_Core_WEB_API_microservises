@@ -1,9 +1,8 @@
-﻿using MetricsAgent.Models;
-using MetricsAgent.Models.Interfaces;
+﻿using Source.Models;
 
 namespace MetricsAgent.Services.Interfaces
 {
-    public interface IRamMetricsRepository : IRepository<RamMetric>
+    public interface IRamMetricsRepository : IRepository<RamMetricDto>
     {
     }
 }

@@ -1,17 +1,22 @@
 ﻿using AutoMapper;
-using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
-using MetricsAgent.Models.Responses;
 using MetricsAgent.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Source.Models;
+using Source.Models.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
+    /// <summary>
+    /// Контроллер сбора CPU метрик
+    /// </summary>
     [Route("api/metrics/cpu")]
     [ApiController]
+    [SwaggerTag("Предоставляет возможность получение CPU метрик")]
     public class CpuMetricsController : ControllerBase, IMetricsController
     {
         private readonly ICpuMetricsRepository _metricsRepository;
@@ -77,18 +82,24 @@ namespace MetricsAgent.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Получить метрики за весь период
+        /// </summary>
+        /// <returns>Результат операции</returns>
         [HttpGet("all")]
+        [SwaggerOperation(description: "Получение метрик CPU")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetAll()
         {
-            IList<CpuMetric> metrics = _metricsRepository.GetAll();
+            IList<CpuMetricDto> metrics = _metricsRepository.GetAll();
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<CpuMetricDto>()
+                Metrics = new List<CpuMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetric>(metric));
             }
             if (_logger is not null)
             {
@@ -97,19 +108,26 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
-
+        /// <summary>
+        /// Получить метрики за указанный период
+        /// </summary>
+        /// <param name="fromTime">Время с...</param>
+        /// <param name="toTime">Время по...</param>
+        /// <returns>Результат операции</returns>
         [HttpGet("from/{fromTime}/to/{toTime}")]
+        [SwaggerOperation(description: "Получение метрик CPU за указанный период")]
+        [SwaggerResponse(200, description: "Метрики успешно получены")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            IList<CpuMetric> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
+            IList<CpuMetricDto> metrics = _metricsRepository.GetByTimePeriod(fromTime, toTime);
 
             CpuAllMetricsResponse response = new CpuAllMetricsResponse()
             {
-                Metrics = new List<CpuMetricDto>()
+                Metrics = new List<CpuMetric>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetric>(metric));
             }
             if (_logger is not null)
             {

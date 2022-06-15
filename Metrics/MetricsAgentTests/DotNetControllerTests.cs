@@ -1,6 +1,5 @@
 ﻿using MetricsAgent.Controllers;
-using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
+using Source.Models;
 using MetricsAgent.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -48,7 +47,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetAll())
-                              .Returns(new List<DotNetMetric>());
+                              .Returns(new List<DotNetMetricDto>());
 
             _controller.GetAll();
 
@@ -61,7 +60,7 @@ namespace MetricsAgentTests
         {
             _mockMetricsRepository.Setup(repository =>
                     repository.GetByTimePeriod(It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
-                              .Returns(new List<DotNetMetric>());
+                              .Returns(new List<DotNetMetricDto>());
 
             _controller.GetMetrics(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(100));
 

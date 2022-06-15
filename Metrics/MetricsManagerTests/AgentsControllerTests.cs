@@ -22,7 +22,7 @@ namespace MetricsManagerTests
         {
             _agentPool = LazyAgentPool.Instance;
 
-            _agentsController = new AgentsController(_agentPool);
+            _agentsController = new AgentsController(null);
         }
 
         [Fact]

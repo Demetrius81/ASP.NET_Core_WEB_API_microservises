@@ -1,4 +1,4 @@
-﻿using MetricsAgent.Models;
+﻿using Source.Models;
 using MetricsAgent.Services.Interfaces;
 using Quartz;
 using System;
@@ -17,7 +17,7 @@ namespace MetricsAgent.Jobs
         {
             _metricRepository = metricRepository;
 
-            _performanceCounter = new PerformanceCounter("Processor", "Interrupts/sec", "_Total");
+            _performanceCounter = new PerformanceCounter(".NET CLR Networking", "Connections Established", "_Global_");
         }
 
         public Task Execute(IJobExecutionContext context)
@@ -26,7 +26,20 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            _metricRepository.Create(new NetworkMetric
+            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
+
+            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 600);
+
+            try
+            {
+                _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            _metricRepository.Create(new NetworkMetricDto
             {
                 Time = time.TotalSeconds,
                 Value = (int)network

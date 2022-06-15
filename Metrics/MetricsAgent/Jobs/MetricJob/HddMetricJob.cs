@@ -1,4 +1,4 @@
-﻿using MetricsAgent.Models;
+﻿using Source.Models;
 using MetricsAgent.Services.Interfaces;
 using Quartz;
 using System;
@@ -26,7 +26,20 @@ namespace MetricsAgent.Jobs
 
             TimeSpan time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            _metricRepository.Create(new HddMetric
+            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
+
+            TimeSpan timeTo = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 600);
+
+            try
+            {
+                _metricRepository.DeleteByTimePeriod(timeFrom, timeTo);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            _metricRepository.Create(new HddMetricDto
             {
                 Time = time.TotalSeconds,
                 Value = (int)hddSpeed
